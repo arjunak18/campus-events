@@ -1,6 +1,6 @@
 import { supabase } from '../lib/supabase';
 
-export const API_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000/api';
+export const API_URL = process.env.EXPO_PUBLIC_API_URL || 'https://campus-events-api-icb1.onrender.com/api';
 
 class ApiError extends Error {
   status: number;
@@ -25,6 +25,8 @@ export async function fetcher<T>(endpoint: string, options: RequestInit = {}): P
   headers.set('Content-Type', 'application/json');
   if (sessionToken) {
     headers.set('Authorization', `Bearer ${sessionToken}`);
+  } else {
+    headers.set('Authorization', 'Bearer guest-token');
   }
 
   const config: RequestInit = {

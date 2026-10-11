@@ -6,16 +6,31 @@
   "build": {
     "development": {
       "developmentClient": true,
-      "distribution": "internal"
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://campus-events-api-icb1.onrender.com/api",
+        "EXPO_PUBLIC_SUPABASE_URL": "https://rgniolsyrwrlaknkopxr.supabase.co",
+        "EXPO_PUBLIC_SUPABASE_ANON_KEY": "sb_publishable_-tCCaQ2QqSwnUs-LCf6q-A_PfCb9FZd"
+      }
     },
     "preview": {
       "distribution": "internal",
       "android": {
         "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://campus-events-api-icb1.onrender.com/api",
+        "EXPO_PUBLIC_SUPABASE_URL": "https://rgniolsyrwrlaknkopxr.supabase.co",
+        "EXPO_PUBLIC_SUPABASE_ANON_KEY": "sb_publishable_-tCCaQ2QqSwnUs-LCf6q-A_PfCb9FZd"
       }
     },
     "production": {
-      "autoIncrement": true
+      "autoIncrement": true,
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://campus-events-api-icb1.onrender.com/api",
+        "EXPO_PUBLIC_SUPABASE_URL": "https://rgniolsyrwrlaknkopxr.supabase.co",
+        "EXPO_PUBLIC_SUPABASE_ANON_KEY": "sb_publishable_-tCCaQ2QqSwnUs-LCf6q-A_PfCb9FZd"
+      }
     }
   },
   "submit": {

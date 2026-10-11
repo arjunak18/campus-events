@@ -38,14 +38,14 @@ const WebStorageAdapter = {
 
 const storageAdapter = Platform.OS === 'web' ? WebStorageAdapter : ExpoSecureStoreAdapter;
 
-export const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL || 'https://campus-events-placeholder.supabase.co';
-export const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || 'campus-events-placeholder-anon-key';
+export const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL || 'https://rgniolsyrwrlaknkopxr.supabase.co';
+export const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || 'sb_publishable_-tCCaQ2QqSwnUs-LCf6q-A_PfCb9FZd';
 
 export const isSupabaseConfigured = 
-  Boolean(process.env.EXPO_PUBLIC_SUPABASE_URL) && 
-  !process.env.EXPO_PUBLIC_SUPABASE_URL.includes('placeholder') &&
-  Boolean(process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY) &&
-  !process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY.includes('placeholder');
+  Boolean(supabaseUrl) && 
+  !supabaseUrl.includes('placeholder') &&
+  Boolean(supabaseAnonKey) &&
+  !supabaseAnonKey.includes('placeholder');
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
