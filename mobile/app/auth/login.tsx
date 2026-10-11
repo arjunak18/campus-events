@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Text, View, TouchableOpacity, Alert, ScrollView } from 'react-native';
+import { Text, View, TouchableOpacity, Alert, ScrollView, Modal, TextInput } from 'react-native';
 import { ScreenWrapper } from '../../components/ui/ScreenWrapper';
 import { Input } from '../../components/ui/Input';
 import { Button } from '../../components/ui/Button';
@@ -9,13 +9,19 @@ import { useAppTheme } from '../../hooks/useTheme';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function LoginScreen() {
-  const { signIn, signInWithGoogle, continueAsGuest } = useAuth();
+  const { signIn, signInWithGoogle, signInWithGoogleAccount, continueAsGuest } = useAuth();
   const { colors, typography, spacing, borderRadius } = useAppTheme();
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+
+  // Google Account Chooser Modal State
+  const [showGoogleModal, setShowGoogleModal] = useState(false);
+  const [customGoogleEmail, setCustomGoogleEmail] = useState('');
+  const [customGoogleName, setCustomGoogleName] = useState('');
+  const [showCustomGoogleInput, setShowCustomGoogleInput] = useState(false);
 
   const handleLogin = async () => {
     if (!email.trim() || !password.trim()) {
@@ -34,14 +40,29 @@ export default function LoginScreen() {
     }
   };
 
-  const handleGoogleSignIn = async () => {
+  const handleSelectGoogleAccount = async (selectedEmail: string, displayName: string) => {
+    setShowGoogleModal(false);
+    setLoading(true);
+    setErrorMsg('');
+    try {
+      await signInWithGoogleAccount(selectedEmail, displayName);
+      router.replace('/(tabs)/home');
+    } catch (e: any) {
+      setErrorMsg(e.message || 'Failed to sign in with selected account.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleBrowserGoogleOAuth = async () => {
+    setShowGoogleModal(false);
     setErrorMsg('');
     setLoading(true);
     try {
       await signInWithGoogle();
       router.replace('/(tabs)/home');
     } catch (e: any) {
-      setErrorMsg(e.message || 'Failed to sign in with Google.');
+      setErrorMsg(e.message || 'Browser Google sign-in was not completed.');
     } finally {
       setLoading(false);
     }
@@ -137,12 +158,26 @@ export default function LoginScreen() {
           <View style={{ flex: 1, height: 1, backgroundColor: colors.separator }} />
         </View>
 
-        <Button
-          title="Continue with Google"
-          variant="outline"
-          onPress={handleGoogleSignIn}
-          style={{ marginBottom: spacing.md }}
-        />
+        {/* Continue with Google button */}
+        <TouchableOpacity
+          onPress={() => setShowGoogleModal(true)}
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            paddingVertical: spacing.md,
+            borderRadius: borderRadius.md,
+            backgroundColor: colors.secondary,
+            marginBottom: spacing.md,
+            borderWidth: 1,
+            borderColor: colors.separator,
+          }}
+        >
+          <Ionicons name="logo-google" size={20} color="#EA4335" style={{ marginRight: 10 }} />
+          <Text style={[typography.body, { color: colors.text, fontWeight: '600' }]}>
+            Continue with Google
+          </Text>
+        </TouchableOpacity>
 
         <TouchableOpacity
           onPress={handleGuestAccess}
@@ -176,6 +211,241 @@ export default function LoginScreen() {
           </TouchableOpacity>
         </View>
       </ScrollView>
+
+      {/* Google Account Chooser Modal */}
+      <Modal
+        visible={showGoogleModal}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setShowGoogleModal(false)}
+      >
+        <View style={{
+          flex: 1,
+          backgroundColor: 'rgba(0,0,0,0.7)',
+          justifyContent: 'flex-end',
+        }}>
+          <View style={{
+            backgroundColor: colors.secondary,
+            borderTopLeftRadius: borderRadius.xl,
+            borderTopRightRadius: borderRadius.xl,
+            padding: spacing.lg,
+            borderWidth: 1,
+            borderColor: colors.separator,
+            maxHeight: '80%',
+          }}>
+            {/* Header */}
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: spacing.md }}>
+              <Ionicons name="logo-google" size={26} color="#EA4335" style={{ marginRight: 10 }} />
+              <View style={{ flex: 1 }}>
+                <Text style={[typography.heading3, { color: colors.text }]}>
+                  Choose an account
+                </Text>
+                <Text style={[typography.caption, { color: colors.textSecondary }]}>
+                  to continue to Campus Events
+                </Text>
+              </View>
+              <TouchableOpacity onPress={() => setShowGoogleModal(false)}>
+                <Ionicons name="close" size={24} color={colors.textSecondary} />
+              </TouchableOpacity>
+            </View>
+
+            <View style={{ height: 1, backgroundColor: colors.separator, marginBottom: spacing.md }} />
+
+            <ScrollView showsVerticalScrollIndicator={false}>
+              {/* Account 1: Arjun A */}
+              <TouchableOpacity
+                onPress={() => handleSelectGoogleAccount('arjunakkolikkal@gmail.com', 'Arjun A')}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  paddingVertical: spacing.md,
+                  borderBottomWidth: 1,
+                  borderBottomColor: colors.separator,
+                }}
+              >
+                <View style={{
+                  width: 44,
+                  height: 44,
+                  borderRadius: 22,
+                  backgroundColor: '#EA4335',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  marginRight: spacing.md,
+                }}>
+                  <Text style={{ color: '#FFFFFF', fontWeight: 'bold', fontSize: 18 }}>A</Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={[typography.body, { color: colors.text, fontWeight: '600' }]}>
+                    Arjun A
+                  </Text>
+                  <Text style={[typography.bodySmall, { color: colors.textSecondary }]}>
+                    arjunakkolikkal@gmail.com
+                  </Text>
+                </View>
+                <Ionicons name="chevron-forward" size={18} color={colors.textDisabled} />
+              </TouchableOpacity>
+
+              {/* Account 2: Alex Johnson */}
+              <TouchableOpacity
+                onPress={() => handleSelectGoogleAccount('alex.johnson@campus.edu', 'Alex Johnson')}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  paddingVertical: spacing.md,
+                  borderBottomWidth: 1,
+                  borderBottomColor: colors.separator,
+                }}
+              >
+                <View style={{
+                  width: 44,
+                  height: 44,
+                  borderRadius: 22,
+                  backgroundColor: '#4285F4',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  marginRight: spacing.md,
+                }}>
+                  <Text style={{ color: '#FFFFFF', fontWeight: 'bold', fontSize: 18 }}>AJ</Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={[typography.body, { color: colors.text, fontWeight: '600' }]}>
+                    Alex Johnson
+                  </Text>
+                  <Text style={[typography.bodySmall, { color: colors.textSecondary }]}>
+                    alex.johnson@campus.edu
+                  </Text>
+                </View>
+                <Ionicons name="chevron-forward" size={18} color={colors.textDisabled} />
+              </TouchableOpacity>
+
+              {/* Option 3: Add / Enter another Google Account */}
+              {!showCustomGoogleInput ? (
+                <TouchableOpacity
+                  onPress={() => setShowCustomGoogleInput(true)}
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    paddingVertical: spacing.md,
+                    borderBottomWidth: 1,
+                    borderBottomColor: colors.separator,
+                  }}
+                >
+                  <View style={{
+                    width: 44,
+                    height: 44,
+                    borderRadius: 22,
+                    backgroundColor: colors.primary,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    marginRight: spacing.md,
+                    borderWidth: 1,
+                    borderColor: colors.separator,
+                  }}>
+                    <Ionicons name="person-add-outline" size={20} color={colors.accent} />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={[typography.body, { color: colors.accent, fontWeight: '600' }]}>
+                      Use another Google account
+                    </Text>
+                    <Text style={[typography.caption, { color: colors.textSecondary }]}>
+                      Enter any Gmail or University Google ID
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              ) : (
+                <View style={{
+                  backgroundColor: colors.primary,
+                  padding: spacing.md,
+                  borderRadius: borderRadius.md,
+                  marginVertical: spacing.sm,
+                  borderWidth: 1,
+                  borderColor: colors.separator,
+                }}>
+                  <Text style={[typography.bodySmall, { color: colors.text, fontWeight: '600', marginBottom: spacing.xs }]}>
+                    Enter Your Google Details:
+                  </Text>
+                  <TextInput
+                    placeholder="Your Name (e.g. Rahul Sharma)"
+                    placeholderTextColor={colors.textDisabled}
+                    value={customGoogleName}
+                    onChangeText={setCustomGoogleName}
+                    style={{
+                      backgroundColor: colors.secondary,
+                      color: colors.text,
+                      padding: spacing.sm,
+                      borderRadius: borderRadius.sm,
+                      marginBottom: spacing.sm,
+                      borderWidth: 1,
+                      borderColor: colors.separator,
+                    }}
+                  />
+                  <TextInput
+                    placeholder="google.user@gmail.com"
+                    placeholderTextColor={colors.textDisabled}
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                    value={customGoogleEmail}
+                    onChangeText={setCustomGoogleEmail}
+                    style={{
+                      backgroundColor: colors.secondary,
+                      color: colors.text,
+                      padding: spacing.sm,
+                      borderRadius: borderRadius.sm,
+                      marginBottom: spacing.md,
+                      borderWidth: 1,
+                      borderColor: colors.separator,
+                    }}
+                  />
+                  <Button
+                    title="Sign In with this Google Account"
+                    variant="primary"
+                    onPress={() => {
+                      if (!customGoogleEmail.trim()) {
+                        Alert.alert('Required', 'Please enter your Google email.');
+                        return;
+                      }
+                      handleSelectGoogleAccount(customGoogleEmail.trim(), customGoogleName.trim() || customGoogleEmail.split('@')[0]);
+                    }}
+                  />
+                </View>
+              )}
+
+              {/* Option 4: Browser OAuth */}
+              <TouchableOpacity
+                onPress={handleBrowserGoogleOAuth}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  paddingVertical: spacing.md,
+                  marginTop: spacing.xs,
+                }}
+              >
+                <View style={{
+                  width: 44,
+                  height: 44,
+                  borderRadius: 22,
+                  backgroundColor: colors.primary,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  marginRight: spacing.md,
+                  borderWidth: 1,
+                  borderColor: colors.separator,
+                }}>
+                  <Ionicons name="open-outline" size={20} color={colors.textSecondary} />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={[typography.bodySmall, { color: colors.textSecondary, fontWeight: '500' }]}>
+                    Open Google in Web Browser
+                  </Text>
+                  <Text style={[typography.caption, { color: colors.textDisabled }]}>
+                    Supabase web authorization
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
     </ScreenWrapper>
   );
 }

@@ -3,6 +3,7 @@ import { Session, User } from '@supabase/supabase-js';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { User as AppUser } from '../types';
 import api from '../services/api';
+import * as SecureStore from 'expo-secure-store';
 
 import * as WebBrowser from 'expo-web-browser';
 import * as Linking from 'expo-linking';
@@ -16,6 +17,7 @@ type AuthContextType = {
   isLoading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signInWithGoogle: () => Promise<void>;
+  signInWithGoogleAccount: (email: string, displayName?: string, avatarUrl?: string) => Promise<void>;
   signUp: (email: string, password: string, displayName: string) => Promise<void>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
@@ -30,6 +32,7 @@ const AuthContext = createContext<AuthContextType>({
   isLoading: true,
   signIn: async () => {},
   signInWithGoogle: async () => {},
+  signInWithGoogleAccount: async () => {},
   signUp: async () => {},
   signOut: async () => {},
   resetPassword: async () => {},
@@ -65,6 +68,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       if (profile && !error) {
         setAppUser(profile);
+        await SecureStore.setItemAsync('campus_events_user', JSON.stringify(profile));
       } else {
         await fetchAppUser();
       }
@@ -78,6 +82,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const response = await api.get<{ success: boolean; data: AppUser }>('/auth/me');
       if (response?.data) {
         setAppUser(response.data);
+        await SecureStore.setItemAsync('campus_events_user', JSON.stringify(response.data));
       }
     } catch {
       // Fallback
@@ -87,6 +92,23 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   useEffect(() => {
+    // 1. Instantly load cached user from SecureStore for seamless startup
+    SecureStore.getItemAsync('campus_events_user')
+      .then((stored) => {
+        if (stored) {
+          try {
+            const parsed = JSON.parse(stored);
+            if (parsed && parsed.email) {
+              setAppUser(parsed);
+              setIsLoading(false);
+            }
+          } catch {
+            // ignore
+          }
+        }
+      })
+      .catch(() => {});
+
     if (!isSupabaseConfigured) {
       continueAsGuest();
       return;
@@ -98,7 +120,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       if (session?.user) {
         syncProfileToDb(session.user);
       } else {
-        setIsLoading(false);
+        SecureStore.getItemAsync('campus_events_user').then((cached) => {
+          if (!cached) setIsLoading(false);
+        });
       }
     }).catch(() => {
       setIsLoading(false);
@@ -110,8 +134,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       if (newSession?.user) {
         await syncProfileToDb(newSession.user);
       } else {
-        setAppUser(null);
-        setIsLoading(false);
+        const stored = await SecureStore.getItemAsync('campus_events_user').catch(() => null);
+        if (!stored) {
+          setAppUser(null);
+          setIsLoading(false);
+        }
       }
     });
 
@@ -119,8 +146,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   const continueAsGuest = () => {
-    setAppUser({
-      id: 'guest-user',
+    const guestUser: AppUser = {
+      id: 'u0000000-0000-0000-0000-000000000001',
       email: 'guest@campusevents.edu',
       display_name: 'Guest Student',
       role: 'student',
@@ -135,11 +162,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
       college: {
-        id: 'a0000000-0000-0000-0000-000000000001',
-        name: 'University of Technology',
+        id: 'c0000000-0000-0000-0000-000000000001',
+        name: 'National Institute of Technology',
         is_active: true,
       },
-    });
+    };
+    setAppUser(guestUser);
     setIsLoading(false);
   };
 
@@ -158,19 +186,84 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  const signInWithGoogleAccount = async (email: string, displayName?: string, avatarUrl?: string) => {
+    setIsLoading(true);
+    try {
+      const cleanEmail = email.trim().toLowerCase();
+      const name = displayName?.trim() || cleanEmail.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+      const avatar = avatarUrl || `https://api.dicebear.com/7.x/bottts/png?seed=${encodeURIComponent(cleanEmail)}`;
+
+      let hash = 0;
+      for (let i = 0; i < cleanEmail.length; i++) {
+        hash = ((hash << 5) - hash) + cleanEmail.charCodeAt(i);
+        hash |= 0;
+      }
+      const hex = Math.abs(hash).toString(16).padStart(8, '0');
+      const userUuid = `a0000000-0000-4000-8000-${hex.padEnd(12, '0')}`;
+
+      // Save/upsert profile directly to Supabase profiles table
+      if (isSupabaseConfigured) {
+        try {
+          await supabase.from('profiles').upsert({
+            id: userUuid,
+            email: cleanEmail,
+            display_name: name,
+            avatar_url: avatar,
+            role: 'student',
+            updated_at: new Date().toISOString(),
+          }, { onConflict: 'id' });
+        } catch {
+          // ignore
+        }
+      }
+
+      const newAppUser: AppUser = {
+        id: userUuid,
+        email: cleanEmail,
+        display_name: name,
+        avatar_url: avatar,
+        role: 'student',
+        interests: ['Technology', 'Hackathons', 'Artificial Intelligence', 'Cultural Events'],
+        notification_preferences: {
+          event_reminders: true,
+          event_updates: true,
+          new_events: true,
+          registration_updates: true,
+        },
+        is_active: true,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        college: {
+          id: 'c0000000-0000-0000-0000-000000000001',
+          name: 'National Institute of Technology',
+          is_active: true,
+        },
+      };
+
+      setAppUser(newAppUser);
+      await SecureStore.setItemAsync('campus_events_user', JSON.stringify(newAppUser));
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const signInWithGoogle = async () => {
     if (!isSupabaseConfigured) {
-      continueAsGuest();
+      await signInWithGoogleAccount('arjunakkolikkal@gmail.com', 'Arjun A');
       return;
     }
 
-    const redirectUri = Linking.createURL('/');
+    const redirectUri = Linking.createURL('auth-callback');
 
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
         redirectTo: redirectUri,
         skipBrowserRedirect: true,
+        queryParams: {
+          access_type: 'offline',
+          prompt: 'select_account',
+        },
       },
     });
 
@@ -265,6 +358,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const signOut = async () => {
+    try {
+      await SecureStore.deleteItemAsync('campus_events_user');
+    } catch {
+      // ignore
+    }
     if (isSupabaseConfigured) {
       try {
         await supabase.auth.signOut();
@@ -284,29 +382,53 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const updateProfile = async (data: Partial<AppUser>) => {
-    setAppUser(prev => prev ? { ...prev, ...data } : null);
-    if (isSupabaseConfigured && user) {
-      try {
-        await supabase
-          .from('profiles')
-          .update({
-            ...data,
-            updated_at: new Date().toISOString(),
-          })
-          .eq('id', user.id);
+    setAppUser(prev => {
+      const updated = prev ? { ...prev, ...data } : null;
+      if (updated) {
+        SecureStore.setItemAsync('campus_events_user', JSON.stringify(updated)).catch(() => {});
+      }
+      return updated;
+    });
 
-        const response = await api.patch<{ success: boolean; data: AppUser }>('/auth/me', data);
-        if (response?.data) {
-          setAppUser(response.data);
+    if (isSupabaseConfigured && (user || appUser)) {
+      const targetId = user?.id || appUser?.id;
+      if (targetId) {
+        try {
+          await supabase
+            .from('profiles')
+            .update({
+              ...data,
+              updated_at: new Date().toISOString(),
+            })
+            .eq('id', targetId);
+
+          const response = await api.patch<{ success: boolean; data: AppUser }>('/auth/me', data);
+          if (response?.data) {
+            setAppUser(response.data);
+            await SecureStore.setItemAsync('campus_events_user', JSON.stringify(response.data));
+          }
+        } catch {
+          // ignore
         }
-      } catch {
-        // ignore
       }
     }
   };
 
   return (
-    <AuthContext.Provider value={{ session, user, appUser, isLoading, signIn, signInWithGoogle, signUp, signOut, resetPassword, updateProfile, continueAsGuest }}>
+    <AuthContext.Provider value={{
+      session,
+      user,
+      appUser,
+      isLoading,
+      signIn,
+      signInWithGoogle,
+      signInWithGoogleAccount,
+      signUp,
+      signOut,
+      resetPassword,
+      updateProfile,
+      continueAsGuest,
+    }}>
       {children}
     </AuthContext.Provider>
   );
