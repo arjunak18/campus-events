@@ -26,7 +26,7 @@ export const collegesController = {
         .order('name');
 
       if (error) throw new Error(error.message);
-      return successResponse(res, data || devColleges);
+      return successResponse(res, (data && data.length > 0) ? data : devColleges);
     } catch {
       return successResponse(res, devColleges);
     }

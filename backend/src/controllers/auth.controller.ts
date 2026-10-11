@@ -29,13 +29,61 @@ export const authController = {
 
   async getMe(req: Request, res: Response, next: NextFunction) {
     try {
-      const { data, error } = await supabaseAdmin
+      const user = req.user!;
+      let { data, error } = await supabaseAdmin
         .from('profiles')
         .select('*, college:colleges(*)')
-        .eq('id', req.user!.id)
-        .single();
+        .eq('id', user.id)
+        .maybeSingle();
 
-      if (error || !data) throw new NotFoundError('Profile not found');
+      if (!data) {
+        // Automatically create user profile if first time logging in (e.g. from Google or email)
+        let displayName = user.email?.split('@')[0] || 'Student';
+        let avatarUrl: string | null = null;
+
+        try {
+          const { data: authUser } = await supabaseAdmin.auth.admin.getUserById(user.id);
+          const meta = authUser?.user?.user_metadata || {};
+          displayName = meta.full_name || meta.name || meta.display_name || displayName;
+          avatarUrl = meta.avatar_url || meta.picture || null;
+        } catch {
+          // ignore admin lookup error
+        }
+
+        const { data: newProfile, error: insertError } = await supabaseAdmin
+          .from('profiles')
+          .upsert({
+            id: user.id,
+            email: user.email,
+            display_name: displayName,
+            avatar_url: avatarUrl,
+            role: user.role || 'student',
+            updated_at: new Date().toISOString(),
+          }, { onConflict: 'id' })
+          .select('*, college:colleges(*)')
+          .single();
+
+        if (insertError) {
+          data = {
+            id: user.id,
+            email: user.email,
+            display_name: displayName,
+            avatar_url: avatarUrl,
+            role: 'student',
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          };
+        } else {
+          data = newProfile;
+        }
+      } else {
+        // Record login activity
+        await supabaseAdmin
+          .from('profiles')
+          .update({ updated_at: new Date().toISOString() })
+          .eq('id', user.id);
+      }
+
       return successResponse(res, data);
     } catch (error) {
       next(error);

@@ -20,6 +20,7 @@ type AuthContextType = {
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
   updateProfile: (data: Partial<AppUser>) => Promise<void>;
+  continueAsGuest: () => void;
 };
 
 const AuthContext = createContext<AuthContextType>({
@@ -33,6 +34,7 @@ const AuthContext = createContext<AuthContextType>({
   signOut: async () => {},
   resetPassword: async () => {},
   updateProfile: async () => {},
+  continueAsGuest: () => {},
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
@@ -41,38 +43,52 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [appUser, setAppUser] = useState<AppUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Sync profile details directly to/from Supabase profiles table on each login
+  const syncProfileToDb = async (authUser: User) => {
+    try {
+      const meta = authUser.user_metadata || {};
+      const displayName = meta.full_name || meta.name || meta.display_name || authUser.email?.split('@')[0] || 'Student';
+      const avatarUrl = meta.avatar_url || meta.picture || null;
+
+      // Upsert profile in Supabase profiles table
+      const { data: profile, error } = await supabase
+        .from('profiles')
+        .upsert({
+          id: authUser.id,
+          email: authUser.email || '',
+          display_name: displayName,
+          avatar_url: avatarUrl,
+          updated_at: new Date().toISOString(),
+        }, { onConflict: 'id' })
+        .select('*, college:colleges(*)')
+        .single();
+
+      if (profile && !error) {
+        setAppUser(profile);
+      } else {
+        await fetchAppUser();
+      }
+    } catch {
+      await fetchAppUser();
+    }
+  };
+
+  const fetchAppUser = async () => {
+    try {
+      const response = await api.get<{ success: boolean; data: AppUser }>('/auth/me');
+      if (response?.data) {
+        setAppUser(response.data);
+      }
+    } catch {
+      // Fallback
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (!isSupabaseConfigured) {
-      // Development mode: Create a default guest student session
-      const mockUser = {
-        id: 'u0000000-0000-0000-0000-000000000001',
-        email: 'student@campus.edu',
-        user_metadata: { display_name: 'Alex Johnson' },
-      } as unknown as User;
-
-      setUser(mockUser);
-      setAppUser({
-        id: 'u0000000-0000-0000-0000-000000000001',
-        email: 'student@campus.edu',
-        display_name: 'Alex Johnson',
-        role: 'student',
-        interests: ['Technology', 'Hackathons', 'Workshops'],
-        notification_preferences: {
-          event_reminders: true,
-          event_updates: true,
-          new_events: true,
-          registration_updates: true,
-        },
-        is_active: true,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-        college: {
-          id: 'c0000000-0000-0000-0000-000000000001',
-          name: 'National Institute of Technology',
-          is_active: true,
-        },
-      });
-      setIsLoading(false);
+      continueAsGuest();
       return;
     }
 
@@ -80,7 +96,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setSession(session);
       setUser(session?.user ?? null);
       if (session?.user) {
-        fetchAppUser();
+        syncProfileToDb(session.user);
       } else {
         setIsLoading(false);
       }
@@ -88,11 +104,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setIsLoading(false);
     });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        fetchAppUser();
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, newSession) => {
+      setSession(newSession);
+      setUser(newSession?.user ?? null);
+      if (newSession?.user) {
+        await syncProfileToDb(newSession.user);
       } else {
         setAppUser(null);
         setIsLoading(false);
@@ -102,64 +118,54 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return () => subscription.unsubscribe();
   }, []);
 
-  const fetchAppUser = async () => {
-    try {
-      const response = await api.get<{ success: boolean; data: AppUser }>('/auth/me');
-      setAppUser(response.data);
-    } catch {
-      // Fallback
-    } finally {
-      setIsLoading(false);
-    }
+  const continueAsGuest = () => {
+    setAppUser({
+      id: 'guest-user',
+      email: 'guest@campusevents.edu',
+      display_name: 'Guest Student',
+      role: 'student',
+      interests: ['Technology', 'Hackathons', 'Cultural Events'],
+      notification_preferences: {
+        event_reminders: true,
+        event_updates: true,
+        new_events: true,
+        registration_updates: true,
+      },
+      is_active: true,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      college: {
+        id: 'a0000000-0000-0000-0000-000000000001',
+        name: 'University of Technology',
+        is_active: true,
+      },
+    });
+    setIsLoading(false);
   };
 
   const signIn = async (email: string, password: string) => {
     if (!isSupabaseConfigured) {
-      setAppUser(prev => prev || {
-        id: 'u0000000-0000-0000-0000-000000000001',
-        email,
-        display_name: email.split('@')[0],
-        role: 'student',
-        interests: ['Technology', 'Workshops'],
-        notification_preferences: {
-          event_reminders: true,
-          event_updates: true,
-          new_events: true,
-          registration_updates: true,
-        },
-        is_active: true,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      });
+      continueAsGuest();
       return;
     }
 
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) throw error;
+    if (data.session?.user) {
+      setSession(data.session);
+      setUser(data.session.user);
+      await syncProfileToDb(data.session.user);
+    }
   };
 
   const signInWithGoogle = async () => {
     if (!isSupabaseConfigured) {
-      setAppUser({
-        id: 'u0000000-0000-0000-0000-000000000001',
-        email: 'alex.johnson@campus.edu',
-        display_name: 'Alex Johnson (Google)',
-        role: 'student',
-        interests: ['Technology', 'Hackathons'],
-        notification_preferences: {
-          event_reminders: true,
-          event_updates: true,
-          new_events: true,
-          registration_updates: true,
-        },
-        is_active: true,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      });
+      continueAsGuest();
       return;
     }
 
     const redirectUri = Linking.createURL('/');
+
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
@@ -169,20 +175,54 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     });
 
     if (error) throw error;
-    if (data?.url) {
-      const result = await WebBrowser.openAuthSessionAsync(data.url, redirectUri);
-      if (result.type === 'success' && result.url) {
-        // Extract params from redirect URL if needed
-        const parsedUrl = new URL(result.url);
-        const params = new URLSearchParams(parsedUrl.hash.replace('#', '?'));
-        const accessToken = params.get('access_token');
-        const refreshToken = params.get('refresh_token');
+    if (!data?.url) throw new Error('No authentication URL received from Google provider.');
 
-        if (accessToken && refreshToken) {
-          await supabase.auth.setSession({
-            access_token: accessToken,
-            refresh_token: refreshToken,
-          });
+    const result = await WebBrowser.openAuthSessionAsync(data.url, redirectUri);
+    if (result.type === 'success' && result.url) {
+      let code: string | null = null;
+      let accessToken: string | null = null;
+      let refreshToken: string | null = null;
+
+      try {
+        const parsed = Linking.parse(result.url);
+        if (parsed.queryParams?.code) code = String(parsed.queryParams.code);
+        if (parsed.queryParams?.access_token) accessToken = String(parsed.queryParams.access_token);
+        if (parsed.queryParams?.refresh_token) refreshToken = String(parsed.queryParams.refresh_token);
+      } catch {
+        // regex fallback
+      }
+
+      if (!code) {
+        const codeMatch = result.url.match(/[?&]code=([^&#]+)/);
+        if (codeMatch) code = decodeURIComponent(codeMatch[1]);
+      }
+      if (!accessToken) {
+        const tokenMatch = result.url.match(/[?&#]access_token=([^&#]+)/);
+        if (tokenMatch) accessToken = decodeURIComponent(tokenMatch[1]);
+      }
+      if (!refreshToken) {
+        const refreshMatch = result.url.match(/[?&#]refresh_token=([^&#]+)/);
+        if (refreshMatch) refreshToken = decodeURIComponent(refreshMatch[1]);
+      }
+
+      if (code) {
+        const { data: sessionData, error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+        if (exchangeError) throw exchangeError;
+        if (sessionData.session) {
+          setSession(sessionData.session);
+          setUser(sessionData.session.user);
+          await syncProfileToDb(sessionData.session.user);
+        }
+      } else if (accessToken && refreshToken) {
+        const { data: sessionData, error: setSessionError } = await supabase.auth.setSession({
+          access_token: accessToken,
+          refresh_token: refreshToken,
+        });
+        if (setSessionError) throw setSessionError;
+        if (sessionData.session) {
+          setSession(sessionData.session);
+          setUser(sessionData.session.user);
+          await syncProfileToDb(sessionData.session.user);
         }
       }
     }
@@ -190,43 +230,47 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const signUp = async (email: string, password: string, displayName: string) => {
     if (!isSupabaseConfigured) {
-      setAppUser({
-        id: `user-${Date.now()}`,
-        email,
-        display_name: displayName,
-        role: 'student',
-        interests: ['Technology'],
-        notification_preferences: {
-          event_reminders: true,
-          event_updates: true,
-          new_events: true,
-          registration_updates: true,
-        },
-        is_active: true,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      });
+      continueAsGuest();
       return;
     }
 
     const { error, data } = await supabase.auth.signUp({
       email,
       password,
+      options: {
+        data: {
+          display_name: displayName,
+          full_name: displayName,
+        },
+      },
     });
     if (error) throw error;
 
-    if (data.user) {
-      await api.post('/auth/register', {
-        email,
-        displayName,
-      });
+    if (data.session?.user) {
+      setSession(data.session);
+      setUser(data.session.user);
+      await syncProfileToDb(data.session.user);
+    } else if (data.user) {
+      try {
+        await supabase.from('profiles').upsert({
+          id: data.user.id,
+          email: data.user.email || email,
+          display_name: displayName,
+          updated_at: new Date().toISOString(),
+        }, { onConflict: 'id' });
+      } catch {
+        // ignore
+      }
     }
   };
 
   const signOut = async () => {
     if (isSupabaseConfigured) {
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
+      try {
+        await supabase.auth.signOut();
+      } catch {
+        // ignore
+      }
     }
     setSession(null);
     setUser(null);
@@ -241,10 +285,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const updateProfile = async (data: Partial<AppUser>) => {
     setAppUser(prev => prev ? { ...prev, ...data } : null);
-    if (isSupabaseConfigured) {
+    if (isSupabaseConfigured && user) {
       try {
+        await supabase
+          .from('profiles')
+          .update({
+            ...data,
+            updated_at: new Date().toISOString(),
+          })
+          .eq('id', user.id);
+
         const response = await api.patch<{ success: boolean; data: AppUser }>('/auth/me', data);
-        setAppUser(response.data);
+        if (response?.data) {
+          setAppUser(response.data);
+        }
       } catch {
         // ignore
       }
@@ -252,7 +306,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ session, user, appUser, isLoading, signIn, signInWithGoogle, signUp, signOut, resetPassword, updateProfile }}>
+    <AuthContext.Provider value={{ session, user, appUser, isLoading, signIn, signInWithGoogle, signUp, signOut, resetPassword, updateProfile, continueAsGuest }}>
       {children}
     </AuthContext.Provider>
   );

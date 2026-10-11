@@ -9,7 +9,7 @@ import { useAppTheme } from '../../hooks/useTheme';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function LoginScreen() {
-  const { signIn, signInWithGoogle } = useAuth();
+  const { signIn, signInWithGoogle, continueAsGuest } = useAuth();
   const { colors, typography, spacing, borderRadius } = useAppTheme();
   
   const [email, setEmail] = useState('');
@@ -45,6 +45,11 @@ export default function LoginScreen() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleGuestAccess = () => {
+    continueAsGuest();
+    router.replace('/(tabs)/home');
   };
 
   return (
@@ -136,8 +141,28 @@ export default function LoginScreen() {
           title="Continue with Google"
           variant="outline"
           onPress={handleGoogleSignIn}
-          style={{ marginBottom: spacing.xl }}
+          style={{ marginBottom: spacing.md }}
         />
+
+        <TouchableOpacity
+          onPress={handleGuestAccess}
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            paddingVertical: spacing.md,
+            borderRadius: borderRadius.md,
+            backgroundColor: colors.secondary,
+            marginBottom: spacing.xl,
+            borderWidth: 1,
+            borderColor: colors.separator,
+          }}
+        >
+          <Ionicons name="compass-outline" size={18} color={colors.accent} style={{ marginRight: 8 }} />
+          <Text style={[typography.body, { color: colors.text, fontWeight: '600' }]}>
+            Browse Events as Guest
+          </Text>
+        </TouchableOpacity>
 
         {/* Register Navigation */}
         <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>

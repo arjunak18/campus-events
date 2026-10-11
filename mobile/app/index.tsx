@@ -5,7 +5,7 @@ import { useAuth } from '../hooks/useAuth';
 import { useAppTheme } from '../hooks/useTheme';
 
 export default function Index() {
-  const { session, isLoading } = useAuth();
+  const { session, appUser, isLoading } = useAuth();
   const { colors } = useAppTheme();
 
   if (isLoading) {
@@ -16,7 +16,7 @@ export default function Index() {
     );
   }
 
-  if (session) {
+  if (session || appUser) {
     return <Redirect href="/(tabs)/home" />;
   }
 

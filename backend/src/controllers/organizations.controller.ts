@@ -24,7 +24,7 @@ export const organizationsController = {
       if (college_id) query = query.eq('college_id', college_id);
       const { data, error } = await query.order('name');
       if (error) throw new Error(error.message);
-      return successResponse(res, data || devOrganizations);
+      return successResponse(res, (data && data.length > 0) ? data : devOrganizations);
     } catch {
       return successResponse(res, devOrganizations);
     }
