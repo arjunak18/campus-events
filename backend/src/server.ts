@@ -8,6 +8,21 @@ const startServer = () => {
     
     const server = app.listen(port, () => {
       logger.info(`Server running in ${env.NODE_ENV} mode on port ${port}`);
+
+      // Self-ping to prevent Render.com free tier from sleeping (every 10 min)
+      if (env.NODE_ENV === 'production') {
+        const PING_INTERVAL = 10 * 60 * 1000; // 10 minutes
+        setInterval(async () => {
+          try {
+            const url = `https://${process.env.RENDER_EXTERNAL_HOSTNAME || 'localhost'}:${port}/api/health`;
+            const res = await fetch(url);
+            logger.info(`Self-ping: ${res.status}`);
+          } catch (err) {
+            logger.warn('Self-ping failed, will retry next interval');
+          }
+        }, PING_INTERVAL);
+        logger.info('Self-ping enabled (every 10 min)');
+      }
     });
 
     // Graceful shutdown
