@@ -1,37 +1,15 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Campus Events REST API",
+  "main": "dist/server.js",
   "scripts": {
+    "clean": "node -e \"const fs = require('fs'); if (fs.existsSync('dist')) fs.rmSync('dist', { recursive: true, force: true });\"",
     "dev": "tsx watch src/server.ts",
-    "build": "tsc",
+    "build": "npm run clean && tsc",
     "start": "node dist/server.js",
     "test": "jest",
-    "lint": "eslint src/",
-    "format": "prettier --write src/"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "devDependencies": {
-    "@types/cors": "^2.8.19",
-    "@types/express": "^5.0.6",
-    "@types/jest": "^30.0.0",
-    "@types/morgan": "^1.9.10",
-    "@types/node": "^26.6.5",
-    "@types/supertest": "^7.2.1",
-    "@types/uuid": "^10.0.0",
-    "eslint": "^10.12.0",
-    "jest": "^30.5.2",
-    "nodemon": "^3.1.14",
-    "prettier": "^3.9.9",
-    "supertest": "^7.3.1",
-    "ts-jest": "^29.4.14",
-    "ts-node": "^10.9.2",
-    "tsx": "^4.23.15",
-    "typescript": "^5.6.3"
+    "lint": "eslint src/"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.117.3",
@@ -43,5 +21,14 @@
     "morgan": "^1.12.1",
     "uuid": "^14.0.3",
     "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/morgan": "^1.9.10",
+    "@types/node": "^22.10.0",
+    "@types/uuid": "^10.0.0",
+    "tsx": "^4.23.15",
+    "typescript": "^5.6.3"
   }
 }

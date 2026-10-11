@@ -4,31 +4,31 @@ import * as SecureStore from 'expo-secure-store';
 import { Platform } from 'react-native';
 
 const ExpoSecureStoreAdapter = {
-  getItem: (key: string) => {
+  getItem: (key: string): Promise<string | null> => {
     return SecureStore.getItemAsync(key);
   },
-  setItem: (key: string, value: string) => {
+  setItem: (key: string, value: string): Promise<void> => {
     return SecureStore.setItemAsync(key, value);
   },
-  removeItem: (key: string) => {
+  removeItem: (key: string): Promise<void> => {
     return SecureStore.deleteItemAsync(key);
   },
 };
 
 const WebStorageAdapter = {
-  getItem: (key: string) => {
+  getItem: (key: string): Promise<string | null> => {
     if (typeof window !== 'undefined' && window.localStorage) {
       return Promise.resolve(window.localStorage.getItem(key));
     }
     return Promise.resolve(null);
   },
-  setItem: (key: string, value: string) => {
+  setItem: (key: string, value: string): Promise<void> => {
     if (typeof window !== 'undefined' && window.localStorage) {
       window.localStorage.setItem(key, value);
     }
     return Promise.resolve();
   },
-  removeItem: (key: string) => {
+  removeItem: (key: string): Promise<void> => {
     if (typeof window !== 'undefined' && window.localStorage) {
       window.localStorage.removeItem(key);
     }
@@ -38,20 +38,21 @@ const WebStorageAdapter = {
 
 const storageAdapter = Platform.OS === 'web' ? WebStorageAdapter : ExpoSecureStoreAdapter;
 
-export const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL || 'https://rgniolsyrwrlaknkopxr.supabase.co';
-export const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || 'sb_publishable_-tCCaQ2QqSwnUs-LCf6q-A_PfCb9FZd';
+export const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL || '';
+export const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || '';
 
-export const isSupabaseConfigured = 
-  Boolean(supabaseUrl) && 
+export const isSupabaseConfigured = Boolean(
+  supabaseUrl &&
   !supabaseUrl.includes('placeholder') &&
-  Boolean(supabaseAnonKey) &&
-  !supabaseAnonKey.includes('placeholder');
+  supabaseAnonKey &&
+  !supabaseAnonKey.includes('placeholder')
+);
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+export const supabase = createClient(supabaseUrl || 'https://placeholder.supabase.co', supabaseAnonKey || 'placeholder', {
   auth: {
     storage: storageAdapter as any,
-    autoRefreshToken: isSupabaseConfigured,
+    autoRefreshToken: true,
     persistSession: true,
-    detectSessionInUrl: Platform.OS === 'web',
+    detectSessionInUrl: false,
   },
 });

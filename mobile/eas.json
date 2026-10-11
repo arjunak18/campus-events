@@ -8,7 +8,7 @@
       "developmentClient": true,
       "distribution": "internal",
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://campus-events-api-icb1.onrender.com/api",
+        "EXPO_PUBLIC_API_URL": "http://10.0.2.2:3000/api",
         "EXPO_PUBLIC_SUPABASE_URL": "https://rgniolsyrwrlaknkopxr.supabase.co",
         "EXPO_PUBLIC_SUPABASE_ANON_KEY": "sb_publishable_-tCCaQ2QqSwnUs-LCf6q-A_PfCb9FZd"
       }
