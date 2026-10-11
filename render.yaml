@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: campus-events-api
+    env: node
+    plan: free
+    region: oregon
+    rootDir: backend
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: SUPABASE_URL
+        value: https://your-project.supabase.co
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        value: your-service-role-key
+      - key: SUPABASE_ANON_KEY
+        value: your-anon-key
+      - key: ALLOWED_ORIGINS
+        value: "*"

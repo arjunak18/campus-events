@@ -1,0 +1,54 @@
+import { supabase } from '../lib/supabase';
+
+export const API_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000/api';
+
+class ApiError extends Error {
+  status: number;
+  data: any;
+  constructor(status: number, message: string, data?: any) {
+    super(message);
+    this.status = status;
+    this.data = data;
+  }
+}
+
+export async function fetcher<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+  let sessionToken: string | undefined = undefined;
+  try {
+    const { data } = await supabase.auth.getSession();
+    sessionToken = data?.session?.access_token;
+  } catch {
+    // In demo / offline environments
+  }
+  
+  const headers = new Headers(options.headers);
+  headers.set('Content-Type', 'application/json');
+  if (sessionToken) {
+    headers.set('Authorization', `Bearer ${sessionToken}`);
+  }
+
+  const config: RequestInit = {
+    ...options,
+    headers,
+  };
+
+  const response = await fetch(`${API_URL}${endpoint}`, config);
+  
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new ApiError(response.status, errorData.message || 'API Error', errorData);
+  }
+
+  if (response.status === 204) {
+    return {} as T;
+  }
+
+  return response.json();
+}
+
+export default {
+  get: <T>(endpoint: string, options?: RequestInit) => fetcher<T>(endpoint, { ...options, method: 'GET' }),
+  post: <T>(endpoint: string, body: any, options?: RequestInit) => fetcher<T>(endpoint, { ...options, method: 'POST', body: JSON.stringify(body) }),
+  patch: <T>(endpoint: string, body: any, options?: RequestInit) => fetcher<T>(endpoint, { ...options, method: 'PATCH', body: JSON.stringify(body) }),
+  delete: <T>(endpoint: string, options?: RequestInit) => fetcher<T>(endpoint, { ...options, method: 'DELETE' }),
+};
