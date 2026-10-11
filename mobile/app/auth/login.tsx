@@ -9,7 +9,7 @@ import { useAppTheme } from '../../hooks/useTheme';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function LoginScreen() {
-  const { signIn } = useAuth();
+  const { signIn, signInWithGoogle } = useAuth();
   const { colors, typography, spacing, borderRadius } = useAppTheme();
   
   const [email, setEmail] = useState('');
@@ -34,11 +34,17 @@ export default function LoginScreen() {
     }
   };
 
-  const handleGoogleSignIn = () => {
-    Alert.alert(
-      'Google Sign-In',
-      'Google OAuth is configured via Supabase Auth. To enable on this device, configure the Google provider in your Supabase dashboard.',
-    );
+  const handleGoogleSignIn = async () => {
+    setErrorMsg('');
+    setLoading(true);
+    try {
+      await signInWithGoogle();
+      router.replace('/(tabs)/home');
+    } catch (e: any) {
+      setErrorMsg(e.message || 'Failed to sign in with Google.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

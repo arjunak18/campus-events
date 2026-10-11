@@ -4,12 +4,18 @@ import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { User as AppUser } from '../types';
 import api from '../services/api';
 
+import * as WebBrowser from 'expo-web-browser';
+import * as Linking from 'expo-linking';
+
+WebBrowser.maybeCompleteAuthSession();
+
 type AuthContextType = {
   session: Session | null;
   user: User | null;
   appUser: AppUser | null;
   isLoading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
+  signInWithGoogle: () => Promise<void>;
   signUp: (email: string, password: string, displayName: string) => Promise<void>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
@@ -22,6 +28,7 @@ const AuthContext = createContext<AuthContextType>({
   appUser: null,
   isLoading: true,
   signIn: async () => {},
+  signInWithGoogle: async () => {},
   signUp: async () => {},
   signOut: async () => {},
   resetPassword: async () => {},
@@ -131,6 +138,56 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     if (error) throw error;
   };
 
+  const signInWithGoogle = async () => {
+    if (!isSupabaseConfigured) {
+      setAppUser({
+        id: 'u0000000-0000-0000-0000-000000000001',
+        email: 'alex.johnson@campus.edu',
+        display_name: 'Alex Johnson (Google)',
+        role: 'student',
+        interests: ['Technology', 'Hackathons'],
+        notification_preferences: {
+          event_reminders: true,
+          event_updates: true,
+          new_events: true,
+          registration_updates: true,
+        },
+        is_active: true,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      });
+      return;
+    }
+
+    const redirectUri = Linking.createURL('/');
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: redirectUri,
+        skipBrowserRedirect: true,
+      },
+    });
+
+    if (error) throw error;
+    if (data?.url) {
+      const result = await WebBrowser.openAuthSessionAsync(data.url, redirectUri);
+      if (result.type === 'success' && result.url) {
+        // Extract params from redirect URL if needed
+        const parsedUrl = new URL(result.url);
+        const params = new URLSearchParams(parsedUrl.hash.replace('#', '?'));
+        const accessToken = params.get('access_token');
+        const refreshToken = params.get('refresh_token');
+
+        if (accessToken && refreshToken) {
+          await supabase.auth.setSession({
+            access_token: accessToken,
+            refresh_token: refreshToken,
+          });
+        }
+      }
+    }
+  };
+
   const signUp = async (email: string, password: string, displayName: string) => {
     if (!isSupabaseConfigured) {
       setAppUser({
@@ -195,7 +252,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ session, user, appUser, isLoading, signIn, signUp, signOut, resetPassword, updateProfile }}>
+    <AuthContext.Provider value={{ session, user, appUser, isLoading, signIn, signInWithGoogle, signUp, signOut, resetPassword, updateProfile }}>
       {children}
     </AuthContext.Provider>
   );
