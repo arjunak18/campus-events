@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { supabaseAdmin } from '../config/supabase';
+import { env } from '../config/env';
 import { UnauthorizedError, ForbiddenError } from '../utils/errors';
 import { UserRole } from '../types';
 import { logger } from '../utils/logger';
@@ -7,6 +8,18 @@ import { logger } from '../utils/logger';
 export const authenticate = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const authHeader = req.headers.authorization;
+    // If running in placeholder/dev environment, allow gracefully with mock user
+    const isPlaceholder = !env.SUPABASE_URL || env.SUPABASE_URL.includes('your-project') || !env.SUPABASE_SERVICE_ROLE_KEY || env.SUPABASE_SERVICE_ROLE_KEY.includes('your-service-role');
+
+    if (isPlaceholder) {
+      req.user = {
+        id: 'u0000000-0000-0000-0000-000000000001',
+        email: 'alex.johnson@campus.edu',
+        role: 'student',
+      };
+      return next();
+    }
+
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       throw new UnauthorizedError('Missing or invalid authorization header');
     }
@@ -22,7 +35,6 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
     }
 
     // Attach user to request
-    // Role would typically come from user metadata or a database query
     const role = (user.user_metadata?.role as UserRole) || 'student';
     
     req.user = {
