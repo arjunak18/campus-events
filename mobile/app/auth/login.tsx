@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Text, View, TouchableOpacity, Alert, ScrollView } from 'react-native';
+import { Text, View, TouchableOpacity, Alert, ScrollView, Linking } from 'react-native';
 import { ScreenWrapper } from '../../components/ui/ScreenWrapper';
 import { Input } from '../../components/ui/Input';
 import { Button } from '../../components/ui/Button';
@@ -7,14 +7,17 @@ import { useAuth } from '../../hooks/useAuth';
 import { router } from 'expo-router';
 import { useAppTheme } from '../../hooks/useTheme';
 import { Ionicons } from '@expo/vector-icons';
+import api from '../../services/api';
 
 export default function LoginScreen() {
-  const { signIn, signInWithGoogle, continueAsGuest, isLoading } = useAuth();
+  const { signIn, signInWithGoogle, continueAsGuest, resendVerificationEmail, isLoading } = useAuth();
   const { colors, typography, spacing, borderRadius } = useAppTheme();
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
+  const [isUnconfirmed, setIsUnconfirmed] = useState(false);
+  const [resending, setResending] = useState(false);
 
   const handleLogin = async () => {
     const cleanEmail = email.trim().toLowerCase();
@@ -23,16 +26,34 @@ export default function LoginScreen() {
       return;
     }
     setErrorMsg('');
+    setIsUnconfirmed(false);
     try {
       await signIn(cleanEmail, password);
       router.replace('/(tabs)/home');
     } catch (e: any) {
+      // Check status from backend for actionable feedback
+      try {
+        const res = await api.post<{ success: boolean; data: { exists: boolean; confirmed: boolean } }>('/auth/check-status', {
+          email: cleanEmail,
+        });
+        if (res?.data?.exists && !res?.data?.confirmed) {
+          setIsUnconfirmed(true);
+          return;
+        }
+        if (res?.data && !res?.data?.exists) {
+          setErrorMsg('No account found with this email. Please sign up first.');
+          return;
+        }
+      } catch {
+        // ignore check-status fallback
+      }
       setErrorMsg(e.message || 'Invalid email or password.');
     }
   };
 
   const handleGoogleSignIn = async () => {
     setErrorMsg('');
+    setIsUnconfirmed(false);
     try {
       await signInWithGoogle();
       router.replace('/(tabs)/home');
@@ -70,8 +91,67 @@ export default function LoginScreen() {
           </Text>
         </View>
 
-        {/* Error Feedback */}
-        {errorMsg ? (
+        {/* Email Unconfirmed Banner */}
+        {isUnconfirmed ? (
+          <View style={{
+            backgroundColor: '#F59E0B22',
+            borderWidth: 1,
+            borderColor: '#F59E0B',
+            padding: spacing.md,
+            borderRadius: borderRadius.md,
+            marginBottom: spacing.md,
+          }}>
+            <Text style={{ color: '#D97706', fontSize: 14, fontWeight: '700', marginBottom: 4 }}>
+              Email Not Confirmed ✉️
+            </Text>
+            <Text style={{ color: colors.text, fontSize: 13, marginBottom: spacing.sm, lineHeight: 18 }}>
+              Please check your Gmail inbox (and Spam folder) and tap the confirmation link to activate your account.
+            </Text>
+            <View style={{ flexDirection: 'row', gap: spacing.sm }}>
+              <TouchableOpacity
+                disabled={resending}
+                onPress={async () => {
+                  const cleanEmail = email.trim().toLowerCase();
+                  setResending(true);
+                  try {
+                    await resendVerificationEmail(cleanEmail);
+                    Alert.alert('Link Resent! 📬', `A fresh confirmation link has been sent to ${cleanEmail}.`);
+                  } catch (err: any) {
+                    Alert.alert('Error', err.message || 'Could not resend link.');
+                  } finally {
+                    setResending(false);
+                  }
+                }}
+                style={{
+                  backgroundColor: colors.accent,
+                  paddingVertical: 8,
+                  paddingHorizontal: 12,
+                  borderRadius: borderRadius.sm,
+                }}
+              >
+                <Text style={{ color: '#000', fontSize: 12, fontWeight: 'bold' }}>
+                  {resending ? 'Sending...' : 'Resend Link'}
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() => Linking.openURL('mailto:' + email.trim())}
+                style={{
+                  backgroundColor: colors.secondary,
+                  borderWidth: 1,
+                  borderColor: colors.separator,
+                  paddingVertical: 8,
+                  paddingHorizontal: 12,
+                  borderRadius: borderRadius.sm,
+                }}
+              >
+                <Text style={{ color: colors.text, fontSize: 12, fontWeight: '500' }}>
+                  Open Gmail
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        ) : errorMsg ? (
           <View style={{
             backgroundColor: colors.error + '22',
             borderWidth: 1,

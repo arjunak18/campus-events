@@ -58,7 +58,7 @@ export const authController = {
     }
   },
 
-  async autoConfirm(req: Request, res: Response, next: NextFunction) {
+  async checkStatus(req: Request, res: Response, next: NextFunction) {
     try {
       const email = req.body?.email?.trim().toLowerCase();
       if (!email) {
@@ -67,12 +67,14 @@ export const authController = {
 
       const { data } = await supabaseAdmin.auth.admin.listUsers();
       const user = data?.users?.find(u => u.email?.toLowerCase() === email);
-      if (user && !user.email_confirmed_at) {
-        await supabaseAdmin.auth.admin.updateUserById(user.id, { email_confirm: true });
-        return successResponse(res, { confirmed: true }, 200, 'User auto-confirmed');
+      if (!user) {
+        return successResponse(res, { exists: false, confirmed: false });
       }
 
-      return successResponse(res, { confirmed: false }, 200, 'Already confirmed or not found');
+      return successResponse(res, {
+        exists: true,
+        confirmed: !!user.email_confirmed_at,
+      });
     } catch (error) {
       next(error);
     }

@@ -26,9 +26,15 @@ type AuthContextType = {
   isLoading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signInWithGoogle: () => Promise<void>;
-  signUp: (email: string, password: string, displayName: string, extraData?: SignUpExtraData) => Promise<void>;
+  signUp: (
+    email: string,
+    password: string,
+    displayName: string,
+    extraData?: SignUpExtraData
+  ) => Promise<{ emailConfirmationRequired: boolean }>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
+  resendVerificationEmail: (email: string) => Promise<void>;
   updateProfile: (data: Partial<AppUser>) => Promise<void>;
   continueAsGuest: () => void;
 };
@@ -40,9 +46,10 @@ const AuthContext = createContext<AuthContextType>({
   isLoading: true,
   signIn: async () => {},
   signInWithGoogle: async () => {},
-  signUp: async () => {},
+  signUp: async () => ({ emailConfirmationRequired: false }),
   signOut: async () => {},
   resetPassword: async () => {},
+  resendVerificationEmail: async () => {},
   updateProfile: async () => {},
   continueAsGuest: () => {},
 });
@@ -131,27 +138,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     const cleanEmail = email.trim().toLowerCase();
-    let { data, error } = await supabase.auth.signInWithPassword({ email: cleanEmail, password });
-
-    // If sign in fails, attempt auto-confirming in case the account was unconfirmed in Supabase
-    if (error && (error.message.includes('Invalid') || error.message.includes('confirm') || error.message.includes('credential'))) {
-      try {
-        const confirmRes = await api.post<{ success: boolean; data: { confirmed: boolean } }>('/auth/auto-confirm', {
-          email: cleanEmail,
-        });
-        if (confirmRes?.data?.confirmed) {
-          // Retry signing in now that account is confirmed
-          const retry = await supabase.auth.signInWithPassword({ email: cleanEmail, password });
-          if (!retry.error && retry.data) {
-            data = retry.data;
-            error = null;
-          }
-        }
-      } catch {
-        // Fall back to original error
-      }
-    }
-
+    const { data, error } = await supabase.auth.signInWithPassword({ email: cleanEmail, password });
     if (error) throw error;
     if (data?.session) {
       setSession(data.session);
@@ -239,51 +226,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     password: string,
     displayName: string,
     extraData?: SignUpExtraData
-  ) => {
+  ): Promise<{ emailConfirmationRequired: boolean }> => {
     if (!isSupabaseConfigured) {
       continueAsGuest();
-      return;
+      return { emailConfirmationRequired: false };
     }
 
     setIsLoading(true);
     try {
-      let registeredViaBackend = false;
-      try {
-        const res = await api.post<{ success: boolean; data?: any }>('/auth/signup', {
-          email,
-          password,
-          displayName,
-          department: extraData?.department,
-          academicYear: extraData?.academic_year,
-          collegeId: extraData?.college_id,
-        });
-        if (res?.success) {
-          registeredViaBackend = true;
-        }
-      } catch (err: any) {
-        // If the error was a user already exists or validation error, bubble it up to show user
-        if (err?.status === 400 && err?.message && !err.message.includes('API Error')) {
-          throw err;
-        }
-      }
+      const cleanEmail = email.trim().toLowerCase();
 
-      if (registeredViaBackend) {
-        // Immediately sign in since user was pre-confirmed
-        const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
-        if (!signInError && signInData.session) {
-          setSession(signInData.session);
-          setUser(signInData.session.user);
-          await fetchServerProfile();
-          return;
-        }
-      }
-
-      // Direct Supabase sign up fallback
+      // Standard Supabase signup that sends the genuine confirmation email to Gmail
       const { error, data } = await supabase.auth.signUp({
-        email,
+        email: cleanEmail,
         password,
         options: {
           data: {
@@ -293,9 +248,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             academic_year: extraData?.academic_year,
             college_id: extraData?.college_id,
           },
+          emailRedirectTo: REDIRECT_URI,
         },
       });
-      if (error) throw error;
+
+      if (error) {
+        if (error.message.toLowerCase().includes('already')) {
+          throw new Error('An account with this email already exists. Please sign in.');
+        }
+        throw error;
+      }
 
       if (data.session) {
         setSession(data.session);
@@ -311,10 +273,26 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           // ignore
         }
         await fetchServerProfile();
+        return { emailConfirmationRequired: false };
       }
+
+      return { emailConfirmationRequired: true };
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const resendVerificationEmail = async (email: string) => {
+    if (!isSupabaseConfigured) return;
+    const cleanEmail = email.trim().toLowerCase();
+    const { error } = await supabase.auth.resend({
+      type: 'signup',
+      email: cleanEmail,
+      options: {
+        emailRedirectTo: REDIRECT_URI,
+      },
+    });
+    if (error) throw error;
   };
 
   const signOut = async () => {
@@ -359,6 +337,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       signUp,
       signOut,
       resetPassword,
+      resendVerificationEmail,
       updateProfile,
       continueAsGuest,
     }}>

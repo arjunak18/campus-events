@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Alert, Linking } from 'react-native';
 import { ScreenWrapper } from '../../components/ui/ScreenWrapper';
 import { Input } from '../../components/ui/Input';
 import { Button } from '../../components/ui/Button';
@@ -10,7 +10,7 @@ import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function RegisterScreen() {
-  const { signUp } = useAuth();
+  const { signUp, resendVerificationEmail } = useAuth();
   const { data: colleges = [] } = useColleges();
   const { colors, typography, spacing, borderRadius } = useAppTheme();
 
@@ -24,9 +24,12 @@ export default function RegisterScreen() {
 
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+  const [pendingVerificationEmail, setPendingVerificationEmail] = useState<string | null>(null);
+  const [resending, setResending] = useState(false);
+  const [resendSuccess, setResendSuccess] = useState(false);
 
   const handleRegister = async () => {
-    const trimmedEmail = email.trim();
+    const trimmedEmail = email.trim().toLowerCase();
     const trimmedName = displayName.trim();
 
     if (!trimmedName || !trimmedEmail || !password.trim()) {
@@ -53,32 +56,91 @@ export default function RegisterScreen() {
     setErrorMsg('');
     setLoading(true);
     try {
-      await signUp(trimmedEmail, password, trimmedName, {
+      const result = await signUp(trimmedEmail, password, trimmedName, {
         department: department.trim() || undefined,
         academic_year: academicYear,
         college_id: selectedCollegeId || (colleges.length > 0 ? colleges[0]?.id : undefined),
       });
 
-      Alert.alert(
-        'Account Created! 🎓',
-        'Welcome to Campus Events.',
-        [
-          {
-            text: 'Choose Interests',
-            onPress: () => router.replace('/onboarding/interests'),
-          },
-          {
-            text: 'Go to Home',
-            onPress: () => router.replace('/(tabs)/home'),
-          },
-        ]
-      );
+      if (result?.emailConfirmationRequired) {
+        setPendingVerificationEmail(trimmedEmail);
+      } else {
+        router.replace('/(tabs)/home');
+      }
     } catch (e: any) {
       setErrorMsg(e.message || 'Unable to register account.');
     } finally {
       setLoading(false);
     }
   };
+
+  if (pendingVerificationEmail) {
+    return (
+      <ScreenWrapper style={{ padding: spacing.xl, justifyContent: 'center', alignItems: 'center' }}>
+        <View style={{
+          width: 80,
+          height: 80,
+          borderRadius: 40,
+          backgroundColor: colors.accent + '22',
+          justifyContent: 'center',
+          alignItems: 'center',
+          marginBottom: spacing.lg,
+        }}>
+          <Ionicons name="mail-unread-outline" size={44} color={colors.accent} />
+        </View>
+
+        <Text style={[typography.heading1, { color: colors.text, textAlign: 'center', marginBottom: spacing.xs }]}>
+          Check Your Gmail! 📬
+        </Text>
+
+        <Text style={[typography.body, { color: colors.textSecondary, textAlign: 'center', marginBottom: spacing.xs }]}>
+          We have sent a verification email to:
+        </Text>
+        <Text style={[typography.body, { color: colors.accent, fontWeight: '700', textAlign: 'center', marginBottom: spacing.md }]}>
+          {pendingVerificationEmail}
+        </Text>
+
+        <Text style={[typography.bodySmall, { color: colors.textSecondary, textAlign: 'center', marginBottom: spacing.xl, lineHeight: 20 }]}>
+          Please open your Gmail and tap the confirmation link to activate your student account. Once clicked, you can sign in below.
+        </Text>
+
+        <Button
+          title="Open Email App"
+          variant="primary"
+          onPress={() => Linking.openURL('mailto:' + pendingVerificationEmail)}
+          style={{ width: '100%', marginBottom: spacing.md }}
+        />
+
+        <Button
+          title="I've Confirmed, Go to Sign In"
+          variant="secondary"
+          onPress={() => router.replace('/auth/login')}
+          style={{ width: '100%', marginBottom: spacing.md }}
+        />
+
+        <TouchableOpacity
+          disabled={resending}
+          onPress={async () => {
+            setResending(true);
+            try {
+              await resendVerificationEmail(pendingVerificationEmail);
+              setResendSuccess(true);
+              Alert.alert('Link Resent! 📬', 'A fresh confirmation link has been sent to your Gmail.');
+            } catch (err: any) {
+              Alert.alert('Error', err.message || 'Could not resend email.');
+            } finally {
+              setResending(false);
+            }
+          }}
+          style={{ paddingVertical: spacing.sm, alignItems: 'center' }}
+        >
+          <Text style={[typography.bodySmall, { color: colors.accent, fontWeight: '600' }]}>
+            {resending ? 'Resending...' : resendSuccess ? '✓ Link Resent (Tap to send again)' : "Didn't receive email? Resend link"}
+          </Text>
+        </TouchableOpacity>
+      </ScreenWrapper>
+    );
+  }
 
   return (
     <ScreenWrapper style={{ padding: 0 }}>
