@@ -17,13 +17,14 @@ export default function LoginScreen() {
   const [errorMsg, setErrorMsg] = useState('');
 
   const handleLogin = async () => {
-    if (!email.trim() || !password.trim()) {
+    const cleanEmail = email.trim().toLowerCase();
+    if (!cleanEmail || !password.trim()) {
       setErrorMsg('Please enter both email and password.');
       return;
     }
     setErrorMsg('');
     try {
-      await signIn(email.trim(), password);
+      await signIn(cleanEmail, password);
       router.replace('/(tabs)/home');
     } catch (e: any) {
       setErrorMsg(e.message || 'Invalid email or password.');

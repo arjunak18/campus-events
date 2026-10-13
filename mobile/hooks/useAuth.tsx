@@ -130,9 +130,30 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       return;
     }
 
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    const cleanEmail = email.trim().toLowerCase();
+    let { data, error } = await supabase.auth.signInWithPassword({ email: cleanEmail, password });
+
+    // If sign in fails, attempt auto-confirming in case the account was unconfirmed in Supabase
+    if (error && (error.message.includes('Invalid') || error.message.includes('confirm') || error.message.includes('credential'))) {
+      try {
+        const confirmRes = await api.post<{ success: boolean; data: { confirmed: boolean } }>('/auth/auto-confirm', {
+          email: cleanEmail,
+        });
+        if (confirmRes?.data?.confirmed) {
+          // Retry signing in now that account is confirmed
+          const retry = await supabase.auth.signInWithPassword({ email: cleanEmail, password });
+          if (!retry.error && retry.data) {
+            data = retry.data;
+            error = null;
+          }
+        }
+      } catch {
+        // Fall back to original error
+      }
+    }
+
     if (error) throw error;
-    if (data.session) {
+    if (data?.session) {
       setSession(data.session);
       setUser(data.session.user);
       await fetchServerProfile();

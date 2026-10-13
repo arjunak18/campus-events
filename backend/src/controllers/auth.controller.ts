@@ -58,6 +58,26 @@ export const authController = {
     }
   },
 
+  async autoConfirm(req: Request, res: Response, next: NextFunction) {
+    try {
+      const email = req.body?.email?.trim().toLowerCase();
+      if (!email) {
+        throw new BadRequestError('Email is required');
+      }
+
+      const { data } = await supabaseAdmin.auth.admin.listUsers();
+      const user = data?.users?.find(u => u.email?.toLowerCase() === email);
+      if (user && !user.email_confirmed_at) {
+        await supabaseAdmin.auth.admin.updateUserById(user.id, { email_confirm: true });
+        return successResponse(res, { confirmed: true }, 200, 'User auto-confirmed');
+      }
+
+      return successResponse(res, { confirmed: false }, 200, 'Already confirmed or not found');
+    } catch (error) {
+      next(error);
+    }
+  },
+
   async register(req: Request, res: Response, next: NextFunction) {
     try {
       const { email, displayName, collegeId, department, academicYear } = req.body;
