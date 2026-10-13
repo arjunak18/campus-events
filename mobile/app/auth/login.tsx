@@ -88,8 +88,8 @@ export default function LoginScreen() {
         {/* Form Inputs */}
         <View style={{ marginBottom: spacing.md }}>
           <Input
-            label="College Email"
-            placeholder="student@university.edu"
+            label="Email / Gmail"
+            placeholder="yourname@gmail.com"
             keyboardType="email-address"
             autoCapitalize="none"
             value={email}

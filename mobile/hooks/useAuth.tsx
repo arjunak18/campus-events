@@ -13,6 +13,12 @@ const REDIRECT_URI = AuthSession.makeRedirectUri({
   path: 'auth-callback',
 });
 
+export type SignUpExtraData = {
+  department?: string;
+  academic_year?: string;
+  college_id?: string;
+};
+
 type AuthContextType = {
   session: Session | null;
   user: User | null;
@@ -20,7 +26,7 @@ type AuthContextType = {
   isLoading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signInWithGoogle: () => Promise<void>;
-  signUp: (email: string, password: string, displayName: string) => Promise<void>;
+  signUp: (email: string, password: string, displayName: string, extraData?: SignUpExtraData) => Promise<void>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
   updateProfile: (data: Partial<AppUser>) => Promise<void>;
@@ -207,28 +213,86 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const signUp = async (email: string, password: string, displayName: string) => {
+  const signUp = async (
+    email: string,
+    password: string,
+    displayName: string,
+    extraData?: SignUpExtraData
+  ) => {
     if (!isSupabaseConfigured) {
       continueAsGuest();
       return;
     }
 
-    const { error, data } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          display_name: displayName,
-          full_name: displayName,
-        },
-      },
-    });
-    if (error) throw error;
+    setIsLoading(true);
+    try {
+      let registeredViaBackend = false;
+      try {
+        const res = await api.post<{ success: boolean; data?: any }>('/auth/signup', {
+          email,
+          password,
+          displayName,
+          department: extraData?.department,
+          academicYear: extraData?.academic_year,
+          collegeId: extraData?.college_id,
+        });
+        if (res?.success) {
+          registeredViaBackend = true;
+        }
+      } catch (err: any) {
+        // If the error was a user already exists or validation error, bubble it up to show user
+        if (err?.status === 400 && err?.message && !err.message.includes('API Error')) {
+          throw err;
+        }
+      }
 
-    if (data.session) {
-      setSession(data.session);
-      setUser(data.session.user);
-      await fetchServerProfile();
+      if (registeredViaBackend) {
+        // Immediately sign in since user was pre-confirmed
+        const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+        if (!signInError && signInData.session) {
+          setSession(signInData.session);
+          setUser(signInData.session.user);
+          await fetchServerProfile();
+          return;
+        }
+      }
+
+      // Direct Supabase sign up fallback
+      const { error, data } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            display_name: displayName,
+            full_name: displayName,
+            department: extraData?.department,
+            academic_year: extraData?.academic_year,
+            college_id: extraData?.college_id,
+          },
+        },
+      });
+      if (error) throw error;
+
+      if (data.session) {
+        setSession(data.session);
+        setUser(data.session.user);
+        try {
+          await api.patch('/auth/me', {
+            display_name: displayName,
+            department: extraData?.department,
+            academic_year: extraData?.academic_year,
+            college_id: extraData?.college_id,
+          });
+        } catch {
+          // ignore
+        }
+        await fetchServerProfile();
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 

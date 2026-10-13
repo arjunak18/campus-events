@@ -26,10 +26,21 @@ export default function RegisterScreen() {
   const [errorMsg, setErrorMsg] = useState('');
 
   const handleRegister = async () => {
-    if (!displayName.trim() || !email.trim() || !password.trim()) {
-      setErrorMsg('Please fill in your name, email, and password.');
+    const trimmedEmail = email.trim();
+    const trimmedName = displayName.trim();
+
+    if (!trimmedName || !trimmedEmail || !password.trim()) {
+      setErrorMsg('Please fill in your full name, Gmail address, and password.');
       return;
     }
+
+    // Enforce only registered @gmail.com accounts
+    const gmailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/i;
+    if (!gmailRegex.test(trimmedEmail)) {
+      setErrorMsg('Only registered @gmail.com accounts are permitted.');
+      return;
+    }
+
     if (password.length < 6) {
       setErrorMsg('Password must be at least 6 characters.');
       return;
@@ -42,14 +53,23 @@ export default function RegisterScreen() {
     setErrorMsg('');
     setLoading(true);
     try {
-      await signUp(email.trim(), password, displayName.trim());
+      await signUp(trimmedEmail, password, trimmedName, {
+        department: department.trim() || undefined,
+        academic_year: academicYear,
+        college_id: selectedCollegeId || (colleges.length > 0 ? colleges[0]?.id : undefined),
+      });
+
       Alert.alert(
         'Account Created! 🎓',
-        'Welcome to Campus Events. Let us set your event interests.',
+        'Welcome to Campus Events.',
         [
           {
             text: 'Choose Interests',
             onPress: () => router.replace('/onboarding/interests'),
+          },
+          {
+            text: 'Go to Home',
+            onPress: () => router.replace('/(tabs)/home'),
           },
         ]
       );
@@ -101,8 +121,8 @@ export default function RegisterScreen() {
         />
 
         <Input
-          label="College Email *"
-          placeholder="alex@college.edu"
+          label="Gmail Address *"
+          placeholder="yourname@gmail.com"
           keyboardType="email-address"
           autoCapitalize="none"
           value={email}
