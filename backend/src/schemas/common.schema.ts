@@ -6,7 +6,7 @@ export const paginationSchema = z.object({
 });
 
 export const uuidParamSchema = z.object({
-  id: z.string().uuid('Invalid ID format. Must be a UUID.'),
+  id: z.string().min(1, 'ID is required'),
 });
 
 export const dateRangeSchema = z.object({

@@ -102,6 +102,7 @@ export default function CreateEventScreen() {
         summary: summary || title,
         description,
         poster_url: posterUrl || undefined,
+        category,
         start_date: startDate,
         start_time: startTime,
         end_date: endDate || startDate,

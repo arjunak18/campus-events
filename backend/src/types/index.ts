@@ -29,6 +29,7 @@ export interface Event {
   id: string;
   slug: string;
   title: string;
+  summary?: string;
   description: string;
   poster_url?: string;
   category_id?: string;
@@ -66,6 +67,10 @@ export interface Event {
   views_count: number;
   likes_count: number;
   published_at?: string;
+  category?: EventCategory;
+  organization?: any;
+  college?: any;
+  organizer?: any;
   created_at: string;
   updated_at: string;
 }
