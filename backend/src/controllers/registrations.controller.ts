@@ -195,15 +195,9 @@ export const registrationsController = {
         .range(from, to);
 
       if (error) {
-        return successResponse(res, {
-          data: [],
-          pagination: { page: Number(page), limit: Number(limit), total: 0, totalPages: 0 },
-        });
+        return successResponse(res, []);
       }
-      return successResponse(res, {
-        data: data || [],
-        pagination: { page: Number(page), limit: Number(limit), total: count || 0, totalPages: Math.ceil((count || 0) / Number(limit)) },
-      });
+      return successResponse(res, data || []);
     } catch (error) {
       next(error);
     }

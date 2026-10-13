@@ -16,11 +16,10 @@ export const savedEventsController = {
         .order('created_at', { ascending: false })
         .range(from, to);
 
-      if (error) throw new Error(error.message);
-      return successResponse(res, {
-        data: data || [],
-        pagination: { page: Number(page), limit: Number(limit), total: count || 0, totalPages: Math.ceil((count || 0) / Number(limit)) },
-      });
+      if (error) {
+        return successResponse(res, []);
+      }
+      return successResponse(res, data || []);
     } catch (error) {
       next(error);
     }

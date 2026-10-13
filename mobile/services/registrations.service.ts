@@ -10,7 +10,14 @@ export const registrationsService = {
   cancelRegistration: (eventId: string) => api.delete<void>(`/events/${eventId}/registrations/me`),
 
   getMyRegistrations: async (): Promise<Registration[]> => {
-    const res = await api.get<PaginatedResponse<Registration>>('/me/registrations');
-    return res.data;
+    try {
+      const res = await api.get<any>('/me/registrations');
+      if (Array.isArray(res)) return res;
+      if (Array.isArray(res?.data)) return res.data;
+      if (Array.isArray(res?.data?.data)) return res.data.data;
+      return [];
+    } catch {
+      return [];
+    }
   },
 };

@@ -25,8 +25,16 @@ export default function EventDetailScreen() {
   const saveMutation = useSaveEvent();
   const unsaveMutation = useUnsaveEvent();
 
-  const isRegistered = myRegistrations.some(r => r.event_id === id && r.status !== 'cancelled');
-  const isSaved = mySaved.some(s => s.event_id === id);
+  const regList = Array.isArray(myRegistrations)
+    ? myRegistrations
+    : (Array.isArray((myRegistrations as any)?.data) ? (myRegistrations as any).data : []);
+
+  const savedList = Array.isArray(mySaved)
+    ? mySaved
+    : (Array.isArray((mySaved as any)?.data) ? (mySaved as any).data : []);
+
+  const isRegistered = regList.some((r: any) => r?.event_id === id && r?.status !== 'cancelled');
+  const isSaved = savedList.some((s: any) => s?.event_id === id);
 
   const [reportModalVisible, setReportModalVisible] = useState(false);
 
