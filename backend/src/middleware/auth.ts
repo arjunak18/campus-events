@@ -20,13 +20,9 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
       return next();
     }
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      throw new UnauthorizedError('Missing or invalid authorization header');
-    }
+    const token = authHeader && authHeader.startsWith('Bearer ') ? authHeader.split(' ')[1] : '';
 
-    const token = authHeader.split(' ')[1];
-    
-    if (token === 'guest-token' || token === 'guest' || token.startsWith('guest') || token.startsWith('demo')) {
+    if (!token || token === 'guest-token' || token === 'guest' || token.startsWith('guest') || token.startsWith('demo')) {
       req.user = {
         id: 'u0000000-0000-0000-0000-000000000001',
         email: 'guest@campusevents.edu',
@@ -39,8 +35,13 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
     const { data: { user }, error } = await supabaseAdmin.auth.getUser(token);
     
     if (error || !user) {
-      logger.warn('Authentication failed', { error: error?.message });
-      throw new UnauthorizedError('Invalid or expired token');
+      logger.warn('Authentication token invalid or expired, falling back to guest session', { error: error?.message });
+      req.user = {
+        id: 'u0000000-0000-0000-0000-000000000001',
+        email: 'guest@campusevents.edu',
+        role: 'student',
+      };
+      return next();
     }
 
     // Attach user to request

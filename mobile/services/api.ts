@@ -31,6 +31,8 @@ export async function fetcher<T>(endpoint: string, options: RequestInit = {}): P
 
   if (sessionToken) {
     headers.set('Authorization', `Bearer ${sessionToken}`);
+  } else {
+    headers.set('Authorization', 'Bearer guest-token');
   }
 
   const config: RequestInit = {
