@@ -46,6 +46,7 @@ coverage/
 # Android
 android/app/debug/
 android/app/release/
+*.apk
 
 # iOS
 ios/Pods/
