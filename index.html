@@ -23,7 +23,9 @@
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
       --text-dim: #64748b;
-      --success: #10b981;
+      --warning-bg: rgba(245, 158, 11, 0.12);
+      --warning-border: rgba(245, 158, 11, 0.35);
+      --warning-text: #fcd34d;
     }
 
     * {
@@ -41,7 +43,6 @@
       line-height: 1.6;
     }
 
-    /* Ambient Background Glow */
     .ambient-glow {
       position: fixed;
       top: 0;
@@ -62,7 +63,6 @@
       z-index: 1;
     }
 
-    /* Header / Nav */
     header {
       padding: 28px 0;
       display: flex;
@@ -136,9 +136,8 @@
       transform: translateY(-1px);
     }
 
-    /* Hero Section */
     .hero {
-      padding: 72px 0 60px;
+      padding: 60px 0 40px;
       text-align: center;
     }
 
@@ -185,17 +184,52 @@
       font-size: 1.25rem;
       color: var(--text-muted);
       max-width: 660px;
-      margin: 0 auto 40px;
+      margin: 0 auto 36px;
       font-weight: 400;
     }
 
-    /* Download Card Group */
+    /* Warning Notice for Existing App */
+    .alert-banner {
+      max-width: 900px;
+      margin: 0 auto 32px;
+      background: var(--warning-bg);
+      border: 1px solid var(--warning-border);
+      border-radius: 16px;
+      padding: 16px 20px;
+      text-align: left;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .alert-icon {
+      font-size: 1.5rem;
+      line-height: 1;
+    }
+
+    .alert-content h4 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--warning-text);
+      margin-bottom: 4px;
+    }
+
+    .alert-content p {
+      font-size: 0.9rem;
+      color: #cbd5e1;
+      line-height: 1.5;
+    }
+
+    .alert-content strong {
+      color: #fff;
+    }
+
     .download-grid {
       display: grid;
       grid-template-columns: 1.5fr 1fr;
       gap: 28px;
       max-width: 900px;
-      margin: 0 auto 80px;
+      margin: 0 auto 60px;
       text-align: left;
     }
 
@@ -228,25 +262,25 @@
     .download-header p {
       color: var(--text-muted);
       font-size: 0.95rem;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
     }
 
     .specs-list {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 14px;
-      margin-bottom: 28px;
+      gap: 12px;
+      margin-bottom: 24px;
     }
 
     .spec-item {
       background: rgba(15, 23, 42, 0.6);
       border: 1px solid rgba(255, 255, 255, 0.05);
       border-radius: 12px;
-      padding: 12px 16px;
+      padding: 10px 14px;
     }
 
     .spec-label {
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       color: var(--text-dim);
       text-transform: uppercase;
       font-weight: 600;
@@ -254,13 +288,19 @@
     }
 
     .spec-value {
-      font-size: 0.95rem;
+      font-size: 0.92rem;
       font-weight: 600;
       color: var(--text-main);
       margin-top: 2px;
     }
 
-    .btn-download {
+    .button-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .btn-download-primary {
       display: flex;
       align-items: center;
       justify-content: center;
@@ -268,26 +308,49 @@
       background: var(--accent-gradient);
       color: white;
       text-decoration: none;
-      padding: 18px 28px;
-      border-radius: 16px;
+      padding: 16px 24px;
+      border-radius: 14px;
       font-weight: 700;
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       box-shadow: 0 10px 30px var(--accent-glow);
       transition: all 0.2s ease;
+      cursor: pointer;
+      border: none;
+      width: 100%;
     }
 
-    .btn-download:hover {
+    .btn-download-primary:hover {
       transform: translateY(-2px);
       box-shadow: 0 14px 40px rgba(99, 102, 241, 0.5);
     }
 
-    .btn-download svg {
-      width: 24px;
-      height: 24px;
+    .btn-download-secondary {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: var(--text-main);
+      text-decoration: none;
+      padding: 12px 20px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .btn-download-secondary:hover {
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .btn-download-primary svg, .btn-download-secondary svg {
+      width: 22px;
+      height: 22px;
       fill: currentColor;
     }
 
-    /* QR Code Card */
     .qr-card {
       display: flex;
       flex-direction: column;
@@ -300,14 +363,14 @@
       background: white;
       padding: 14px;
       border-radius: 18px;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
     }
 
     .qr-box img {
       display: block;
-      width: 170px;
-      height: 170px;
+      width: 165px;
+      height: 165px;
       border-radius: 8px;
     }
 
@@ -323,7 +386,6 @@
       max-width: 200px;
     }
 
-    /* Features Grid */
     .section-title {
       text-align: center;
       font-size: 2.2rem;
@@ -343,7 +405,7 @@
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 24px;
-      margin-bottom: 90px;
+      margin-bottom: 80px;
     }
 
     .feature-card {
@@ -378,20 +440,19 @@
       line-height: 1.6;
     }
 
-    /* How to Install Steps */
     .steps-section {
       background: rgba(15, 23, 42, 0.4);
       border: 1px solid var(--border-card);
       border-radius: 28px;
-      padding: 48px;
-      margin-bottom: 90px;
+      padding: 44px;
+      margin-bottom: 80px;
     }
 
     .steps-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 32px;
-      margin-top: 36px;
+      margin-top: 32px;
     }
 
     .step-item {
@@ -423,7 +484,6 @@
       font-size: 0.9rem;
     }
 
-    /* Verification Box */
     .checksum-box {
       background: rgba(15, 23, 42, 0.8);
       border: 1px solid rgba(255, 255, 255, 0.08);
@@ -449,7 +509,7 @@
 
     .checksum-hash {
       font-family: monospace;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       color: #38bdf8;
       white-space: nowrap;
       overflow: hidden;
@@ -474,7 +534,6 @@
       background: rgba(255, 255, 255, 0.16);
     }
 
-    /* Footer */
     footer {
       padding: 40px 0;
       border-top: 1px solid rgba(255, 255, 255, 0.05);
@@ -492,10 +551,9 @@
       color: var(--text-main);
     }
 
-    /* Mobile Responsive */
     @media (max-width: 868px) {
       .hero-title {
-        font-size: 2.6rem;
+        font-size: 2.5rem;
       }
       .download-grid,
       .features-grid,
@@ -503,7 +561,11 @@
         grid-template-columns: 1fr;
       }
       .steps-section {
-        padding: 32px 24px;
+        padding: 32px 20px;
+      }
+      .alert-banner {
+        flex-direction: column;
+        gap: 10px;
       }
     }
   </style>
@@ -512,7 +574,6 @@
   <div class="ambient-glow"></div>
 
   <div class="container">
-    <!-- Navbar -->
     <header>
       <a href="#" class="brand">
         <div class="brand-icon">
@@ -522,7 +583,7 @@
       </a>
       <div class="nav-links">
         <a href="#features" class="nav-link">Features</a>
-        <a href="#install" class="nav-link">Installation</a>
+        <a href="#install" class="nav-link">Installation Guide</a>
         <a href="https://github.com/arjunak18/campus-events" target="_blank" class="github-btn">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
           GitHub
@@ -530,24 +591,33 @@
       </div>
     </header>
 
-    <!-- Hero -->
     <section class="hero">
       <div class="badge">
         <span class="badge-dot"></span>
-        Latest Build v1.0.0 (Production Release)
+        Latest Build v1.0.0 (Release Verified)
       </div>
       <h1 class="hero-title">Your College Life.<br><span>All Events in One Place.</span></h1>
       <p class="hero-subtitle">
         Discover college symposiums, workshops, sports tournaments, and club fests. Register with your verified student Gmail account in seconds.
       </p>
 
-      <!-- Download Grid -->
+      <!-- IMPORTANT INSTALLATION NOTICE -->
+      <div class="alert-banner">
+        <div class="alert-icon">⚠️</div>
+        <div class="alert-content">
+          <h4>Getting "Something went wrong" or "App not installed"?</h4>
+          <p>
+            If you already have an earlier test/Expo version of <strong>Campus Events</strong> installed, <strong>you must UNINSTALL the old app from your phone first</strong>. Android's security prevents overwriting an app with a different signature. Also, if Google Play Protect prompts you, tap <strong>"More details" &rarr; "Install anyway"</strong>.
+          </p>
+        </div>
+      </div>
+
       <div class="download-grid">
         <div class="card download-main-card">
           <div>
             <div class="download-header">
               <h3>Download Campus Events App</h3>
-              <p>Official Android APK package with strict Gmail verification & live Supabase sync.</p>
+              <p>Official Android release APK with strict Gmail validation and Supabase database tracking.</p>
             </div>
             <div class="specs-list">
               <div class="spec-item">
@@ -556,36 +626,45 @@
               </div>
               <div class="spec-item">
                 <div class="spec-label">File Size</div>
-                <div class="spec-value">60.4 MB</div>
+                <div class="spec-value">60.5 MB</div>
               </div>
               <div class="spec-item">
                 <div class="spec-label">Platform</div>
                 <div class="spec-value">Android 8.0+ (Oreo+)</div>
               </div>
               <div class="spec-item">
-                <div class="spec-label">Architecture</div>
-                <div class="spec-value">Universal (arm64/v7a)</div>
+                <div class="spec-label">Signature</div>
+                <div class="spec-value">Release (v2 &amp; v3)</div>
               </div>
             </div>
           </div>
 
-          <a href="https://github.com/arjunak18/campus-events/releases/download/v1.0.0/campus-events-release.apk" class="btn-download" id="downloadBtn">
-            <svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
-            Download Android APK (60.4 MB)
-          </a>
+          <div class="button-group">
+            <!-- Primary Direct Download (Same-Origin: Works on all phone browsers) -->
+            <a href="./campus-events-release.apk" download="campus-events-release.apk" class="btn-download-primary" id="directDownloadBtn" onclick="handleDownload(event, './campus-events-release.apk')">
+              <svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
+              Download APK Directly (60.5 MB)
+            </a>
+
+            <!-- Secondary GitHub Mirror -->
+            <a href="https://github.com/arjunak18/campus-events/releases/download/v1.0.0/campus-events-release.apk" target="_blank" rel="noopener noreferrer" class="btn-download-secondary">
+              <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-9l6 4.5-6 4.5z"/></svg>
+              Download Mirror (GitHub Releases CDN)
+            </a>
+          </div>
         </div>
 
         <div class="card qr-card">
           <div class="qr-box">
-            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://github.com/arjunak18/campus-events/releases/download/v1.0.0/campus-events-release.apk" alt="Download QR Code">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://arjunak18.github.io/campus-events/campus-events-release.apk" alt="Download QR Code">
           </div>
           <h4>Scan to Download</h4>
-          <p>Scan with your phone's camera to download the APK directly on Android.</p>
+          <p>Scan with your phone camera to download directly to your mobile device.</p>
         </div>
       </div>
     </section>
 
-    <!-- Features Section -->
+    <!-- Features -->
     <section id="features">
       <h2 class="section-title">Everything You Need for Campus Events</h2>
       <p class="section-subtitle">Engineered specifically for university students, organizers, and college communities.</p>
@@ -598,13 +677,13 @@
         </div>
         <div class="feature-card">
           <div class="feature-icon">🔒</div>
-          <h4>Verified Student Access</h4>
-          <p>Strict Gmail authentication rules prevent invalid addresses, keeping event rosters clean and registrations authentic.</p>
+          <h4>Strict Gmail Validation</h4>
+          <p>Real-time Google username rule validation ensures clean event rosters and authenticated student registrations.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">⚡</div>
-          <h4>Real-Time Sync</h4>
-          <p>Powered by Supabase PostgreSQL and Node.js. Event schedules, announcements, and registrations update in real time.</p>
+          <h4>Live Supabase Backend</h4>
+          <p>Fast cloud sync via PostgreSQL. Event announcements, RSVP counts, and sign-in activity update in real-time.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">🏢</div>
@@ -613,50 +692,49 @@
         </div>
         <div class="feature-card">
           <div class="feature-icon">🔔</div>
-          <h4>Instant Notifications</h4>
-          <p>Never miss a registration deadline or venue change with smart in-app notifications and scheduled reminders.</p>
+          <h4>Smart Reminders</h4>
+          <p>Never miss a registration deadline or venue change with smart in-app notifications and calendar sync.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">🛡️</div>
-          <h4>Sign-In Activity Log</h4>
-          <p>Enterprise-grade sign-in audit logs that protect user accounts and track active sessions for campus safety.</p>
+          <h4>Sign-In Activity Tracking</h4>
+          <p>Automatic database session tracking records user sign-ins, device types, and login timestamps for security.</p>
         </div>
       </div>
     </section>
 
-    <!-- How to install -->
+    <!-- Install Walkthrough -->
     <section class="steps-section" id="install">
       <h2 class="section-title" style="margin-bottom: 8px;">How to Install on Android</h2>
-      <p class="section-subtitle" style="margin-bottom: 24px;">Follow these 3 quick steps to install the APK directly on your phone.</p>
+      <p class="section-subtitle" style="margin-bottom: 24px;">Follow these steps if installing an APK outside the Google Play Store.</p>
 
       <div class="steps-grid">
         <div class="step-item">
           <div class="step-number">1</div>
-          <h5>Download the APK</h5>
-          <p>Tap the <strong>Download Android APK</strong> button or scan the QR code using your phone camera.</p>
+          <h5>Uninstall Old Version</h5>
+          <p>If you previously tested an older build of Campus Events, <strong>delete/uninstall it first</strong> from your phone's home screen or settings.</p>
         </div>
         <div class="step-item">
           <div class="step-number">2</div>
-          <h5>Enable Unknown Sources</h5>
-          <p>If prompted by Chrome or your browser, select <strong>Settings</strong> and allow <em>"Install unknown apps"</em>.</p>
+          <h5>Allow Chrome to Install</h5>
+          <p>Tap <strong>Download APK Directly</strong>. When Chrome asks "File might be harmful", tap <strong>Download anyway</strong>.</p>
         </div>
         <div class="step-item">
           <div class="step-number">3</div>
-          <h5>Install &amp; Log In</h5>
-          <p>Open the downloaded <code>campus-events-release.apk</code>, tap <strong>Install</strong>, and log in with your Gmail.</p>
+          <h5>Tap Install &amp; Play Protect</h5>
+          <p>Open the downloaded file. If Play Protect appears, tap <strong>More details &rarr; Install anyway</strong>.</p>
         </div>
       </div>
 
       <div class="checksum-box">
         <div class="checksum-info">
           <div class="checksum-label">SHA-256 Checksum (Verification)</div>
-          <div class="checksum-hash" id="hashText">7ae17058213af831273e12f18401f3da372d3d01113b9802a7282cbca37638d7</div>
+          <div class="checksum-hash" id="hashText">eefed1ee3510faa6615312005f552668f60e2fea75a32e630bd483d3550afbbd</div>
         </div>
         <button class="copy-btn" onclick="copyChecksum()">Copy Hash</button>
       </div>
     </section>
 
-    <!-- Footer -->
     <footer>
       <p>&copy; 2026 Campus Events Calendar. Open-source under MIT License.</p>
       <p style="margin-top: 8px;">
@@ -677,6 +755,17 @@
           btn.innerText = 'Copy Hash';
         }, 2000);
       });
+    }
+
+    function handleDownload(e, url) {
+      // Trigger smooth direct download on all mobile devices
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'campus-events-release.apk';
+      a.target = '_blank';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
     }
   </script>
 </body>
