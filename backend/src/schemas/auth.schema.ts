@@ -1,7 +1,18 @@
 import { z } from 'zod';
+import { validateGmailAddress } from '../utils/validators';
+
+const gmailZod = z.string().superRefine((val, ctx) => {
+  const result = validateGmailAddress(val);
+  if (!result.isValid) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: result.error || 'Only registered @gmail.com accounts are permitted',
+    });
+  }
+});
 
 export const registerProfileSchema = z.object({
-  email: z.string().email('Invalid email'),
+  email: gmailZod,
   displayName: z.string().min(2, 'Name must be at least 2 characters').max(100),
   collegeId: z.string().uuid().optional().nullable(),
   department: z.string().max(200).optional().nullable(),
@@ -9,7 +20,7 @@ export const registerProfileSchema = z.object({
 });
 
 export const signUpSchema = z.object({
-  email: z.string().email('Invalid email address').regex(/^[a-zA-Z0-9._%+-]+@gmail\.com$/i, 'Only registered @gmail.com accounts are permitted'),
+  email: gmailZod,
   password: z.string().min(6, 'Password must be at least 6 characters'),
   displayName: z.string().min(2, 'Name must be at least 2 characters').max(100),
   department: z.string().max(200).optional().nullable(),

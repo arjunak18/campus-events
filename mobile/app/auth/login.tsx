@@ -7,6 +7,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { router } from 'expo-router';
 import { useAppTheme } from '../../hooks/useTheme';
 import { Ionicons } from '@expo/vector-icons';
+import { validateGmailAddress } from '../../utils/validators';
 import api from '../../services/api';
 
 export default function LoginScreen() {
@@ -25,6 +26,13 @@ export default function LoginScreen() {
       setErrorMsg('Please enter both email and password.');
       return;
     }
+
+    const gmailValidation = validateGmailAddress(cleanEmail);
+    if (!gmailValidation.isValid) {
+      setErrorMsg(gmailValidation.error || 'Only registered @gmail.com accounts are permitted.');
+      return;
+    }
+
     setErrorMsg('');
     setIsUnconfirmed(false);
     try {

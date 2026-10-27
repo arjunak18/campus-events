@@ -2,21 +2,22 @@ import { Request, Response, NextFunction } from 'express';
 import { supabaseAdmin } from '../config/supabase';
 import { successResponse } from '../utils/response';
 import { NotFoundError, BadRequestError } from '../utils/errors';
+import { validateGmailAddress } from '../utils/validators';
 
 export const authController = {
   async signUp(req: Request, res: Response, next: NextFunction) {
     try {
       const { email, password, displayName, department, academicYear, collegeId } = req.body;
 
-      // Enforce registered Gmail address
-      const gmailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/i;
-      if (!gmailRegex.test(email)) {
-        throw new BadRequestError('Only registered @gmail.com accounts are permitted');
+      // Enforce strict registered Gmail address validation
+      const gmailValidation = validateGmailAddress(email);
+      if (!gmailValidation.isValid) {
+        throw new BadRequestError(gmailValidation.error || 'Only registered @gmail.com accounts are permitted');
       }
 
       // Create pre-confirmed user in Supabase auth
       const { data, error } = await supabaseAdmin.auth.admin.createUser({
-        email,
+        email: gmailValidation.normalizedEmail || email.trim().toLowerCase(),
         password,
         email_confirm: true,
         user_metadata: {
@@ -75,6 +76,52 @@ export const authController = {
         exists: true,
         confirmed: !!user.email_confirmed_at,
       });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  async recordSignIn(req: Request, res: Response, next: NextFunction) {
+    try {
+      const user = req.user!;
+      const method = req.body?.method || 'email_password';
+      const now = new Date().toISOString();
+      const ip = (req.headers['x-forwarded-for'] as string) || req.ip || null;
+      const userAgent = req.headers['user-agent'] || null;
+
+      // 1. Update profiles table with last sign in timestamp
+      try {
+        await supabaseAdmin
+          .from('profiles')
+          .update({
+            last_sign_in_at: now,
+            updated_at: now,
+          })
+          .eq('id', user.id);
+      } catch {
+        await supabaseAdmin
+          .from('profiles')
+          .update({ updated_at: now })
+          .eq('id', user.id);
+      }
+
+      // 2. Insert detailed sign-in log entry
+      try {
+        await supabaseAdmin
+          .from('sign_in_logs')
+          .insert({
+            user_id: user.id,
+            email: user.email,
+            sign_in_method: method,
+            signed_in_at: now,
+            ip_address: ip,
+            user_agent: userAgent,
+          });
+      } catch {
+        // Table optional if migration pending
+      }
+
+      return successResponse(res, { user_id: user.id, signed_in_at: now }, 200, 'Sign-in recorded in database');
     } catch (error) {
       next(error);
     }
@@ -167,11 +214,22 @@ export const authController = {
           data = newProfile;
         }
       } else {
-        // Record login activity
-        await supabaseAdmin
-          .from('profiles')
-          .update({ updated_at: new Date().toISOString() })
-          .eq('id', user.id);
+        // Record login activity in profiles table
+        const now = new Date().toISOString();
+        try {
+          await supabaseAdmin
+            .from('profiles')
+            .update({
+              last_sign_in_at: now,
+              updated_at: now,
+            })
+            .eq('id', user.id);
+        } catch {
+          await supabaseAdmin
+            .from('profiles')
+            .update({ updated_at: now })
+            .eq('id', user.id);
+        }
       }
 
       return successResponse(res, data);

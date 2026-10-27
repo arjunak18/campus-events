@@ -9,6 +9,7 @@ const router = Router();
 
 router.post('/signup', authLimiter, validate({ body: signUpSchema }), authController.signUp);
 router.post('/check-status', authLimiter, authController.checkStatus);
+router.post('/record-sign-in', authenticate, authController.recordSignIn);
 router.post('/register', authLimiter, authenticate, validate({ body: registerProfileSchema }), authController.register);
 router.get('/me', authenticate, authController.getMe);
 router.patch('/me', authenticate, validate({ body: updateProfileSchema }), authController.updateMe);

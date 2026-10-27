@@ -4,6 +4,7 @@ import * as WebBrowser from 'expo-web-browser';
 import * as AuthSession from 'expo-auth-session';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { User as AppUser } from '../types';
+import { validateGmailAddress } from '../utils/validators';
 import api from '../services/api';
 
 WebBrowser.maybeCompleteAuthSession();
@@ -137,13 +138,24 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       return;
     }
 
-    const cleanEmail = email.trim().toLowerCase();
+    const gmailValidation = validateGmailAddress(email);
+    if (!gmailValidation.isValid) {
+      throw new Error(gmailValidation.error || 'Please enter a valid @gmail.com address.');
+    }
+    const cleanEmail = gmailValidation.normalizedEmail!;
+
     const { data, error } = await supabase.auth.signInWithPassword({ email: cleanEmail, password });
     if (error) throw error;
     if (data?.session) {
       setSession(data.session);
       setUser(data.session.user);
       await fetchServerProfile();
+      // Record sign-in in database
+      try {
+        await api.post('/auth/record-sign-in', { method: 'email_password' });
+      } catch {
+        // non-blocking
+      }
     }
   };
 
@@ -216,6 +228,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
 
       await fetchServerProfile();
+      // Record sign-in in database
+      try {
+        await api.post('/auth/record-sign-in', { method: 'google' });
+      } catch {
+        // non-blocking
+      }
     } finally {
       setIsLoading(false);
     }
@@ -232,10 +250,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       return { emailConfirmationRequired: false };
     }
 
+    const gmailValidation = validateGmailAddress(email);
+    if (!gmailValidation.isValid) {
+      throw new Error(gmailValidation.error || 'Please enter a valid @gmail.com address.');
+    }
+    const cleanEmail = gmailValidation.normalizedEmail!;
+
     setIsLoading(true);
     try {
-      const cleanEmail = email.trim().toLowerCase();
-
       // Standard Supabase signup that sends the genuine confirmation email to Gmail
       const { error, data } = await supabase.auth.signUp({
         email: cleanEmail,
@@ -269,6 +291,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             academic_year: extraData?.academic_year,
             college_id: extraData?.college_id,
           });
+          await api.post('/auth/record-sign-in', { method: 'signup' });
         } catch {
           // ignore
         }

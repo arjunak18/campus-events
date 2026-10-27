@@ -8,6 +8,7 @@ import { useColleges } from '../../hooks/useColleges';
 import { useAppTheme } from '../../hooks/useTheme';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { validateGmailAddress } from '../../utils/validators';
 
 export default function RegisterScreen() {
   const { signUp, resendVerificationEmail } = useAuth();
@@ -37,10 +38,10 @@ export default function RegisterScreen() {
       return;
     }
 
-    // Enforce only registered @gmail.com accounts
-    const gmailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/i;
-    if (!gmailRegex.test(trimmedEmail)) {
-      setErrorMsg('Only registered @gmail.com accounts are permitted.');
+    // Enforce strict Google Gmail account naming rules
+    const gmailValidation = validateGmailAddress(trimmedEmail);
+    if (!gmailValidation.isValid) {
+      setErrorMsg(gmailValidation.error || 'Only registered @gmail.com accounts are permitted.');
       return;
     }
 
