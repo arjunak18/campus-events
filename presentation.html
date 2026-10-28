@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Campus Events Calendar - Project Presentation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #070913;
+      --card-bg: rgba(22, 28, 45, 0.72);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --card-hover: rgba(99, 102, 241, 0.25);
+      --primary: #6366f1;
+      --purple: #8b5cf6;
+      --cyan: #06b6d4;
+      --emerald: #10b981;
+      --rose: #f43f5e;
+      --amber: #f59e0b;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --grad-main: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
+      --grad-cyan: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+      --grad-emerald: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      overflow: hidden;
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+    }
+
+    /* Background Interactive Canvas */
+    #bg-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* Ambient Glows */
+    .glow-orb {
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: 0.18;
+      pointer-events: none;
+      z-index: 1;
+      animation: floatOrb 18s ease-in-out infinite alternate;
+    }
+
+    .glow-1 {
+      top: -100px;
+      left: -100px;
+      background: var(--primary);
+    }
+
+    .glow-2 {
+      bottom: -150px;
+      right: -100px;
+      background: var(--purple);
+      animation-delay: -7s;
+    }
+
+    @keyframes floatOrb {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(80px, 60px) scale(1.15); }
+    }
+
+    /* Deck Layout */
+    .deck-container {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+      padding: 40px;
+    }
+
+    .slide {
+      position: absolute;
+      width: 90vw;
+      max-width: 1240px;
+      height: 82vh;
+      background: rgba(13, 18, 30, 0.75);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      border-radius: 28px;
+      padding: 48px 56px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(30px) scale(0.97);
+      transition: all 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+    }
+
+    .slide.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+
+    .slide.prev {
+      opacity: 0;
+      transform: translateY(-30px) scale(0.97);
+    }
+
+    /* Slide Header */
+    .slide-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      background: rgba(99, 102, 241, 0.12);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #a5b4fc;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 12px;
+    }
+
+    .badge-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--emerald);
+      box-shadow: 0 0 10px var(--emerald);
+    }
+
+    .slide-title {
+      font-size: 2.5rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      color: #ffffff;
+      margin-bottom: 8px;
+    }
+
+    .slide-title span {
+      background: var(--grad-main);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .slide-subtitle {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      max-width: 800px;
+      line-height: 1.5;
+    }
+
+    /* Content Area */
+    .slide-body {
+      flex: 1;
+      margin: 24px 0 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    /* Grid layouts */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 24px;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--accent-gradient, transparent);
+      opacity: 0.8;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(99, 102, 241, 0.4);
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4), 0 0 24px rgba(99, 102, 241, 0.12);
+    }
+
+    .card-icon {
+      font-size: 1.8rem;
+      margin-bottom: 12px;
+      display: inline-block;
+    }
+
+    .card-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 8px;
+    }
+
+    .card-desc {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+
+    .card-desc strong {
+      color: var(--text);
+    }
+
+    /* Metrics highlight */
+    .stat-number {
+      font-size: 2.8rem;
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -0.03em;
+      margin-bottom: 6px;
+      background: var(--grad-main);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Code Snippet */
+    .code-box {
+      background: #090d16;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 16px 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      color: #38bdf8;
+      line-height: 1.6;
+      overflow: hidden;
+    }
+
+    /* Footer & Controls */
+    .slide-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      padding-top: 16px;
+      font-size: 0.85rem;
+      color: var(--text-dim);
+    }
+
+    .slide-footer a {
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .slide-footer a:hover {
+      color: #fff;
+    }
+
+    /* Floating Navigation Controls */
+    .nav-toolbar {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 9999px;
+      padding: 8px 18px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      z-index: 100;
+    }
+
+    .nav-btn {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #fff;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+
+    .nav-btn:hover {
+      background: var(--primary);
+      transform: scale(1.08);
+    }
+
+    .slide-counter {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #a5b4fc;
+      padding: 0 10px;
+    }
+
+    .keyboard-hint {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      margin-left: 8px;
+      border-left: 1px solid rgba(255, 255, 255, 0.1);
+      padding-left: 12px;
+    }
+
+    .keyboard-hint kbd {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #cbd5e1;
+    }
+
+    /* Top Progress Bar */
+    .progress-bar-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.05);
+      z-index: 100;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: var(--grad-main);
+      width: 11%;
+      transition: width 0.4s ease;
+      box-shadow: 0 0 12px var(--primary);
+    }
+
+    /* Hero Slide Special */
+    .hero-badge-wrap {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .hero-main-title {
+      font-size: 4rem;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+      margin-bottom: 20px;
+    }
+
+    .hero-tags {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+
+    .pill-tag {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 6px 14px;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      color: #cbd5e1;
+    }
+
+    /* Interactive Tab Switcher */
+    .tab-pills {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .tab-pill {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--text-muted);
+      padding: 8px 18px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tab-pill.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+      box-shadow: 0 4px 16px rgba(99, 102, 241, 0.4);
+    }
+
+    /* Pulsing Live Beacon */
+    .live-beacon {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.75rem;
+      color: var(--emerald);
+      font-weight: 700;
+    }
+
+    .beacon-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--emerald);
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background Interactive Particles -->
+  <canvas id="bg-canvas"></canvas>
+  <div class="glow-orb glow-1"></div>
+  <div class="glow-orb glow-2"></div>
+
+  <!-- Top Progress Bar -->
+  <div class="progress-bar-container">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+
+  <div class="deck-container">
+
+    <!-- ==============================================
+         SLIDE 1: HERO & TITLE
+         ============================================== -->
+    <div class="slide active" id="slide-1">
+      <div>
+        <div class="hero-badge-wrap">
+          <div class="slide-badge">
+            <span class="badge-dot"></span> Production Verified • v1.0.0
+          </div>
+          <div class="slide-badge" style="border-color: rgba(6, 182, 212, 0.4); color: #67e8f9; background: rgba(6, 182, 212, 0.1);">
+            React Native + Supabase
+          </div>
+        </div>
+
+        <h1 class="hero-main-title">
+          Campus Events<br>
+          <span style="background: var(--grad-main); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Calendar Platform</span>
+        </h1>
+        <p class="slide-subtitle" style="font-size: 1.25rem;">
+          Next-generation collegiate event aggregation, student verification, and real-time scheduling ecosystem.
+        </p>
+
+        <div class="hero-tags">
+          <span class="pill-tag">📱 Android Native APK (Build 5)</span>
+          <span class="pill-tag">⚡ Live Render Cloud Backend</span>
+          <span class="pill-tag">🗄️ PostgreSQL + RLS Security</span>
+          <span class="pill-tag">🔒 Strict Gmail Validation</span>
+          <span class="pill-tag">🌐 GitHub Pages Portal</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        <div class="grid-3">
+          <div class="card" style="--accent-gradient: var(--grad-main);">
+            <div class="card-icon">🚀</div>
+            <div class="card-title">Production APK Built</div>
+            <div class="card-desc">Signed with 2048-bit RSA release keystore (v2/v3 schemes), 60.5 MB universal binary with zero MAX_PATH compilation errors.</div>
+          </div>
+          <div class="card" style="--accent-gradient: var(--grad-cyan);">
+            <div class="card-icon">🛡️</div>
+            <div class="card-title">Zero-Trust Student Auth</div>
+            <div class="card-desc">Symmetric Google username naming constraints, two-factor email verification deep links, and real-time sign-in audit logs.</div>
+          </div>
+          <div class="card" style="--accent-gradient: var(--grad-emerald);">
+            <div class="card-icon">🌐</div>
+            <div class="card-title">Global Web Distribution</div>
+            <div class="card-desc">Direct same-origin mobile downloads on GitHub Pages, bypassing mobile browser cross-origin redirect blocks.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide-footer">
+        <div>Presenter: <strong>Arjun A K (AkDevos)</strong> • October 2026</div>
+        <div>Press <kbd style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px;">Space</kbd> or <kbd style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px;">&rarr;</kbd> to advance</div>
+      </div>
+    </div>
+
+    <!-- ==============================================
+         SLIDE 2: PROBLEM VS SOLUTION
+         ============================================== -->
+    <div class="slide" id="slide-2">
+      <div>
+        <div class="slide-badge">The Collegiate Challenge</div>
+        <h2 class="slide-title">Why Campus Events <span>Needed Innovation</span></h2>
+        <p class="slide-subtitle">Traditional university communication channels fail students and organizers alike.</p>
+      </div>
+
+      <div class="slide-body">
+        <div class="grid-2">
+          <!-- Problem Card -->
+          <div class="card" style="border-color: rgba(244, 63, 94, 0.3); --accent-gradient: linear-gradient(135deg, #f43f5e, #e11d48);">
+            <div class="card-icon">❌</div>
+            <div class="card-title" style="color: #fda4af;">The Status Quo Problems</div>
+            <div class="card-desc" style="line-height: 1.7;">
+              • <strong>Fragmented Notices:</strong> Events get buried across noisy WhatsApp groups, paper flyers, and discarded emails.<br>
+              • <strong>Missed Deadlines:</strong> Students discover key hackathons, symposiums, or sports trials after registrations close.<br>
+              • <strong>Phantom Registrations:</strong> Organizers suffer huge no-show rates from unverified spam emails.<br>
+              • <strong>Zero Department Targeting:</strong> Students drown in irrelevant notifications with no filtering for their major.
+            </div>
+          </div>
+
+          <!-- Solution Card -->
+          <div class="card" style="border-color: rgba(16, 185, 129, 0.3); --accent-gradient: var(--grad-emerald);">
+            <div class="card-icon">✅</div>
+            <div class="card-title" style="color: #6ee7b7;">The Campus Events Solution</div>
+            <div class="card-desc" style="line-height: 1.7;">
+              • <strong>Single Source of Truth:</strong> An interactive day-by-day calendar aggregating every club and department.<br>
+              • <strong>Strict Google/Gmail Verification:</strong> Guarantees authenticated students and clean event rosters.<br>
+              • <strong>Live Cloud Sync:</strong> Real-time RSVP updates, seat counters, and one-tap device calendar export.<br>
+              • <strong>Smart Department Feeds:</strong> Instant filtering by Computer Science, Mechanical, Civil, Arts, and Clubs.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide-footer">
+        <div>Problem Statement &amp; Market Need</div>
+        <div>Slide 2 of 9</div>
+      </div>
+    </div>
+
+    <!-- ==============================================
+         SLIDE 3: SYSTEM ARCHITECTURE
+         ============================================== -->
+    <div class="slide" id="slide-3">
+      <div>
+        <div class="slide-badge">System Engineering</div>
+        <h2 class="slide-title">3-Tier Distributed <span>Cloud Architecture</span></h2>
+        <p class="slide-subtitle">Engineered for low latency, zero state drift, and high concurrency.</p>
+      </div>
+
+      <div class="slide-body">
+        <div class="grid-3">
+          <div class="card" style="--accent-gradient: var(--grad-main);">
+            <div class="card-icon">📱</div>
+            <div class="card-title">1. Mobile Client Tier</div>
+            <div class="card-desc">
+              • <strong>React Native 0.86 &amp; Expo SDK 57</strong><br>
+              • High-performance Hermes JS runtime<br>
+              • TanStack Query v5 for optimistic state<br>
+              • Expo Router file-based deep linking<br>
+              • Reanimated 4 smooth 60fps animations<br>
+              • Expo SecureStore token encryption
+            </div>
+          </div>
+
+          <div class="card" style="--accent-gradient: var(--grad-cyan);">
+            <div class="card-icon">⚙️</div>
+            <div class="card-title">2. Backend Microservice</div>
+            <div class="card-desc">
+              • <strong>Node.js 20+ &amp; Express TypeScript</strong><br>
+              • Strict Zod request interceptors<br>
+              • Centralized Supabase JWT verification<br>
+              • Hosted on Render Web Service<br>
+              • Helmet, Morgan, and Rate Limiting<br>
+              • Live Health Probe: <code>/api/health</code>
+            </div>
+          </div>
+
+          <div class="card" style="--accent-gradient: var(--grad-emerald);">
+            <div class="card-icon">🗄️</div>
+            <div class="card-title">3. Cloud &amp; Database Tier</div>
+            <div class="card-desc">
+              • <strong>Supabase PostgreSQL 15</strong><br>
+              • Row Level Security (RLS) enforcement<br>
+              • GoTrue Auth with PKCE verification<br>
+              • Supabase S3 Object Storage<br>
+              • Migrations 001 - 006 fully applied<br>
+              • Automated PL/pgSQL triggers
+            </div>
+          </div>
+        </div>
+
+        <div class="code-box" style="margin-top: 18px;">
+          // Client &rarr; API &rarr; Database Flow:
+          Mobile (Axios Bearer Auth) &rarr; Render API (Zod Validator + JWT Middleware) &rarr; Supabase PostgreSQL (RLS Policy Enforcement)
+        </div>
+      </div>
+
+      <div class="slide-footer">
+        <div>Architecture &amp; Data Pipeline</div>
+        <div>Slide 3 of 9</div>
+      </div>
+    </div>
+
+    <!-- ==============================================
+         SLIDE 4: FEATURE SPOTLIGHT
+         ============================================== -->
+    <div class="slide" id="slide-4">
+      <div>
+        <div class="slide-badge">Feature Suite</div>
+        <h2 class="slide-title">Built for Students, <span>Loved by Organizers</span></h2>
+        <p class="slide-subtitle">A cohesive set of tools addressing every stage of campus event lifecycles.</p>
+      </div>
+
+      <div class="slide-body">
+        <div class="grid-3" style="gap: 16px;">
+          <div class="card">
+            <div class="card-icon">📅</div>
+            <div class="card-title">Interactive Calendar</div>
+            <div class="card-desc">Visual date selector with colored department dots and direct export to phone calendar.</div>
+          </div>
+          <div class="card">
+            <div class="card-icon">🔍</div>
+            <div class="card-title">Explore &amp; Filter</div>
+            <div class="card-desc">Search by keywords, venue, or filter by academic departments and event categories.</div>
+          </div>
+          <div class="card">
+            <div class="card-icon">📝</div>
+            <div class="card-title">Event Publishing</div>
+            <div class="card-desc">Multi-step creation wizard with high-res poster uploads and seat registration caps.</div>
+          </div>
+          <div class="card">
+            <div class="card-icon">📌</div>
+            <div class="card-title">Bookmarks &amp; RSVPs</div>
+            <div class="card-desc">One-tap saving with offline cache, instant cancellation, and real-time seat counters.</div>
+          </div>
+          <div class="card">
+            <div class="card-icon">🔔</div>
+            <div class="card-title">Smart Notifications</div>
+            <div class="card-desc">Timely alerts for registered event start times, venue changes, and club announcements.</div>
+          </div>
+          <div class="card">
+            <div class="card-icon">👤</div>
+            <div class="card-title">Student Profile</div>
+            <div class="card-desc">Verified student badges, department attribution, attendance counts, and session security.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide-footer">
+        <div>Core Functional Modules</div>
+        <div>Slide 4 of 9</div>
+      </div>
+    </div>
+
+    <!-- ==============================================
+         SLIDE 5: SECURITY & VALIDATION
+         ============================================== -->
+    <div class="slide" id="slide-5">
+      <div>
+        <div class="slide-badge">Security First</div>
+        <h2 class="slide-title">Strict Google Authentication <span>&amp; Audit Trail</span></h2>
+        <p class="slide-subtitle">Enterprise-grade security preventing bot registrations and unverified submissions.</p>
+      </div>
+
+      <div class="slide-body">
+        <div class="grid-2">
+          <div class="card" style="--accent-gradient: var(--grad-main);">
+            <div class="card-icon">🔒</div>
+            <div class="card-title">Strict Google/Gmail RFC Rules</div>
+            <div class="card-desc">
+              Symmetrically validated on both mobile client and backend:
+              <br><br>
+              • <strong>Domain:</strong> Must end strictly with <code>@gmail.com</code>.<br>
+              • <strong>Length:</strong> Bounded strictly between <strong>6 and 30 characters</strong>.<br>
+              • <strong>Character Rules:</strong> Only lowercase letters, digits, and periods.<br>
+              • <strong>No Consecutive Dots:</strong> <code>..</code> is rejected.<br>
+              • <strong>Edge Constraints:</strong> Cannot start or end with a period.<br>
+              <br>
+              <em>Result: Invalid, disposable, or malformed email addresses are blocked before registration.</em>
+            </div>
+          </div>
+
+          <div class="card" style="--accent-gradient: var(--grad-emerald);">
+            <div class="card-icon">🛡️</div>
+            <div class="card-title">Email Confirmation &amp; Audit Logs</div>
+            <div class="card-desc">
+              • <strong>Email Confirmation Retained:</strong> Accounts require verification click via deep link <code>campusevents://auth-callback</code>.<br>
+              • <strong>Status Interception:</strong> Login page automatically flags unconfirmed accounts and offers a 1-tap resend button.<br>
+              • <strong>Database Audit Logs (<code>sign_in_logs</code>):</strong> Records user ID, login timestamp, client IP address, User-Agent, and authentication method for campus safety compliance.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide-footer">
+        <div>Security &amp; Validation Implementation</div>
+        <div>Slide 5 of 9</div>
+      </div>
+    </div>
+
+    <!-- ==============================================
+         SLIDE 6: DATA MODELING
+         ============================================== -->
+    <div class="slide" id="slide-6">
+      <div>
+        <div class="slide-badge">Database Design</div>
+        <h2 class="slide-title">PostgreSQL Relational Schema <span>&amp; RLS</span></h2>
+        <p class="slide-subtitle">Granular data integrity with 6 sequential migrations on Supabase Cloud.</p>
+      </div>
+
+      <div class="slide-body">
+        <div class="grid-3">
+          <div class="card">
+            <div class="card-title" style="color: #818cf8;">profiles &amp; logs</div>
+            <div class="card-desc">
+              • <code>profiles</code>: full_name, email, department, academic_year, college_id, last_sign_in_at, sign_in_count<br>
+              • <code>sign_in_logs</code>: user_id, sign_in_method, ip_address, user_agent, created_at
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title" style="color: #67e8f9;">events &amp; taxonomy</div>
+            <div class="card-desc">
+              • <code>events</code>: title, description, category_id, organizer_id, venue, start_date, end_date, poster_url, max_capacity<br>
+              • <code>categories</code>: Tech, Cultural, Sports, Workshop, Seminar
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title" style="color: #6ee7b7;">actions &amp; orgs</div>
+            <div class="card-desc">
+              • <code>registrations</code>: user_id, event_id, status, registered_at<br>
+              • <code>saved_events</code>: user_id, event_id, saved_at<br>
+              • <code>organizations</code>: student councils, clubs, and societies
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top: 16px; background: rgba(30, 41, 59, 0.4);">
+          <div class="card-title" style="font-size: 1rem;">⚡ Automated PostgreSQL Trigger: <code>on_auth_user_created</code></div>
+          <div class="card-desc" style="font-size: 0.85rem;">
+            When a user signs up, a database trigger executes <code>public.handle_auth_user_created()</code> to extract department, academic year, and college ID from metadata directly into <code>public.profiles</code> with zero client lag.
+          </div>
+        </div>
+      </div>
+
+      <div class="slide-footer">
+        <div>Relational Schema &amp; Row Level Security</div>
+        <div>Slide 6 of 9</div>
+      </div>
+    </div>
+
+    <!-- ==============================================
+         SLIDE 7: ENGINEERING CHALLENGES
+         ============================================== -->
+    <div class="slide" id="slide-7">
+      <div>
+        <div class="slide-badge">Deep Engineering</div>
+        <h2 class="slide-title">Critical Technical <span>Hurdles Overcome</span></h2>
+        <p class="slide-subtitle">Tackling complex low-level issues in the build system and packaging pipeline.</p>
+      </div>
+
+      <div class="slide-body">
+        <div class="grid-2">
+          <div class="card" style="--accent-gradient: var(--grad-main);">
+            <div class="card-title">1. Windows MAX_PATH (260-Char) CMake Failure</div>
+            <div class="card-desc">
+              <strong>Problem:</strong> React Native New Architecture C++ paths reached 272 chars, crashing Ninja with dirty manifest loops.<br>
+              <strong>Solution:</strong> Mapped virtual drive <code>M:\</code>, set <code>CMAKE_OBJECT_PATH_MAX=1024</code>, and refactored autolinked sources into local component directories.
+            </div>
+          </div>
+
+          <div class="card" style="--accent-gradient: var(--grad-cyan);">
+            <div class="card-title">2. C++ Linker Duplicate Symbol Resolution</div>
+            <div class="card-desc">
+              <strong>Problem:</strong> <code>rnscreens</code> autolinking failed due to duplicate definition of <code>rnscreens_ModuleProvider</code>.<br>
+              <strong>Solution:</strong> Isolated redundant generated codegen stubs from the compilation glob, enabling a clean 2m 8s build.
+            </div>
+          </div>
+
+          <div class="card" style="--accent-gradient: var(--grad-emerald);">
+            <div class="card-title">3. Android Package Signature Conflict</div>
+            <div class="card-desc">
+              <strong>Problem:</strong> Android package manager blocked installation with "Something went wrong" when upgrading test builds.<br>
+              <strong>Solution:</strong> Generated 2048-bit RSA production release keystore (v2+v3 verified) and documented clean legacy uninstallation.
+            </div>
+          </div>
+
+          <div class="card" style="--accent-gradient: linear-gradient(135deg, #f59e0b, #d97706);">
+            <div class="card-title">4. Mobile Cross-Origin Download Blocking</div>
+            <div class="card-desc">
+              <strong>Problem:</strong> Mobile Chrome blocked GitHub Releases 302 cross-origin redirected download URLs.<br>
+              <strong>Solution:</strong> Hosted APK directly on same-origin GitHub Pages with native <code>application/vnd.android.package-archive</code> MIME type.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide-footer">
+        <div>Low-Level Build &amp; Distribution Engineering</div>
+        <div>Slide 7 of 9</div>
+      </div>
+    </div>
+
+    <!-- ==============================================
+         SLIDE 8: PRODUCTION METRICS & DEMO
+         ============================================== -->
+    <div class="slide" id="slide-8">
+      <div>
+        <div class="slide-badge">Live Production</div>
+        <h2 class="slide-title">Global Deployment <span>&amp; Live Verification</span></h2>
+        <p class="slide-subtitle">All infrastructure is live, healthy, and publicly accessible right now.</p>
+      </div>
+
+      <div class="slide-body">
+        <div class="grid-4" style="margin-bottom: 20px;">
+          <div class="card" style="text-align: center;">
+            <div class="stat-number">60.5</div>
+            <div class="stat-label">MB APK Size</div>
+          </div>
+          <div class="card" style="text-align: center;">
+            <div class="stat-number">100%</div>
+            <div class="stat-label">Type-Safe TypeScript</div>
+          </div>
+          <div class="card" style="text-align: center;">
+            <div class="stat-number">6</div>
+            <div class="stat-label">DB Migrations</div>
+          </div>
+          <div class="card" style="text-align: center;">
+            <div class="stat-number">2m 8s</div>
+            <div class="stat-label">Release Build Time</div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title">🌐 Live Web Portal &amp; APK</div>
+            <div class="card-desc">
+              • <strong>Portal:</strong> <a href="https://arjunak18.github.io/campus-events/" target="_blank" style="color: #818cf8;">arjunak18.github.io/campus-events/</a><br>
+              • <strong>Direct APK:</strong> <a href="https://arjunak18.github.io/campus-events/campus-events-release.apk" target="_blank" style="color: #67e8f9;">campus-events-release.apk</a><br>
+              • <strong>GitHub Release:</strong> v1.0.0 Global CDN Asset
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">⚙️ Backend Cloud Status</div>
+            <div class="card-desc">
+              • <strong>Live API:</strong> <a href="https://campus-events-api-icb1.onrender.com/api" target="_blank" style="color: #818cf8;">campus-events-api-icb1.onrender.com</a><br>
+              • <strong>Health:</strong> <span class="live-beacon"><span class="beacon-dot"></span> LIVE ON RENDER</span><br>
+              • <strong>Database:</strong> Active Supabase PostgreSQL
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide-footer">
+        <div>Live Links &amp; Metrics</div>
+        <div>Slide 8 of 9</div>
+      </div>
+    </div>
+
+    <!-- ==============================================
+         SLIDE 9: ROADMAP & CONCLUSION
+         ============================================== -->
+    <div class="slide" id="slide-9">
+      <div>
+        <div class="slide-badge">Roadmap &amp; Wrap-Up</div>
+        <h2 class="slide-title">The Future of <span>Campus Events</span></h2>
+        <p class="slide-subtitle">Scaling across university networks with rich administrative tooling.</p>
+      </div>
+
+      <div class="slide-body">
+        <div class="grid-3" style="margin-bottom: 20px;">
+          <div class="card" style="--accent-gradient: var(--grad-main);">
+            <div class="card-icon">🖥️</div>
+            <div class="card-title">Phase 8: Web Admin Panel</div>
+            <div class="card-desc">React + Vite web console for university deans and club heads to review event applications, moderate posts, and export CSV attendee rosters.</div>
+          </div>
+
+          <div class="card" style="--accent-gradient: var(--grad-cyan);">
+            <div class="card-icon">🔔</div>
+            <div class="card-title">Automated Push Reminders</div>
+            <div class="card-desc">Supabase Webhooks combined with Expo Push Notifications to alert students 24h and 1h prior to event commencement.</div>
+          </div>
+
+          <div class="card" style="--accent-gradient: var(--grad-emerald);">
+            <div class="card-icon">🎟️</div>
+            <div class="card-title">QR Ticket Check-In</div>
+            <div class="card-desc">In-app QR camera scanner for door organizers to validate student registrations instantly and record real-time event attendance.</div>
+          </div>
+        </div>
+
+        <div class="card" style="text-align: center; padding: 24px; background: rgba(30, 27, 75, 0.4); border-color: rgba(99, 102, 241, 0.4);">
+          <h3 style="font-size: 1.6rem; font-weight: 800; margin-bottom: 6px;">Thank You! Questions &amp; Discussion</h3>
+          <p style="color: var(--text-muted); font-size: 0.95rem;">
+            Open-source on GitHub: <strong>github.com/arjunak18/campus-events</strong> • Built by Arjun A K (AkDevos)
+          </p>
+        </div>
+      </div>
+
+      <div class="slide-footer">
+        <div>Campus Events Calendar • Concluding Slide</div>
+        <div>Slide 9 of 9</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FLOATING PRESENTATION CONTROLS -->
+  <div class="nav-toolbar">
+    <button class="nav-btn" onclick="prevSlide()" title="Previous Slide">&larr;</button>
+    <div class="slide-counter" id="slideCounter">01 / 09</div>
+    <button class="nav-btn" onclick="nextSlide()" title="Next Slide">&rarr;</button>
+    <button class="nav-btn" onclick="toggleFullscreen()" title="Toggle Fullscreen" style="margin-left: 6px;">⛶</button>
+    <button class="nav-btn" onclick="toggleAudio()" id="audioBtn" title="Toggle Sound">🔊</button>
+    <div class="keyboard-hint">Use <kbd>&larr;</kbd> <kbd>&rarr;</kbd> or <kbd>Space</kbd></div>
+  </div>
+
+  <!-- Interactive Particles Canvas & Controller Script -->
+  <script>
+    // Slide Navigation Controller
+    let currentSlide = 1;
+    const totalSlides = 9;
+    let audioEnabled = true;
+
+    // Web Audio Synthesizer for tactile UI clicks
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playBeep(freq = 600, type = 'sine', duration = 0.04) {
+      if (!audioEnabled || !audioCtx) return;
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch(e) {}
+    }
+
+    function updateSlide() {
+      document.querySelectorAll('.slide').forEach((slide, idx) => {
+        const slideNum = idx + 1;
+        slide.classList.remove('active', 'prev');
+        if (slideNum === currentSlide) {
+          slide.classList.add('active');
+        } else if (slideNum < currentSlide) {
+          slide.classList.add('prev');
+        }
+      });
+
+      // Update counter and progress bar
+      const formattedCur = String(currentSlide).padStart(2, '0');
+      const formattedTot = String(totalSlides).padStart(2, '0');
+      document.getElementById('slideCounter').innerText = `${formattedCur} / ${formattedTot}`;
+      const progressPercent = (currentSlide / totalSlides) * 100;
+      document.getElementById('progressBar').style.width = `${progressPercent}%`;
+
+      playBeep(450 + currentSlide * 35, 'sine', 0.05);
+    }
+
+    function nextSlide() {
+      if (currentSlide < totalSlides) {
+        currentSlide++;
+        updateSlide();
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlide > 1) {
+        currentSlide--;
+        updateSlide();
+      }
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen();
+      }
+    }
+
+    function toggleAudio() {
+      audioEnabled = !audioEnabled;
+      document.getElementById('audioBtn').innerText = audioEnabled ? '🔊' : '🔇';
+    }
+
+    // Keyboard Listeners
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        e.preventDefault();
+        nextSlide();
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        e.preventDefault();
+        prevSlide();
+      } else if (e.key === 'f' || e.key === 'F') {
+        toggleFullscreen();
+      } else if (e.key === 'm' || e.key === 'M') {
+        toggleAudio();
+      } else if (e.key >= '1' && e.key <= '9') {
+        currentSlide = parseInt(e.key);
+        updateSlide();
+      }
+    });
+
+    // Touch Swipe Navigation for mobile & tablets
+    let touchStartX = 0;
+    window.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, false);
+    window.addEventListener('touchend', (e) => {
+      const diff = touchStartX - e.changedTouches[0].screenX;
+      if (Math.abs(diff) > 50) {
+        if (diff > 0) nextSlide();
+        else prevSlide();
+      }
+    }, false);
+
+    // Dynamic Constellation Canvas Background Animation
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+    let width, height;
+    let particles = [];
+
+    function resizeCanvas() {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    class Particle {
+      constructor() {
+        this.x = Math.random() * width;
+        this.y = Math.random() * height;
+        this.vx = (Math.random() - 0.5) * 0.45;
+        this.vy = (Math.random() - 0.5) * 0.45;
+        this.radius = Math.random() * 1.5 + 0.8;
+      }
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        if (this.x < 0 || this.x > width) this.vx *= -1;
+        if (this.y < 0 || this.y > height) this.vy *= -1;
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(165, 180, 252, 0.45)';
+        ctx.fill();
+      }
+    }
+
+    for (let i = 0; i < 48; i++) {
+      particles.push(new Particle());
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, width, height);
+
+      // Draw connection lines
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 130) {
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = `rgba(99, 102, 241, ${0.12 * (1 - dist / 130)})`;
+            ctx.lineWidth = 0.8;
+            ctx.stroke();
+          }
+        }
+      }
+
+      particles.forEach(p => {
+        p.update();
+        p.draw();
+      });
+
+      requestAnimationFrame(animate);
+    }
+    animate();
+  </script>
+</body>
+</html>
