@@ -288,7 +288,7 @@ def make_numbered_page(inner_content, page_num_str):
     return f"""
     <div class="page">
         <div class="running-header">
-            <div class="running-header-text">OBJECT ORIENTED PROGRAMMING IN JAVA 24CSOPJT405</div>
+            <div class="running-header-text">HYBRID APP DEVELOPMENT  25CCHADT305</div>
             <div class="running-header-line"></div>
         </div>
         <div style="flex: 1; display: flex; flex-direction: column;">
@@ -311,7 +311,7 @@ p1_content = """
 <div style="text-align: center; margin-top: 3mm;">
     <h1 style="font-size: 17pt; font-weight: bold; margin: 0 0 4mm 0; letter-spacing: 0.5px;">CAMPUS EVENTS CALENDAR</h1>
     <h2 style="font-size: 13pt; font-weight: bold; margin: 0 0 2mm 0;">PROJECT REPORT</h2>
-    <div style="font-size: 11pt; font-weight: bold; margin-bottom: 6mm;">(24CSOPJT405 – OBJECT ORIENTED PROGRAMMING IN JAVA)</div>
+    <div style="font-size: 11pt; font-weight: bold; margin-bottom: 6mm;">(25CCHADT305 – HYBRID APP DEVELOPMENT)</div>
     
     <div style="font-size: 10.5pt; line-height: 1.4; margin: 0 auto 5mm auto; max-width: 155mm;">
         Submitted to the Jawaharlal College of Engineering and Technology (Autonomous), affiliated to APJ Abdul Kalam Technological University in partial fulfilment of requirements for the award of degree
@@ -324,11 +324,8 @@ p1_content = """
     <div style="display: flex; justify-content: space-between; text-align: left; width: 100%; margin-top: 5mm; padding: 0 8mm;">
         <div>
             <div style="font-size: 11pt; font-weight: bold; margin-bottom: 2mm;">By</div>
-            <div style="font-size: 10.5pt; line-height: 1.5;">
-                <b>JCE24CD009</b> ADITHYAKUMAR E<br>
-                <b>JCE24CD039</b> MUHAMMED SINAN V<br>
-                <b>JCE24CD048</b> PRANAV PRAMOD NAIR<br>
-                <b>JCE24CD054</b> SEYA S
+            <div style="font-size: 11.5pt; line-height: 1.6;">
+                <b>JCE25CC019</b> ARJUN P KOLIKKAL
             </div>
         </div>
         <div style="text-align: right;">
@@ -359,7 +356,7 @@ p2_content = """
     <h1 style="font-size: 14pt; font-weight: bold; letter-spacing: 0.5px; margin: 0 0 6mm 0;">BONAFIDE CERTIFICATE</h1>
     
     <p class="body-text" style="text-indent: 10mm; margin-bottom: 5mm;">
-        This is to certify that the project report entitled <b>“CAMPUS EVENTS CALENDAR”</b> submitted by <b>ADITHYAKUMAR E (JCE24CD009)</b>, <b>MUHAMMED SINAN V (JCE24CD039)</b>, <b>PRANAV PRAMOD NAIR (JCE24CD048)</b>, and <b>SEYA S (JCE24CD054)</b>, of Fourth Semester, B.Tech in Computer Science & Engineering - DATA SCIENCE has been successfully carried out under our supervision and guidance in partial fulfillment of the requirements for the subject <b>24CSOPJT405 – Object Oriented Programming in Java</b>, prescribed by Jawaharlal College of Engineering and Technology (Autonomous), affiliated to APJ Abdul Kalam Technological University, Kerala. It is further certified that this work is a bonafide record carried out by the above students during the academic year 2025–2026.
+        This is to certify that the project report entitled <b>“CAMPUS EVENTS CALENDAR”</b> submitted by <b>ARJUN P KOLIKKAL (JCE25CC019)</b>, of B.Tech in Computer Science & Engineering - DATA SCIENCE has been successfully carried out under our supervision and guidance in partial fulfillment of the requirements for the subject <b>25CCHADT305 – Hybrid App Development</b>, prescribed by Jawaharlal College of Engineering and Technology (Autonomous), affiliated to APJ Abdul Kalam Technological University, Kerala. It is further certified that this work is a bonafide record carried out by the above student during the academic year 2025–2026.
     </p>
     
     <div style="display: flex; justify-content: space-between; margin-top: 16mm; padding: 0 5mm;">
@@ -498,15 +495,13 @@ p8_content = """
     <h2 style="text-align: center; font-size: 13pt; font-weight: bold; margin: 0 0 6mm 0;">DECLARATION</h2>
     
     <p class="body-text" style="line-height: 1.5; margin-bottom: 6mm;">
-        We hereby declare that the project report <b>CAMPUS EVENTS CALENDAR</b> submitted for the partial fulfilment of the requirements of the Fourth Semester subject <b>24CSOPJT405 – Object Oriented Programming in Java</b>, prescribed by Jawaharlal College of Engineering and Technology (Autonomous), affiliated to APJ Abdul Kalam Technological University, Kerala is a bonafide work done by us under the guidance of <b>Prof. Dr. R. Satheesh Kumar</b>. The submission represents our ideas in our own words and where ideas or words of others have been included, we have adequately and accurately cited and referred the original sources. We also declare that we have adhered to ethics and integrity and have not misinterpreted or fabricated any data or idea or fact or source in our submission. We understand that any violation of the above will be a case for disciplinary action by the institution and/or the University and can also evoke penal actions from the sources which have thus not been properly cited or from whom proper permission has not been obtained. This report has not previously formed the basis for the award of any degree, diploma or similar title of any other University.
+        I hereby declare that the project report <b>CAMPUS EVENTS CALENDAR</b> submitted for the partial fulfilment of the requirements of the subject <b>25CCHADT305 – Hybrid App Development</b>, prescribed by Jawaharlal College of Engineering and Technology (Autonomous), affiliated to APJ Abdul Kalam Technological University, Kerala is a bonafide work done by me under the guidance of <b>Prof. Dr. R. Satheesh Kumar</b>. The submission represents my ideas in my own words and where ideas or words of others have been included, I have adequately and accurately cited and referred the original sources. I also declare that I have adhered to ethics and integrity and have not misinterpreted or fabricated any data or idea or fact or source in my submission. I understand that any violation of the above will be a case for disciplinary action by the institution and/or the University and can also evoke penal actions from the sources which have thus not been properly cited or from whom proper permission has not been obtained. This report has not previously formed the basis for the award of any degree, diploma or similar title of any other University.
     </p>
     
     <div style="display: flex; justify-content: flex-end; margin-top: 10mm; padding-right: 5mm;">
-        <div style="text-align: right; font-size: 10.5pt; line-height: 1.6;">
-            <b>ADITHYAKUMAR E</b><br>
-            <b>MUHAMMED SINAN V</b><br>
-            <b>PRANAV PRAMOD NAIR</b><br>
-            <b>SEYA S</b>
+        <div style="text-align: right; font-size: 11pt; line-height: 1.6;">
+            <b>ARJUN P KOLIKKAL</b><br>
+            <b>(JCE25CC019)</b>
         </div>
     </div>
     
@@ -557,11 +552,9 @@ p10_content = """
         We also appreciate the valuable feedback and constructive suggestions offered by the evaluation panel members during our departmental project reviews. Last but not least, we place on record our profound sense of gratitude to our parents, family members, lab instructors, and fellow classmates whose unwavering moral support and encouragement motivated us at every stage.
     </p>
     <div style="display: flex; justify-content: flex-end; margin-top: 8mm; padding-right: 5mm;">
-        <div style="text-align: right; font-size: 10.5pt; line-height: 1.5;">
-            <b>ADITHYAKUMAR E</b><br>
-            <b>MUHAMMED SINAN V</b><br>
-            <b>PRANAV PRAMOD NAIR</b><br>
-            <b>SEYA S</b>
+        <div style="text-align: right; font-size: 11pt; line-height: 1.5;">
+            <b>ARJUN P KOLIKKAL</b><br>
+            <b>(JCE25CC019)</b>
         </div>
     </div>
 </div>

@@ -71,7 +71,7 @@ r2 = p.add_run("PROJECT REPORT\n")
 r2.bold = True
 r2.font.size = Pt(13)
 
-r3 = p.add_run("(24CSOPJT405 – OBJECT ORIENTED PROGRAMMING IN JAVA)\n\n")
+r3 = p.add_run("(25CCHADT305 – HYBRID APP DEVELOPMENT)\n\n")
 r3.bold = True
 r3.font.size = Pt(11)
 
@@ -98,12 +98,8 @@ c1 = tbl.cell(0, 0)
 p1 = c1.paragraphs[0]
 r_by = p1.add_run("By\n")
 r_by.bold = True
-p1.add_run(
-    "JCE24CD009  ADITHYAKUMAR E\n"
-    "JCE24CD039  MUHAMMED SINAN V\n"
-    "JCE24CD048  PRANAV PRAMOD NAIR\n"
-    "JCE24CD054  SEYA S"
-)
+r_stu = p1.add_run("JCE25CC019  ARJUN P KOLIKKAL\n")
+r_stu.bold = True
 
 c2 = tbl.cell(0, 1)
 p2 = c2.paragraphs[0]
@@ -403,10 +399,8 @@ p_dec_l.add_run("Place: Palakkad\nDate: 26-03-2026")
 p_dec_r = tbl_dec.cell(0, 1).paragraphs[0]
 p_dec_r.alignment = WD_ALIGN_PARAGRAPH.RIGHT
 p_dec_r.add_run(
-    "ADITHYAKUMAR E\n"
-    "MUHAMMED SINAN V\n"
-    "PRANAV PRAMOD NAIR\n"
-    "SEYA S"
+    "ARJUN P KOLIKKAL\n"
+    "(JCE25CC019)"
 ).bold = True
 
 if os.path.exists(emblem_path):
@@ -425,7 +419,7 @@ sec2.right_margin = Inches(0.9)
 
 header = sec2.header
 p_hdr = header.paragraphs[0]
-p_hdr.text = "OBJECT ORIENTED PROGRAMMING IN JAVA 24CSOPJT405"
+p_hdr.text = "HYBRID APP DEVELOPMENT  25CCHADT305"
 p_hdr.runs[0].bold = True
 p_hdr.runs[0].font.size = Pt(9.5)
 
@@ -494,10 +488,8 @@ p_ack_txt.add_run(
 p_ack_sig = doc.add_paragraph()
 p_ack_sig.alignment = WD_ALIGN_PARAGRAPH.RIGHT
 p_ack_sig.add_run(
-    "ADITHYAKUMAR E\n"
-    "MUHAMMED SINAN V\n"
-    "PRANAV PRAMOD NAIR\n"
-    "SEYA S"
+    "ARJUN P KOLIKKAL\n"
+    "(JCE25CC019)"
 ).bold = True
 
 doc.add_page_break()
