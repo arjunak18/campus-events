@@ -283,7 +283,7 @@ pages_html = []
 
 def make_front_page(inner_content, show_banner=True, show_emblem=True):
     banner_tag = f'<img src="{b64_banner}" class="front-banner" />' if show_banner else ''
-    emblem_tag = f'<img src="{b64_emblem}" class="front-bottom-emblem" />' if show_emblem else ''
+    emblem_tag = ''
     return f"""
     <div class="page">
         <img src="{b64_logo_watermark}" class="page-watermark" />
@@ -291,7 +291,7 @@ def make_front_page(inner_content, show_banner=True, show_emblem=True):
         <div class="front-content">
             {inner_content}
         </div>
-        {emblem_tag}
+        
     </div>
     """
 

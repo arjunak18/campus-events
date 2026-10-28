@@ -111,10 +111,7 @@ r_gname = p2.add_run("Prof. Dr. R. SATHEESH KUMAR\n")
 r_gname.bold = True
 p2.add_run("Professor and HoD, CSE")
 
-if os.path.exists(emblem_path):
-    p_emb = doc.add_paragraph()
-    p_emb.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    p_emb.add_run().add_picture(emblem_path, width=Inches(0.9))
+# Bottom emblem removed as requested)
 
 p_col = doc.add_paragraph()
 p_col.alignment = WD_ALIGN_PARAGRAPH.CENTER
@@ -184,10 +181,7 @@ p_ex2 = tbl_ex.cell(0, 1).paragraphs[0]
 p_ex2.alignment = WD_ALIGN_PARAGRAPH.RIGHT
 p_ex2.add_run("External Examiner").bold = True
 
-if os.path.exists(emblem_path):
-    p_emb2 = doc.add_paragraph()
-    p_emb2.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    p_emb2.add_run().add_picture(emblem_path, width=Inches(0.8))
+# Bottom emblem removed as requested)
 
 doc.add_page_break()
 
@@ -221,10 +215,7 @@ for b in bullets:
     p_b = doc.add_paragraph(b, style='List Bullet')
     p_b.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
 
-if os.path.exists(emblem_path):
-    p_emb3 = doc.add_paragraph()
-    p_emb3.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    p_emb3.add_run().add_picture(emblem_path, width=Inches(0.8))
+# Bottom emblem removed as requested)
 
 doc.add_page_break()
 
@@ -258,10 +249,7 @@ for b in bullets_d:
     p_b = doc.add_paragraph(b, style='List Bullet')
     p_b.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
 
-if os.path.exists(emblem_path):
-    p_emb4 = doc.add_paragraph()
-    p_emb4.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    p_emb4.add_run().add_picture(emblem_path, width=Inches(0.8))
+# Bottom emblem removed as requested)
 
 doc.add_page_break()
 
@@ -294,10 +282,7 @@ p_pso_b.add_run("Ability to understand the architecture and working of computer 
 p_pso_b.add_run("PSO2: ").bold = True
 p_pso_b.add_run("Ability to design and develop software for technology application to fulfill industrial and social needs.")
 
-if os.path.exists(emblem_path):
-    p_emb5 = doc.add_paragraph()
-    p_emb5.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    p_emb5.add_run().add_picture(emblem_path, width=Inches(0.8))
+# Bottom emblem removed as requested)
 
 doc.add_page_break()
 
@@ -330,10 +315,7 @@ for title, desc in pos:
     p_po.add_run(title).bold = True
     p_po.add_run(desc)
 
-if os.path.exists(emblem_path):
-    p_emb6 = doc.add_paragraph()
-    p_emb6.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    p_emb6.add_run().add_picture(emblem_path, width=Inches(0.8))
+# Bottom emblem removed as requested)
 
 doc.add_page_break()
 
@@ -359,10 +341,7 @@ if os.path.exists(im48_path):
     p_im48.alignment = WD_ALIGN_PARAGRAPH.CENTER
     p_im48.add_run().add_picture(im48_path, width=Inches(5.8))
 
-if os.path.exists(emblem_path):
-    p_emb7 = doc.add_paragraph()
-    p_emb7.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    p_emb7.add_run().add_picture(emblem_path, width=Inches(0.8))
+# Bottom emblem removed as requested)
 
 doc.add_page_break()
 
@@ -404,10 +383,7 @@ p_dec_r.add_run(
     "(JCE25CC019)"
 ).bold = True
 
-if os.path.exists(emblem_path):
-    p_emb8 = doc.add_paragraph()
-    p_emb8.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    p_emb8.add_run().add_picture(emblem_path, width=Inches(0.8))
+# Bottom emblem removed as requested)
 
 doc.add_page_break()
 
