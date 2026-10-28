@@ -194,6 +194,16 @@ export default function ProfileScreen() {
             </Text>
           </TouchableOpacity>
         )}
+
+        {/* App Version Info */}
+        <View style={{ alignItems: 'center', marginTop: spacing.xl, paddingBottom: spacing.md }}>
+          <Text style={[typography.caption, { color: colors.textDisabled }]}>
+            Campus Events v1.0.1 (Build 6)
+          </Text>
+          <Text style={[typography.caption, { color: colors.textDisabled, fontSize: 10, marginTop: 2 }]}>
+            Production Release • Verified Universal Build
+          </Text>
+        </View>
       </ScrollView>
     </ScreenWrapper>
   );

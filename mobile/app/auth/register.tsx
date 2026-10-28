@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Alert, Linking } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Alert, Linking, KeyboardAvoidingView, Platform } from 'react-native';
 import { ScreenWrapper } from '../../components/ui/ScreenWrapper';
 import { Input } from '../../components/ui/Input';
 import { Button } from '../../components/ui/Button';
@@ -195,7 +195,7 @@ export default function RegisterScreen() {
         <Input
           label="Password *"
           placeholder="Min 6 characters"
-          secureTextEntry
+          isPassword
           value={password}
           onChangeText={setPassword}
         />
@@ -203,7 +203,7 @@ export default function RegisterScreen() {
         <Input
           label="Confirm Password *"
           placeholder="Re-enter password"
-          secureTextEntry
+          isPassword
           value={confirmPassword}
           onChangeText={setConfirmPassword}
         />

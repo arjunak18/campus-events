@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Text, View, TouchableOpacity, Alert, ScrollView, Linking } from 'react-native';
+import { Text, View, TouchableOpacity, Alert, ScrollView, Linking, KeyboardAvoidingView, Platform } from 'react-native';
 import { ScreenWrapper } from '../../components/ui/ScreenWrapper';
 import { Input } from '../../components/ui/Input';
 import { Button } from '../../components/ui/Button';
@@ -77,7 +77,11 @@ export default function LoginScreen() {
 
   return (
     <ScreenWrapper style={{ padding: 0 }}>
-      <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', padding: spacing.lg }}>
+      <KeyboardAvoidingView 
+        style={{ flex: 1 }} 
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      >
+        <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', padding: spacing.lg }}>
         {/* App Branding */}
         <View style={{ alignItems: 'center', marginBottom: spacing.xl }}>
           <View style={{
@@ -187,7 +191,7 @@ export default function LoginScreen() {
           <Input
             label="Password"
             placeholder="Enter your password"
-            secureTextEntry
+            isPassword
             value={password}
             onChangeText={setPassword}
           />
@@ -273,7 +277,8 @@ export default function LoginScreen() {
             </Text>
           </TouchableOpacity>
         </View>
-      </ScrollView>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </ScreenWrapper>
   );
 }
