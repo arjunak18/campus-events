@@ -84,7 +84,7 @@ r_sub = p_sub.add_run(
 )
 r_sub.font.size = Pt(10.5)
 
-r_deg = p_sub.add_run("BACHELOR OF TECHNOLOGY\nin\nCOMPUTER SCIENCE AND ENGINEERING - DATA SCIENCE\n\n")
+r_deg = p_sub.add_run("BACHELOR OF TECHNOLOGY\nin\nCOMPUTER SCIENCE AND ENGINEERING - CYBER SECURITY\n\n")
 r_deg.bold = True
 r_deg.font.size = Pt(12)
 
@@ -119,7 +119,7 @@ if os.path.exists(emblem_path):
 p_col = doc.add_paragraph()
 p_col.alignment = WD_ALIGN_PARAGRAPH.CENTER
 r_col = p_col.add_run(
-    "DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING (DATA SCIENCE)\n"
+    "DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING (CYBER SECURITY)\n"
     "JAWAHARLAL COLLEGE OF ENGINEERING AND TECHNOLOGY\n"
     "LAKKIDI, MANGALAM P.O, PALAKKAD, KERALA - 679301\n"
     "APRIL 2026"
@@ -137,7 +137,7 @@ if os.path.exists(banner_path):
 
 p_head = doc.add_paragraph()
 p_head.alignment = WD_ALIGN_PARAGRAPH.CENTER
-r = p_head.add_run("DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING\n(DATA SCIENCE)\n\n")
+r = p_head.add_run("DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING\n(CYBER SECURITY)\n\n")
 r.bold = True
 
 r_cert = p_head.add_run("BONAFIDE CERTIFICATE\n\n")
@@ -151,7 +151,7 @@ p_body.paragraph_format.line_spacing = 1.3
 r_txt = p_body.add_run(
     "This is to certify that the project report entitled “CAMPUS EVENTS CALENDAR” submitted by "
     "ADITHYAKUMAR E (JCE24CD009), MUHAMMED SINAN V (JCE24CD039), PRANAV PRAMOD NAIR (JCE24CD048), "
-    "and SEYA S (JCE24CD054), of Fourth Semester, B.Tech in Computer Science & Engineering - DATA SCIENCE "
+    "and SEYA S (JCE24CD054), of Fourth Semester, B.Tech in Computer Science & Engineering - CYBER SECURITY "
     "has been successfully carried out under our supervision and guidance in partial fulfillment of the "
     "requirements for the subject 24CSOPJT405 – Object Oriented Programming in Java, prescribed by "
     "Jawaharlal College of Engineering and Technology (Autonomous), affiliated to APJ Abdul Kalam "
@@ -198,7 +198,7 @@ if os.path.exists(banner_path):
 
 p = doc.add_paragraph()
 p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-p.add_run("DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING\n(DATA SCIENCE)\n\n").bold = True
+p.add_run("DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING\n(CYBER SECURITY)\n\n").bold = True
 
 p_v = doc.add_paragraph()
 p_v.alignment = WD_ALIGN_PARAGRAPH.CENTER
@@ -235,7 +235,7 @@ if os.path.exists(banner_path):
 
 p = doc.add_paragraph()
 p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-p.add_run("DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING\n(DATA SCIENCE)\n\n").bold = True
+p.add_run("DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING\n(CYBER SECURITY)\n\n").bold = True
 
 p_v2 = doc.add_paragraph()
 p_v2.alignment = WD_ALIGN_PARAGRAPH.CENTER
@@ -272,7 +272,7 @@ if os.path.exists(banner_path):
 
 p = doc.add_paragraph()
 p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-p.add_run("DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING\n(DATA SCIENCE)\n\n").bold = True
+p.add_run("DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING\n(CYBER SECURITY)\n\n").bold = True
 p.add_run("PROGRAM EDUCATIONAL OBJECTIVES (PEOs)\n").bold = True
 
 p_peo = doc.add_paragraph()
@@ -426,7 +426,7 @@ p_hdr.runs[0].font.size = Pt(9.5)
 
 footer = sec2.footer
 p_ftr = footer.paragraphs[0]
-p_ftr.text = "DEPARTMENT OF CSE - DATA SCIENCE"
+p_ftr.text = "DEPARTMENT OF CSE - CYBER SECURITY"
 p_ftr.runs[0].font.size = Pt(9.5)
 
 # PAGE 9 (I): ABSTRACT
@@ -671,7 +671,7 @@ add_schema_table(doc, "Sign-in Logs Table", "Table 4.6:", "Stores user sign-in e
 add_schema_table(doc, "Event Organizers Table", "Table 4.7:", "Stores department affiliations and coordinator contacts.", [
     ["id", "UUID", "PRIMARY KEY", "Organizer department identifier"],
     ["org_name", "VARCHAR(100)", "NOT NULL", "Name: 'CSE Department Association'"],
-    ["department", "VARCHAR(50)", "NOT NULL", "Dept: 'CSE - Data Science'"],
+    ["department", "VARCHAR(50)", "NOT NULL", "Dept: 'CSE - Cyber Security'"],
     ["contact_email", "VARCHAR(255)", "NOT NULL", "Coordinator official email address"]
 ])
 

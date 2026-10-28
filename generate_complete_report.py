@@ -310,7 +310,7 @@ def make_numbered_page(inner_content, page_num_str, show_watermark=False):
         <div class="running-footer">
             <div class="running-footer-line"></div>
             <div class="running-footer-content">
-                <span class="dept-title">DEPARTMENT OF CSE - DATA SCIENCE</span>
+                <span class="dept-title">DEPARTMENT OF CSE - CYBER SECURITY</span>
                 <span class="page-num">{page_num_str}</span>
             </div>
         </div>
@@ -332,7 +332,7 @@ p1_content = """
     
     <div style="font-size: 12.5pt; font-weight: bold; margin-bottom: 1.5mm;">BACHELOR OF TECHNOLOGY</div>
     <div style="font-size: 11pt; margin-bottom: 1.5mm;">in</div>
-    <div style="font-size: 12.5pt; font-weight: bold; margin-bottom: 7mm;">COMPUTER SCIENCE AND ENGINEERING - DATA SCIENCE</div>
+    <div style="font-size: 12.5pt; font-weight: bold; margin-bottom: 7mm;">COMPUTER SCIENCE AND ENGINEERING - CYBER SECURITY</div>
     
     <div style="display: flex; justify-content: space-between; text-align: left; width: 100%; margin-top: 5mm; padding: 0 8mm;">
         <div>
@@ -351,7 +351,7 @@ p1_content = """
     </div>
     
     <div style="margin-top: 10mm; font-size: 10pt; font-weight: bold; line-height: 1.35;">
-        DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING (DATA SCIENCE)<br>
+        DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING (CYBER SECURITY)<br>
         JAWAHARLAL COLLEGE OF ENGINEERING AND TECHNOLOGY<br>
         LAKKIDI, MANGALAM P.O, PALAKKAD, KERALA - 679301<br>
         APRIL 2026
@@ -364,12 +364,12 @@ pages_html.append(make_front_page(p1_content, show_banner=True, show_emblem=True
 p2_content = """
 <div style="text-align: center; margin-top: 2mm;">
     <div style="font-size: 11pt; font-weight: bold;">DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING</div>
-    <div style="font-size: 10.5pt; font-weight: bold; margin-bottom: 5mm;">(DATA SCIENCE)</div>
+    <div style="font-size: 10.5pt; font-weight: bold; margin-bottom: 5mm;">(CYBER SECURITY)</div>
     
     <h1 style="font-size: 14pt; font-weight: bold; letter-spacing: 0.5px; margin: 0 0 6mm 0;">BONAFIDE CERTIFICATE</h1>
     
     <p class="body-text" style="text-indent: 10mm; margin-bottom: 5mm;">
-        This is to certify that the project report entitled <b>“CAMPUS EVENTS CALENDAR”</b> submitted by <b>ARJUN P KOLIKKAL (JCE25CC019)</b>, of B.Tech in Computer Science & Engineering - DATA SCIENCE has been successfully carried out under our supervision and guidance in partial fulfillment of the requirements for the subject <b>25CCHADT305 – Hybrid App Development</b>, prescribed by Jawaharlal College of Engineering and Technology (Autonomous), affiliated to APJ Abdul Kalam Technological University, Kerala. It is further certified that this work is a bonafide record carried out by the above student during the academic year 2025–2026.
+        This is to certify that the project report entitled <b>“CAMPUS EVENTS CALENDAR”</b> submitted by <b>ARJUN P KOLIKKAL (JCE25CC019)</b>, of B.Tech in Computer Science & Engineering - CYBER SECURITY has been successfully carried out under our supervision and guidance in partial fulfillment of the requirements for the subject <b>25CCHADT305 – Hybrid App Development</b>, prescribed by Jawaharlal College of Engineering and Technology (Autonomous), affiliated to APJ Abdul Kalam Technological University, Kerala. It is further certified that this work is a bonafide record carried out by the above student during the academic year 2025–2026.
     </p>
     
     <div style="display: flex; justify-content: space-between; margin-top: 16mm; padding: 0 5mm;">
@@ -395,7 +395,7 @@ pages_html.append(make_front_page(p2_content, show_banner=True, show_emblem=True
 p3_content = """
 <div style="margin-top: 3mm;">
     <div style="text-align: center; font-size: 11pt; font-weight: bold;">DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING</div>
-    <div style="text-align: center; font-size: 10.5pt; font-weight: bold; margin-bottom: 7mm;">(DATA SCIENCE)</div>
+    <div style="text-align: center; font-size: 10.5pt; font-weight: bold; margin-bottom: 7mm;">(CYBER SECURITY)</div>
     
     <h2 style="text-align: center; font-size: 13pt; font-weight: bold; margin: 0 0 3mm 0;">INSTITUTE VISION</h2>
     <p class="body-text" style="font-style: italic; margin-bottom: 7mm; text-align: center;">
@@ -418,7 +418,7 @@ pages_html.append(make_front_page(p3_content, show_banner=True, show_emblem=True
 p4_content = """
 <div style="margin-top: 3mm;">
     <div style="text-align: center; font-size: 11pt; font-weight: bold;">DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING</div>
-    <div style="text-align: center; font-size: 10.5pt; font-weight: bold; margin-bottom: 7mm;">(DATA SCIENCE)</div>
+    <div style="text-align: center; font-size: 10.5pt; font-weight: bold; margin-bottom: 7mm;">(CYBER SECURITY)</div>
     
     <h2 style="text-align: center; font-size: 13pt; font-weight: bold; margin: 0 0 3mm 0;">DEPARTMENT VISION</h2>
     <p class="body-text" style="font-style: italic; margin-bottom: 7mm; text-align: center;">
@@ -441,7 +441,7 @@ pages_html.append(make_front_page(p4_content, show_banner=True, show_emblem=True
 p5_content = """
 <div style="margin-top: 2mm;">
     <div style="text-align: center; font-size: 11pt; font-weight: bold;">DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING</div>
-    <div style="text-align: center; font-size: 10.5pt; font-weight: bold; margin-bottom: 5mm;">(DATA SCIENCE)</div>
+    <div style="text-align: center; font-size: 10.5pt; font-weight: bold; margin-bottom: 5mm;">(CYBER SECURITY)</div>
     
     <h2 style="text-align: center; font-size: 12.5pt; font-weight: bold; margin: 0 0 3mm 0;">PROGRAM EDUCATIONAL OBJECTIVES (PEOs)</h2>
     <p class="body-text" style="margin-bottom: 3mm;">The Graduates in Computer Science and Engineering will be able to:</p>
@@ -977,7 +977,7 @@ p21_content = """
 +---------------+---------------+-------------------+-----------------------------------+
 | id            | UUID          | PRIMARY KEY       | Organizer department identifier   |
 | org_name      | VARCHAR(100)  | NOT NULL          | Name: 'CSE Department Association'|
-| department    | VARCHAR(50)   | NOT NULL          | Dept: 'CSE - Data Science'        |
+| department    | VARCHAR(50)   | NOT NULL          | Dept: 'CSE - Cyber Security'        |
 | contact_email | VARCHAR(255)  | NOT NULL          | Coordinator official email address|
 | office_loc    | VARCHAR(100)  | NOT NULL          | Campus office room / cabin number |
 | is_verified   | BOOLEAN       | DEFAULT TRUE      | Institutional verification flag   |
@@ -1223,7 +1223,7 @@ for code_page_idx in range(TOTAL_CODE_PAGES):
             "// ===========================================================================",
             "// END OF CORE PRODUCTION CODE LISTING",
             "// CAMPUS EVENTS CALENDAR MOBILE APPLICATION",
-            "// DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING (DATA SCIENCE)",
+            "// DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING (CYBER SECURITY)",
             "// JAWAHARLAL COLLEGE OF ENGINEERING AND TECHNOLOGY (AUTONOMOUS)",
             "// ==========================================================================="
         ]
