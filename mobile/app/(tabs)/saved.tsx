@@ -7,10 +7,12 @@ import { LoadingSpinner } from '../../components/ui/LoadingSpinner';
 import { useAppTheme } from '../../hooks/useTheme';
 import { useSavedEvents } from '../../hooks/useSavedEvents';
 import { useMyRegistrations } from '../../hooks/useRegistrations';
+import { useAuth } from '../../hooks/useAuth';
 import { router } from 'expo-router';
 
 export default function SavedScreen() {
   const { colors, typography, spacing, borderRadius } = useAppTheme();
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<'Saved' | 'Registered' | 'Past'>('Saved');
 
   const { data: savedEvents = [], isLoading: loadingSaved, refetch: refetchSaved, isRefetching: refetchingSaved } = useSavedEvents();
@@ -90,6 +92,37 @@ export default function SavedScreen() {
           />
         }
       >
+        {!user && (
+          <View style={{
+            backgroundColor: colors.accent + '15',
+            borderColor: colors.accent,
+            borderWidth: 1,
+            borderRadius: borderRadius.md,
+            padding: spacing.md,
+            marginBottom: spacing.md,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}>
+            <View style={{ flex: 1, marginRight: spacing.sm }}>
+              <Text style={{ color: colors.accent, fontWeight: '700', fontSize: 13 }}>Guest Mode Active 👤</Text>
+              <Text style={{ color: colors.textSecondary, fontSize: 12, marginTop: 2 }}>
+                Sign in with your Gmail to sync your registered events and bookmarks across devices.
+              </Text>
+            </View>
+            <TouchableOpacity
+              onPress={() => router.push('/auth/login')}
+              style={{
+                backgroundColor: colors.accent,
+                paddingHorizontal: spacing.sm + 4,
+                paddingVertical: 7,
+                borderRadius: borderRadius.sm,
+              }}
+            >
+              <Text style={{ color: '#000', fontWeight: '700', fontSize: 12 }}>Sign In</Text>
+            </TouchableOpacity>
+          </View>
+        )}
         {/* SAVED TAB */}
         {activeTab === 'Saved' && (
           loadingSaved ? (

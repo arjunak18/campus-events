@@ -16,11 +16,11 @@ export default function ProfileScreen() {
   const { data: registrations = [] } = useMyRegistrations();
   const { data: savedEvents = [] } = useSavedEvents();
 
-  const displayName = appUser?.display_name || user?.user_metadata?.display_name || 'Student Member';
-  const email = appUser?.email || user?.email || 'student@campus.edu';
-  const collegeName = appUser?.college?.name || 'Campus Student';
-  const department = appUser?.department ? `${appUser.department}` : 'Engineering & Technology';
-  const year = appUser?.academic_year ? ` • ${appUser.academic_year}` : '';
+  const displayName = user ? (appUser?.display_name || user?.user_metadata?.display_name || 'Student Member') : 'Guest Student';
+  const email = user ? (appUser?.email || user?.email || 'student@campus.edu') : 'guest@campus.edu';
+  const collegeName = user ? (appUser?.college?.name || 'Campus Student') : 'National Institute of Technology';
+  const department = user ? (appUser?.department ? `${appUser.department}` : 'Engineering & Technology') : 'Browsing as Guest';
+  const year = user && appUser?.academic_year ? ` • ${appUser.academic_year}` : '';
 
   const getInitials = (name: string) => {
     return name
@@ -156,25 +156,44 @@ export default function ProfileScreen() {
           ))}
         </View>
 
-        {/* Sign Out Card */}
-        <TouchableOpacity
-          onPress={handleSignOut}
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-            backgroundColor: colors.secondary,
-            padding: spacing.md,
-            borderRadius: borderRadius.lg,
-            borderWidth: 1,
-            borderColor: colors.error + '44',
-          }}
-        >
-          <Ionicons name="log-out-outline" size={22} color={colors.error} style={{ marginRight: spacing.sm }} />
-          <Text style={[typography.body, { color: colors.error, fontWeight: 'bold' }]}>
-            Sign Out
-          </Text>
-        </TouchableOpacity>
+        {/* Sign In / Sign Out Card */}
+        {user ? (
+          <TouchableOpacity
+            onPress={handleSignOut}
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: colors.secondary,
+              padding: spacing.md,
+              borderRadius: borderRadius.lg,
+              borderWidth: 1,
+              borderColor: colors.error + '44',
+            }}
+          >
+            <Ionicons name="log-out-outline" size={22} color={colors.error} style={{ marginRight: spacing.sm }} />
+            <Text style={[typography.body, { color: colors.error, fontWeight: 'bold' }]}>
+              Sign Out
+            </Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            onPress={() => router.push('/auth/login')}
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: colors.accent,
+              padding: spacing.md,
+              borderRadius: borderRadius.lg,
+            }}
+          >
+            <Ionicons name="log-in-outline" size={22} color="#000000" style={{ marginRight: spacing.sm }} />
+            <Text style={[typography.body, { color: '#000000', fontWeight: 'bold' }]}>
+              Sign In with Gmail
+            </Text>
+          </TouchableOpacity>
+        )}
       </ScrollView>
     </ScreenWrapper>
   );

@@ -8,6 +8,7 @@ import { useAppTheme } from '../../hooks/useTheme';
 import { useEvent } from '../../hooks/useEvents';
 import { useRegisterForEvent, useCancelRegistration, useMyRegistrations } from '../../hooks/useRegistrations';
 import { useSaveEvent, useUnsaveEvent, useSavedEvents } from '../../hooks/useSavedEvents';
+import { useAuth } from '../../hooks/useAuth';
 import { useLocalSearchParams, router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { formatDate, formatTime } from '../../utils/date';
@@ -15,6 +16,7 @@ import { formatDate, formatTime } from '../../utils/date';
 export default function EventDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { colors, typography, spacing, borderRadius } = useAppTheme();
+  const { user } = useAuth();
 
   const { data: event, isLoading, error } = useEvent(id as string);
   const { data: myRegistrations = [] } = useMyRegistrations();
@@ -73,6 +75,17 @@ export default function EventDetailScreen() {
   };
 
   const handleToggleSave = () => {
+    if (!user) {
+      Alert.alert(
+        'Sign In Required 🔐',
+        'Please sign in with your verified Gmail account to save events to your bookmarks.',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          { text: 'Sign In', onPress: () => router.push('/auth/login') }
+        ]
+      );
+      return;
+    }
     if (isSaved) {
       unsaveMutation.mutate(event.id);
     } else {
@@ -81,6 +94,18 @@ export default function EventDetailScreen() {
   };
 
   const handleRegister = async () => {
+    if (!user) {
+      Alert.alert(
+        'Sign In Required 🔐',
+        'Please sign in with your verified Gmail account to register for campus events.',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          { text: 'Sign In', onPress: () => router.push('/auth/login') }
+        ]
+      );
+      return;
+    }
+
     if (event.registration_type === 'external' && event.registration_url) {
       const supported = await Linking.canOpenURL(event.registration_url);
       if (supported) {

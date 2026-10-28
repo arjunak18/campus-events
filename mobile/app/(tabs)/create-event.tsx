@@ -7,6 +7,7 @@ import { useAppTheme } from '../../hooks/useTheme';
 import { useCreateEvent } from '../../hooks/useEvents';
 import { useColleges } from '../../hooks/useColleges';
 import { useOrganizations } from '../../hooks/useOrganizations';
+import { useAuth } from '../../hooks/useAuth';
 import { EVENT_CATEGORIES } from '../../constants/categories';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -14,6 +15,7 @@ import * as ImagePicker from 'expo-image-picker';
 
 export default function CreateEventScreen() {
   const { colors, typography, spacing, borderRadius } = useAppTheme();
+  const { user } = useAuth();
   const createMutation = useCreateEvent();
   const { data: colleges = [] } = useColleges();
   const { data: organizations = [] } = useOrganizations();
@@ -90,6 +92,18 @@ export default function CreateEventScreen() {
   };
 
   const handlePublish = async () => {
+    if (!user) {
+      Alert.alert(
+        'Sign In Required 🔐',
+        'Please sign in with your student or organizer Gmail account to publish events to the campus calendar.',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          { text: 'Sign In', onPress: () => router.push('/auth/login') }
+        ]
+      );
+      return;
+    }
+
     if (!validate()) {
       Alert.alert('Validation Error', 'Please check the required fields highlighted in red.');
       return;
@@ -148,6 +162,38 @@ export default function CreateEventScreen() {
         <Text style={[typography.bodySmall, { color: colors.textSecondary, marginBottom: spacing.lg, textAlign: 'center' }]}>
           Share activities, workshops, competitions, and seminars
         </Text>
+
+        {!user && (
+          <View style={{
+            backgroundColor: colors.accent + '15',
+            borderColor: colors.accent,
+            borderWidth: 1,
+            borderRadius: borderRadius.md,
+            padding: spacing.md,
+            marginBottom: spacing.md,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}>
+            <View style={{ flex: 1, marginRight: spacing.sm }}>
+              <Text style={{ color: colors.accent, fontWeight: '700', fontSize: 13 }}>Guest Mode Active 👤</Text>
+              <Text style={{ color: colors.textSecondary, fontSize: 12, marginTop: 2 }}>
+                Sign in with your student or organizer Gmail to publish events to the campus calendar.
+              </Text>
+            </View>
+            <TouchableOpacity
+              onPress={() => router.push('/auth/login')}
+              style={{
+                backgroundColor: colors.accent,
+                paddingHorizontal: spacing.sm + 4,
+                paddingVertical: 7,
+                borderRadius: borderRadius.sm,
+              }}
+            >
+              <Text style={{ color: '#000', fontWeight: '700', fontSize: 12 }}>Sign In</Text>
+            </TouchableOpacity>
+          </View>
+        )}
 
         {/* Poster Picker */}
         <TouchableOpacity
