@@ -121,3 +121,20 @@ for folder, dims in mipmaps.items():
     ad_mono.save(os.path.join(target_dir, "ic_launcher_monochrome.webp"), "WEBP")
 
 print("Updated all Android native mipmaps.")
+
+# 6. Native Android splashscreen_logo update
+splash_drawables = {
+    "drawable-mdpi": (288, 288),
+    "drawable-hdpi": (432, 432),
+    "drawable-xhdpi": (576, 576),
+    "drawable-xxhdpi": (864, 864),
+    "drawable-xxxhdpi": (1152, 1152),
+}
+
+for folder, dim in splash_drawables.items():
+    target_dir = os.path.join(res_dir, folder)
+    if os.path.exists(target_dir):
+        sp_img = master_img.resize(dim, Image.Resampling.LANCZOS)
+        sp_img.save(os.path.join(target_dir, "splashscreen_logo.png"), "PNG")
+
+print("Updated all Android native splashscreen logos.")
