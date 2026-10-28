@@ -39,6 +39,7 @@ def escape_html(s):
 # Load base64 assets
 b64_banner = get_b64("Image7.jpg")
 b64_watermark = get_b64("Image5.jpg")
+b64_logo_watermark = get_b64("jcet_logo_watermark_hd.png")
 b64_emblem = get_b64("Image20.jpg")
 b64_co_table = get_b64("Image47.png")
 b64_copo_matrix = get_b64("Image48.png")
@@ -84,14 +85,24 @@ html, body {
     flex-direction: column;
 }
 
-/* Front matter components */
+/* Page Watermark for Page 1 to Table of Contents */
+.page-watermark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 110mm;
+    opacity: 0.12;
+    z-index: 0;
+    pointer-events: none;
+}
 .front-watermark {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 145mm;
-    opacity: 0.08;
+    width: 110mm;
+    opacity: 0.12;
     z-index: 0;
     pointer-events: none;
 }
@@ -275,7 +286,7 @@ def make_front_page(inner_content, show_banner=True, show_emblem=True):
     emblem_tag = f'<img src="{b64_emblem}" class="front-bottom-emblem" />' if show_emblem else ''
     return f"""
     <div class="page">
-        <img src="{b64_watermark}" class="front-watermark" />
+        <img src="{b64_logo_watermark}" class="page-watermark" />
         {banner_tag}
         <div class="front-content">
             {inner_content}
@@ -284,14 +295,16 @@ def make_front_page(inner_content, show_banner=True, show_emblem=True):
     </div>
     """
 
-def make_numbered_page(inner_content, page_num_str):
+def make_numbered_page(inner_content, page_num_str, show_watermark=False):
+    watermark_tag = f'<img src="{b64_logo_watermark}" class="page-watermark" />' if show_watermark else ''
     return f"""
     <div class="page">
+        {watermark_tag}
         <div class="running-header">
             <div class="running-header-text">HYBRID APP DEVELOPMENT  25CCHADT305</div>
             <div class="running-header-line"></div>
         </div>
-        <div style="flex: 1; display: flex; flex-direction: column;">
+        <div style="flex: 1; display: flex; flex-direction: column; position: relative; z-index: 1;">
             {inner_content}
         </div>
         <div class="running-footer">
@@ -530,7 +543,7 @@ p9_content = """
     </p>
 </div>
 """
-pages_html.append(make_numbered_page(p9_content, "I"))
+pages_html.append(make_numbered_page(p9_content, "I", show_watermark=True))
 
 # PAGE 10 (II): ACKNOWLEDGEMENT
 p10_content = """
@@ -559,7 +572,7 @@ p10_content = """
     </div>
 </div>
 """
-pages_html.append(make_numbered_page(p10_content, "II"))
+pages_html.append(make_numbered_page(p10_content, "II", show_watermark=True))
 
 # PAGE 11 (III): TABLE OF CONTENTS
 p11_content = """
@@ -606,7 +619,7 @@ p11_content = """
     </div>
 </div>
 """
-pages_html.append(make_numbered_page(p11_content, "III"))
+pages_html.append(make_numbered_page(p11_content, "III", show_watermark=True))
 
 # PAGE 12 (IV): LIST OF FIGURES
 p12_content = """

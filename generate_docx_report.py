@@ -54,6 +54,7 @@ font.color.rgb = RGBColor(0, 0, 0)
 
 banner_path = os.path.join(ASSETS_DIR, 'Image7.jpg')
 emblem_path = os.path.join(ASSETS_DIR, 'Image20.jpg')
+watermark_path = os.path.join(ASSETS_DIR, 'jcet_logo_watermark_hd.png')
 
 # ----------------- PAGE 1: COVER PAGE -----------------
 if os.path.exists(banner_path):
