@@ -54,6 +54,8 @@ font.color.rgb = RGBColor(0, 0, 0)
 
 banner_path = os.path.join(ASSETS_DIR, 'Image7.jpg')
 emblem_path = os.path.join(ASSETS_DIR, 'Image20.jpg')
+nba_path = os.path.join(ASSETS_DIR, 'Image28.jpg')
+naac_path = os.path.join(ASSETS_DIR, 'Image29.jpg')
 watermark_path = os.path.join(ASSETS_DIR, 'jcet_logo_watermark_hd.png')
 
 # ----------------- PAGE 1: COVER PAGE -----------------
@@ -132,12 +134,40 @@ if os.path.exists(banner_path):
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
     p.add_run().add_picture(banner_path, width=Inches(6.2))
 
+# Top address block with NBA and NAAC logos on sides
+tbl_cert_hdr = doc.add_table(rows=1, cols=3)
+tbl_cert_hdr.alignment = WD_TABLE_ALIGNMENT.CENTER
+tbl_cert_hdr.columns[0].width = Inches(0.9)
+tbl_cert_hdr.columns[1].width = Inches(4.5)
+tbl_cert_hdr.columns[2].width = Inches(0.9)
+
+if os.path.exists(nba_path):
+    tbl_cert_hdr.cell(0, 0).paragraphs[0].add_run().add_picture(nba_path, width=Inches(0.65))
+
+p_mid = tbl_cert_hdr.cell(0, 1).paragraphs[0]
+p_mid.alignment = WD_ALIGN_PARAGRAPH.CENTER
+r_m = p_mid.add_run(
+    "JAWAHARLAL COLLEGE OF ENGINEERING AND TECHNOLOGY\n"
+    "LAKKIDI, MANGALAM P.O, PALAKKAD, KERALA - 679301\n"
+    "OCTOBER 2026 DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING\n"
+    "(CYBER SECURITY)"
+)
+r_m.bold = True
+r_m.font.size = Pt(9.5)
+
+if os.path.exists(naac_path):
+    tbl_cert_hdr.cell(0, 2).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+    tbl_cert_hdr.cell(0, 2).paragraphs[0].add_run().add_picture(naac_path, width=Inches(0.65))
+
+# Emblem logo placed in between address and BONAFIDE CERTIFICATE
+if os.path.exists(emblem_path):
+    p_cert_emb = doc.add_paragraph()
+    p_cert_emb.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    p_cert_emb.add_run().add_picture(emblem_path, width=Inches(1.0))
+
 p_head = doc.add_paragraph()
 p_head.alignment = WD_ALIGN_PARAGRAPH.CENTER
-r = p_head.add_run("DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING\n(CYBER SECURITY)\n\n")
-r.bold = True
-
-r_cert = p_head.add_run("BONAFIDE CERTIFICATE\n\n")
+r_cert = p_head.add_run("BONAFIDE CERTIFICATE\n")
 r_cert.bold = True
 r_cert.font.size = Pt(14)
 
@@ -375,7 +405,7 @@ tbl_dec = doc.add_table(rows=1, cols=2)
 tbl_dec.columns[0].width = Inches(3.1)
 tbl_dec.columns[1].width = Inches(3.1)
 p_dec_l = tbl_dec.cell(0, 0).paragraphs[0]
-p_dec_l.add_run("Place: Palakkad\nDate: 26-03-2026")
+p_dec_l.add_run("Place: Palakkad\nDate: 26-10-2026")
 p_dec_r = tbl_dec.cell(0, 1).paragraphs[0]
 p_dec_r.alignment = WD_ALIGN_PARAGRAPH.RIGHT
 p_dec_r.add_run(

@@ -41,6 +41,8 @@ b64_banner = get_b64("Image7.jpg")
 b64_watermark = get_b64("Image5.jpg")
 b64_logo_watermark = get_b64("jcet_logo_watermark_hd.png")
 b64_emblem = get_b64("Image20.jpg")
+b64_nba = get_b64("Image28.jpg")
+b64_naac = get_b64("Image29.jpg")
 b64_co_table = get_b64("Image47.png")
 b64_copo_matrix = get_b64("Image48.png")
 
@@ -320,72 +322,78 @@ def make_numbered_page(inner_content, page_num_str, show_watermark=False):
 print("Building front matter pages 1 to 8...")
 
 # PAGE 1: TITLE COVER
-p1_content = """
-<div style="text-align: center; margin-top: 3mm;">
-    <h1 style="font-size: 17pt; font-weight: bold; margin: 0 0 4mm 0; letter-spacing: 0.5px;">CAMPUS EVENTS CALENDAR</h1>
-    <h2 style="font-size: 13pt; font-weight: bold; margin: 0 0 2mm 0;">PROJECT REPORT</h2>
-    <div style="font-size: 11pt; font-weight: bold; margin-bottom: 6mm;">(25CCHADT305 – HYBRID APP DEVELOPMENT)</div>
+p1_content = f"""
+<div style="text-align: center; margin-top: 1mm;">
+    <h1 style="font-size: 15.5pt; font-weight: bold; margin: 4mm 0 4mm 0; letter-spacing: 0.5px; text-transform: uppercase;">CAMPUS EVENTS CALENDAR</h1>
     
-    <div style="font-size: 10.5pt; line-height: 1.4; margin: 0 auto 5mm auto; max-width: 155mm;">
+    <h2 style="font-size: 12.5pt; font-weight: bold; margin: 0 0 2mm 0; text-transform: uppercase;">PROJECT REPORT</h2>
+    <div style="font-size: 10.5pt; font-weight: bold; margin-bottom: 5mm;">(25CCHADT305 – HYBRID APP DEVELOPMENT)</div>
+    
+    <div style="font-size: 10.5pt; line-height: 1.45; margin: 0 auto 5mm auto; max-width: 155mm; font-style: italic;">
         Submitted to the Jawaharlal College of Engineering and Technology (Autonomous), affiliated to APJ Abdul Kalam Technological University in partial fulfilment of requirements for the award of degree
     </div>
     
-    <div style="font-size: 12.5pt; font-weight: bold; margin-bottom: 1.5mm;">BACHELOR OF TECHNOLOGY</div>
-    <div style="font-size: 11pt; margin-bottom: 1.5mm;">in</div>
-    <div style="font-size: 12.5pt; font-weight: bold; margin-bottom: 7mm;">COMPUTER SCIENCE AND ENGINEERING - CYBER SECURITY</div>
+    <div style="font-size: 12pt; font-weight: bold; margin-bottom: 1.5mm; text-transform: uppercase;">BACHELOR OF TECHNOLOGY</div>
+    <div style="font-size: 10.5pt; margin-bottom: 1.5mm; font-style: italic;">in</div>
+    <div style="font-size: 12pt; font-weight: bold; margin-bottom: 7mm; text-transform: uppercase;">COMPUTER SCIENCE AND ENGINEERING - CYBER SECURITY</div>
     
-    <div style="display: flex; justify-content: space-between; text-align: left; width: 100%; margin-top: 5mm; padding: 0 8mm;">
-        <div>
-            <div style="font-size: 11pt; font-weight: bold; margin-bottom: 2mm;">By</div>
-            <div style="font-size: 11.5pt; line-height: 1.6;">
-                <b>JCE25CC019</b> ARJUN P KOLIKKAL
-            </div>
-        </div>
-        <div style="text-align: right;">
-            <div style="font-size: 11pt; font-weight: bold; margin-bottom: 2mm;">Guided by</div>
-            <div style="font-size: 11pt; font-weight: bold; line-height: 1.5;">
-                Prof. Dr. R. SATHEESH KUMAR<br>
-                <span style="font-size: 10pt; font-weight: normal;">Professor and HoD, CSE</span>
-            </div>
-        </div>
+    <div style="font-size: 11pt; font-style: italic; margin-bottom: 3mm;">By</div>
+    <div style="display: flex; justify-content: center; gap: 10mm; font-size: 11pt; font-weight: bold; margin-bottom: 8mm;">
+        <span>JCE25CC019</span>
+        <span>ARJUN P KOLIKKAL</span>
     </div>
     
-    <div style="margin-top: 10mm; font-size: 10pt; font-weight: bold; line-height: 1.35;">
-        DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING (CYBER SECURITY)<br>
-        JAWAHARLAL COLLEGE OF ENGINEERING AND TECHNOLOGY<br>
-        LAKKIDI, MANGALAM P.O, PALAKKAD, KERALA - 679301<br>
-        APRIL 2026
+    <div style="font-size: 11pt; font-style: italic; margin-bottom: 3mm;">Guided by</div>
+    <div style="font-size: 12pt; font-weight: bold; margin-bottom: 8mm;">
+        Prof. Dr. R. SATHEESH KUMAR
+    </div>
+    
+    <div style="text-align: center; margin-top: 5mm;">
+        <img src="{b64_emblem}" style="width: 25mm; height: auto;" />
     </div>
 </div>
 """
 pages_html.append(make_front_page(p1_content, show_banner=True, show_emblem=True))
 
 # PAGE 2: BONAFIDE CERTIFICATE
-p2_content = """
-<div style="text-align: center; margin-top: 2mm;">
-    <div style="font-size: 11pt; font-weight: bold;">DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING</div>
-    <div style="font-size: 10.5pt; font-weight: bold; margin-bottom: 5mm;">(CYBER SECURITY)</div>
-    
-    <h1 style="font-size: 14pt; font-weight: bold; letter-spacing: 0.5px; margin: 0 0 6mm 0;">BONAFIDE CERTIFICATE</h1>
-    
-    <p class="body-text" style="text-indent: 10mm; margin-bottom: 5mm;">
-        This is to certify that the project report entitled <b>“CAMPUS EVENTS CALENDAR”</b> submitted by <b>ARJUN P KOLIKKAL (JCE25CC019)</b>, of B.Tech in Computer Science & Engineering - CYBER SECURITY has been successfully carried out under our supervision and guidance in partial fulfillment of the requirements for the subject <b>25CCHADT305 – Hybrid App Development</b>, prescribed by Jawaharlal College of Engineering and Technology (Autonomous), affiliated to APJ Abdul Kalam Technological University, Kerala. It is further certified that this work is a bonafide record carried out by the above student during the academic year 2025–2026.
-    </p>
-    
-    <div style="display: flex; justify-content: space-between; margin-top: 16mm; padding: 0 5mm;">
-        <div style="text-align: center;">
-            <div style="font-size: 11pt; font-weight: bold;">Dr. R. Satheesh Kumar</div>
-            <div style="font-size: 10pt;">(Project Coordinator)</div>
+p2_content = f"""
+<div>
+    <!-- Top address header block with NBA and NAAC emblems on sides -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1mm; margin-bottom: 2mm;">
+        <div style="width: 16mm; text-align: left;">
+            <img src="{b64_nba}" style="width: 15mm; height: auto;" />
         </div>
-        <div style="text-align: center;">
-            <div style="font-size: 11pt; font-weight: bold;">Dr. R. Satheesh Kumar</div>
-            <div style="font-size: 10pt;">(Professor and HoD)</div>
+        <div style="text-align: center; font-size: 10.5pt; font-weight: bold; line-height: 1.35; flex: 1; padding: 0 3mm;">
+            JAWAHARLAL COLLEGE OF ENGINEERING AND TECHNOLOGY<br>
+            LAKKIDI, MANGALAM P.O, PALAKKAD, KERALA - 679301<br>
+            OCTOBER 2026 DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING<br>
+            (CYBER SECURITY)
+        </div>
+        <div style="width: 16mm; text-align: right;">
+            <img src="{b64_naac}" style="width: 14mm; height: auto;" />
         </div>
     </div>
     
-    <div style="display: flex; justify-content: space-between; margin-top: 16mm; padding: 0 5mm;">
-        <div style="text-align: left; font-size: 10.5pt; font-weight: bold;">Internal Examiner</div>
-        <div style="text-align: right; font-size: 10.5pt; font-weight: bold;">External Examiner</div>
+    <!-- Logo placed in between the address lines and Bonafide Certificate -->
+    <div style="text-align: center; margin: 3.5mm 0 4mm 0;">
+        <img src="{b64_emblem}" style="width: 25mm; height: auto;" />
+    </div>
+    
+    <h1 style="font-size: 13.5pt; font-weight: bold; letter-spacing: 0.5px; text-align: center; margin: 0 0 5mm 0;">BONAFIDE CERTIFICATE</h1>
+    
+    <p class="body-text" style="text-indent: 10mm; margin-bottom: 5mm; line-height: 1.45;">
+        This is to certify that the project report entitled <b>“CAMPUS EVENTS CALENDAR”</b> submitted by <b>ARJUN P KOLIKKAL (JCE25CC019)</b>, of Fourth Semester, B.Tech in Computer Science & Engineering - CYBER SECURITY has been successfully carried out under our supervision and guidance in partial fulfillment of the requirements for the subject <b>25CCHADT305 – Hybrid App Development</b>, prescribed by Jawaharlal College of Engineering and Technology (Autonomous), affiliated to APJ Abdul Kalam Technological University, Kerala. It is further certified that this work is a bonafide record carried out by the above student during the academic year <b>2025–2026</b>.
+    </p>
+    
+    <div style="display: flex; justify-content: space-between; margin-top: 20mm; padding: 0 6mm;">
+        <div style="text-align: left;">
+            <div style="font-size: 10.5pt; font-weight: bold;">Dr. R. Satheesh Kumar</div>
+            <div style="font-size: 9.5pt;">(Project Coordinator)</div>
+        </div>
+        <div style="text-align: right;">
+            <div style="font-size: 10.5pt; font-weight: bold;">Dr. R. Satheesh Kumar</div>
+            <div style="font-size: 9.5pt;">(Professor and HoD)</div>
+        </div>
     </div>
 </div>
 """
