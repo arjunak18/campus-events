@@ -178,12 +178,12 @@ p_body.paragraph_format.line_spacing = 1.3
 r_txt = p_body.add_run(
     "This is to certify that the project report entitled “CAMPUS EVENTS CALENDAR” submitted by "
     "ADITHYAKUMAR E (JCE24CD009), MUHAMMED SINAN V (JCE24CD039), PRANAV PRAMOD NAIR (JCE24CD048), "
-    "and SEYA S (JCE24CD054), of Fourth Semester, B.Tech in Computer Science & Engineering - CYBER SECURITY "
+    "and SEYA S (JCE24CD054), of Third Semester, B.Tech in Computer Science & Engineering - CYBER SECURITY "
     "has been successfully carried out under our supervision and guidance in partial fulfillment of the "
     "requirements for the subject 24CSOPJT405 – Object Oriented Programming in Java, prescribed by "
     "Jawaharlal College of Engineering and Technology (Autonomous), affiliated to APJ Abdul Kalam "
     "Technological University, Kerala. It is further certified that this work is a bonafide record carried "
-    "out by the above students during the academic year 2025–2026.\n\n\n"
+    "out by the above students during the academic year 2026–2027.\n\n\n"
 )
 
 tbl_sig = doc.add_table(rows=1, cols=2)
@@ -389,7 +389,7 @@ p_dec.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
 p_dec.paragraph_format.line_spacing = 1.3
 p_dec.add_run(
     "We hereby declare that the project report CAMPUS EVENTS CALENDAR submitted for the partial fulfilment "
-    "of the requirements of the Fourth Semester subject 24CSOPJT405 – Object Oriented Programming in Java, "
+    "of the requirements of the Third Semester subject 24CSOPJT405 – Object Oriented Programming in Java, "
     "prescribed by Jawaharlal College of Engineering and Technology (Autonomous), affiliated to APJ Abdul Kalam "
     "Technological University, Kerala is a bonafide work done by us under the guidance of Prof. Dr. R. Satheesh Kumar. "
     "The submission represents our ideas in our own words and where ideas or words of others have been included, we have "

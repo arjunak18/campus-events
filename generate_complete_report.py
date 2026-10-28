@@ -382,7 +382,7 @@ p2_content = f"""
     <h1 style="font-size: 13.5pt; font-weight: bold; letter-spacing: 0.5px; text-align: center; margin: 0 0 5mm 0;">BONAFIDE CERTIFICATE</h1>
     
     <p class="body-text" style="text-indent: 10mm; margin-bottom: 5mm; line-height: 1.45;">
-        This is to certify that the project report entitled <b>“CAMPUS EVENTS CALENDAR”</b> submitted by <b>ARJUN P KOLIKKAL (JCE25CC019)</b>, of Fourth Semester, B.Tech in Computer Science & Engineering - CYBER SECURITY has been successfully carried out under our supervision and guidance in partial fulfillment of the requirements for the subject <b>25CCHADT305 – Hybrid App Development</b>, prescribed by Jawaharlal College of Engineering and Technology (Autonomous), affiliated to APJ Abdul Kalam Technological University, Kerala. It is further certified that this work is a bonafide record carried out by the above student during the academic year <b>2025–2026</b>.
+        This is to certify that the project report entitled <b>“CAMPUS EVENTS CALENDAR”</b> submitted by <b>ARJUN P KOLIKKAL (JCE25CC019)</b>, of Third Semester, B.Tech in Computer Science & Engineering - CYBER SECURITY has been successfully carried out under our supervision and guidance in partial fulfillment of the requirements for the subject <b>25CCHADT305 – Hybrid App Development</b>, prescribed by Jawaharlal College of Engineering and Technology (Autonomous), affiliated to APJ Abdul Kalam Technological University, Kerala. It is further certified that this work is a bonafide record carried out by the above student during the academic year <b>2026–2027</b>.
     </p>
     
     <div style="display: flex; justify-content: space-between; margin-top: 20mm; padding: 0 6mm;">
