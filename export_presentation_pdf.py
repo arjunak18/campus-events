@@ -169,9 +169,9 @@ slides_html = []
 
 # Slide 1: Title
 slides_html.append(f"""
-<div class="slide" style="justify-content: space-between;">
-    <div style="text-align: center;">
-        <img src="{b64_banner}" style="width: 220mm; max-height: 18mm; object-fit: contain;" />
+<div class="slide" style="justify-content: center; gap: 5mm;">
+    <div style="text-align: center; margin-bottom: 1mm;">
+        <span class="pill" style="border-color: #6366F1; color: #818CF8; font-size: 9pt;">JAWAHARLAL COLLEGE OF ENGINEERING AND TECHNOLOGY (JCET AUTONOMOUS)</span>
     </div>
     
     <div style="background: #131C2E; border: 1px solid #6366F1; border-radius: 10px; padding: 6mm 10mm; text-align: center;">
@@ -831,34 +831,26 @@ slides_html.append(f"""
 
 # Slide 20: Thank You
 slides_html.append(f"""
-<div class="slide" style="justify-content: space-between;">
-    <div style="text-align: center;">
-        <img src="{b64_banner}" style="width: 220mm; max-height: 18mm; object-fit: contain;" />
-    </div>
-    
-    <div style="background: #131C2E; border: 1px solid #06B6D4; border-radius: 10px; padding: 8mm 12mm; text-align: center;">
-        <div style="font-size: 32pt; font-weight: bold; color: #06B6D4; margin-bottom: 2mm;">
+<div class="slide" style="justify-content: center; align-items: center;">
+    <div style="background: #131C2E; border: 1px solid #06B6D4; border-radius: 14px; padding: 14mm 18mm; text-align: center; width: 85%;">
+        <div style="font-size: 40pt; font-weight: bold; color: #06B6D4; margin-bottom: 3mm;">
             THANK YOU!
         </div>
-        <div style="font-size: 14pt; font-weight: bold; color: #F8FAFC; margin-bottom: 4mm;">
+        <div style="font-size: 17pt; font-weight: bold; color: #F8FAFC; margin-bottom: 6mm;">
             Open for Questions & Evaluation Committee Discussion
         </div>
-        <div style="font-size: 11pt; font-weight: bold; color: #6366F1; margin-bottom: 2mm;">
+        <div style="font-size: 12.5pt; font-weight: bold; color: #6366F1; margin-bottom: 3mm;">
             CAMPUS EVENTS &nbsp;|&nbsp; HYBRID APP DEVELOPMENT (25CCHADT305)
         </div>
-        <div style="font-size: 10.5pt; color: #94A3B8; margin-bottom: 1.5mm;">
+        <div style="font-size: 12pt; color: #F8FAFC; margin-bottom: 2mm;">
             Candidate: <b>ARJUN P KOLIKKAL (JCE25CC019)</b> &nbsp;|&nbsp; B.Tech in CSE - CYBER SECURITY
         </div>
-        <div style="font-size: 10.5pt; color: #94A3B8; margin-bottom: 2mm;">
-            Guided by: <b>Prof. Dr. R. SATHEESH KUMAR</b> (Professor and HoD)
+        <div style="font-size: 11.5pt; color: #94A3B8; margin-bottom: 3mm;">
+            Guided by: <b>Prof. Dr. R. SATHEESH KUMAR</b> (Professor and HoD, CSE)
         </div>
-        <div style="font-size: 10pt; color: #10B981; font-weight: bold;">
+        <div style="font-size: 11pt; color: #10B981; font-weight: bold;">
             Jawaharlal College of Engineering and Technology (Autonomous) &nbsp;|&nbsp; Academic Year 2026–2027
         </div>
-    </div>
-    
-    <div style="text-align: center;">
-        <img src="{b64_emblem}" style="width: 18mm; height: auto;" />
     </div>
 </div>
 """)

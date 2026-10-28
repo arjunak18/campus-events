@@ -114,14 +114,24 @@ def add_card_content(s, left, top, width, height, badge_text, title_text, bullet
 # ==================== SLIDE 1: TITLE HERO SLIDE ====================
 s1 = new_slide()
 
-# Top Banner
-if os.path.exists(banner_path):
-    s1.shapes.add_picture(banner_path, Inches(1.5), Inches(0.4), Inches(10.333), Inches(0.9))
+# Top Institutional Pill Header (Replaces white banner with sleek dark pill)
+inst_pill = s1.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(2.5), Inches(0.6), Inches(8.333), Inches(0.42))
+inst_pill.fill.solid()
+inst_pill.fill.fore_color.rgb = C_CARD_ALT
+inst_pill.line.color.rgb = C_INDIGO
+inst_pill.line.width = Pt(1)
+tf_ip = inst_pill.text_frame
+tf_ip.text = "JAWAHARLAL COLLEGE OF ENGINEERING AND TECHNOLOGY (JCET AUTONOMOUS)"
+tf_ip.paragraphs[0].font.name = "Segoe UI"
+tf_ip.paragraphs[0].font.size = Pt(10)
+tf_ip.paragraphs[0].font.bold = True
+tf_ip.paragraphs[0].font.color.rgb = C_INDIGO
+tf_ip.paragraphs[0].alignment = PP_ALIGN.CENTER
 
 # Center Title Box
-title_card = add_card(s1, Inches(1.2), Inches(1.55), Inches(10.933), Inches(3.2), border=C_INDIGO, fill=C_CARD)
+title_card = add_card(s1, Inches(1.2), Inches(1.3), Inches(10.933), Inches(3.4), border=C_CYAN, fill=C_CARD)
 
-tb1 = s1.shapes.add_textbox(Inches(1.5), Inches(1.75), Inches(10.333), Inches(2.8))
+tb1 = s1.shapes.add_textbox(Inches(1.5), Inches(1.5), Inches(10.333), Inches(3.0))
 tf1 = tb1.text_frame
 tf1.word_wrap = True
 
@@ -131,25 +141,25 @@ p_pill.font.name = "Segoe UI"
 p_pill.font.size = Pt(11)
 p_pill.font.bold = True
 p_pill.font.color.rgb = C_CYAN
-p_pill.space_after = Pt(6)
+p_pill.space_after = Pt(8)
 
 p_t = tf1.add_paragraph()
 p_t.text = "CAMPUS EVENTS"
 p_t.font.name = "Segoe UI"
-p_t.font.size = Pt(36)
+p_t.font.size = Pt(40)
 p_t.font.bold = True
 p_t.font.color.rgb = C_PRIMARY
-p_t.space_after = Pt(4)
+p_t.space_after = Pt(6)
 
 p_sub = tf1.add_paragraph()
 p_sub.text = "A Cross-Platform Mobile Ecosystem for Academic Discovery, Verified Authentication & Real-Time RSVP"
 p_sub.font.name = "Segoe UI"
-p_sub.font.size = Pt(13)
+p_sub.font.size = Pt(13.5)
 p_sub.font.color.rgb = C_SECONDARY
 
 # Two Information Cards (Candidate & Guide)
 add_card_content(
-    s1, Inches(1.2), Inches(4.95), Inches(5.35), Inches(1.9),
+    s1, Inches(1.2), Inches(4.95), Inches(5.35), Inches(2.05),
     "CANDIDATE INFORMATION", "ARJUN P KOLIKKAL",
     ["Register Number: JCE25CC019",
      "Branch: B.Tech in CSE - CYBER SECURITY",
@@ -158,7 +168,7 @@ add_card_content(
 )
 
 add_card_content(
-    s1, Inches(6.78), Inches(4.95), Inches(5.35), Inches(1.9),
+    s1, Inches(6.78), Inches(4.95), Inches(5.35), Inches(2.05),
     "PROJECT SUPERVISION", "Prof. Dr. R. SATHEESH KUMAR",
     ["Designation: Professor and Head of Department",
      "Department: Computer Science and Engineering",
@@ -745,69 +755,61 @@ add_card_content(
 # ==================== SLIDE 20: Q&A & THANK YOU ====================
 s20 = new_slide()
 
-# Top Banner
-if os.path.exists(banner_path):
-    s20.shapes.add_picture(banner_path, Inches(1.5), Inches(0.4), Inches(10.333), Inches(0.9))
-
-# Center Thank You Card
-card20 = add_card(s20, Inches(1.5), Inches(1.6), Inches(10.333), Inches(4.3), border=C_CYAN, fill=C_CARD)
-tb20 = s20.shapes.add_textbox(Inches(1.8), Inches(1.8), Inches(9.733), Inches(3.8))
+# Center Thank You Card (Centered vertically and horizontally with rich borders)
+card20 = add_card(s20, Inches(1.5), Inches(1.0), Inches(10.333), Inches(5.5), border=C_CYAN, fill=C_CARD)
+tb20 = s20.shapes.add_textbox(Inches(1.8), Inches(1.3), Inches(9.733), Inches(4.9))
 tf20 = tb20.text_frame
 tf20.word_wrap = True
 
 p_ty = tf20.paragraphs[0]
 p_ty.text = "THANK YOU!"
 p_ty.font.name = "Segoe UI"
-p_ty.font.size = Pt(36)
+p_ty.font.size = Pt(44)
 p_ty.font.bold = True
 p_ty.font.color.rgb = C_CYAN
 p_ty.alignment = PP_ALIGN.CENTER
-p_ty.space_after = Pt(6)
+p_ty.space_after = Pt(8)
 
 p_open = tf20.add_paragraph()
 p_open.text = "Open for Questions & Evaluation Committee Discussion"
 p_open.font.name = "Segoe UI"
-p_open.font.size = Pt(16)
+p_open.font.size = Pt(18)
 p_open.font.bold = True
 p_open.font.color.rgb = C_PRIMARY
 p_open.alignment = PP_ALIGN.CENTER
-p_open.space_after = Pt(18)
+p_open.space_after = Pt(24)
 
 p_det = tf20.add_paragraph()
 p_det.text = "CAMPUS EVENTS  |  HYBRID APP DEVELOPMENT (25CCHADT305)"
 p_det.font.name = "Segoe UI"
-p_det.font.size = Pt(12)
+p_det.font.size = Pt(13)
 p_det.font.bold = True
 p_det.font.color.rgb = C_INDIGO
 p_det.alignment = PP_ALIGN.CENTER
-p_det.space_after = Pt(6)
+p_det.space_after = Pt(8)
 
 p_can = tf20.add_paragraph()
 p_can.text = "Candidate: ARJUN P KOLIKKAL (JCE25CC019)  |  B.Tech in CSE - CYBER SECURITY"
 p_can.font.name = "Segoe UI"
-p_can.font.size = Pt(12)
-p_can.font.color.rgb = C_SECONDARY
+p_can.font.size = Pt(13)
+p_can.font.color.rgb = C_PRIMARY
 p_can.alignment = PP_ALIGN.CENTER
-p_can.space_after = Pt(4)
+p_can.space_after = Pt(6)
 
 p_gd = tf20.add_paragraph()
-p_gd.text = "Guided by: Prof. Dr. R. SATHEESH KUMAR (Professor and HoD)"
+p_gd.text = "Guided by: Prof. Dr. R. SATHEESH KUMAR (Professor and HoD, CSE)"
 p_gd.font.name = "Segoe UI"
 p_gd.font.size = Pt(12)
 p_gd.font.color.rgb = C_SECONDARY
 p_gd.alignment = PP_ALIGN.CENTER
-p_gd.space_after = Pt(4)
+p_gd.space_after = Pt(6)
 
 p_col = tf20.add_paragraph()
-p_col.text = "Jawaharlal College of Engineering and Technology (JCET Autonomous)  |  Academic Year 2026–2027"
+p_col.text = "Jawaharlal College of Engineering and Technology (Autonomous)  |  Academic Year 2026–2027"
 p_col.font.name = "Segoe UI"
-p_col.font.size = Pt(11)
+p_col.font.size = Pt(11.5)
 p_col.font.color.rgb = C_EMERALD
 p_col.alignment = PP_ALIGN.CENTER
-
-# Bottom Emblem
-if os.path.exists(emblem_path):
-    s20.shapes.add_picture(emblem_path, Inches(6.166), Inches(6.1), Inches(1.0), Inches(0.85))
 
 prs.save(OUTPUT_PPTX)
 prs.save(OUTPUT_PPTX_ROOT)
