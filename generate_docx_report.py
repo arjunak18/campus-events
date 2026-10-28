@@ -66,7 +66,7 @@ if os.path.exists(banner_path):
 
 p = doc.add_paragraph()
 p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-r = p.add_run("\nCAMPUS EVENTS CALENDAR\n")
+r = p.add_run("\nCAMPUS EVENTS\n")
 r.bold = True
 r.font.size = Pt(17)
 
@@ -176,7 +176,7 @@ p_body.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
 p_body.paragraph_format.first_line_indent = Inches(0.5)
 p_body.paragraph_format.line_spacing = 1.3
 r_txt = p_body.add_run(
-    "This is to certify that the project report entitled “CAMPUS EVENTS CALENDAR” submitted by "
+    "This is to certify that the project report entitled “CAMPUS EVENTS” submitted by "
     "ADITHYAKUMAR E (JCE24CD009), MUHAMMED SINAN V (JCE24CD039), PRANAV PRAMOD NAIR (JCE24CD048), "
     "and SEYA S (JCE24CD054), of Third Semester, B.Tech in Computer Science & Engineering - CYBER SECURITY "
     "has been successfully carried out under our supervision and guidance in partial fulfillment of the "
@@ -388,7 +388,7 @@ p_dec = doc.add_paragraph()
 p_dec.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
 p_dec.paragraph_format.line_spacing = 1.3
 p_dec.add_run(
-    "We hereby declare that the project report CAMPUS EVENTS CALENDAR submitted for the partial fulfilment "
+    "We hereby declare that the project report CAMPUS EVENTS submitted for the partial fulfilment "
     "of the requirements of the Third Semester subject 24CSOPJT405 – Object Oriented Programming in Java, "
     "prescribed by Jawaharlal College of Engineering and Technology (Autonomous), affiliated to APJ Abdul Kalam "
     "Technological University, Kerala is a bonafide work done by us under the guidance of Prof. Dr. R. Satheesh Kumar. "
@@ -445,13 +445,13 @@ p_abs_txt.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
 p_abs_txt.paragraph_format.first_line_indent = Inches(0.4)
 p_abs_txt.paragraph_format.line_spacing = 1.3
 p_abs_txt.add_run(
-    "The Campus Events Calendar is a comprehensive, mobile-first academic platform developed to eliminate "
+    "The Campus Events is a comprehensive, mobile-first academic platform developed to eliminate "
     "fragmentation in university event broadcasting and streamline student participation across extracurricular, "
     "technical, and academic activities. In contemporary collegiate institutions, announcements for symposiums, "
     "workshops, hackathons, and cultural fests are typically scattered across physical notice boards, unstructured "
     "messaging channels, and isolated departmental flyers, frequently resulting in scheduling conflicts, low "
     "student engagement, and inefficient participant management.\n\n"
-    "To resolve these challenges, the Campus Events Calendar delivers a modern cross-platform mobile application "
+    "To resolve these challenges, the Campus Events delivers a modern cross-platform mobile application "
     "engineered with React Native and Expo SDK 52, connected to a high-performance Supabase PostgreSQL cloud backend. "
     "The system enforces strict domain-based authentication restricting account creation to verified institutional Google "
     "credentials (@gmail.com / college domain) to ensure campus safety and student accountability. Robust Row-Level Security "
@@ -513,13 +513,13 @@ add_ch_title(doc, 1, "INTRODUCTION")
 doc.add_paragraph("1.1 BACKGROUND").runs[0].bold = True
 p = doc.add_paragraph(
     "The evolution of mobile computing, cloud-native storage, and ubiquitous high-speed networking has transformed institutional communication within higher education. Traditionally, academic campuses relied on printed circulars, physical notice boards, bulletin boards, and informal messaging channels to disseminate information regarding upcoming activities. These conventional methods suffer from notable deficiencies, including limited reach, rapid obsolescence of paper flyers, lack of real-time scheduling updates, and absence of automated attendee tracking.\n\n"
-    "With the rapid proliferation of smartphones among students and faculty members, dedicated mobile campus portals have become paramount. A modernized Campus Events Calendar unifies all collegiate events—spanning technical symposiums, research conferences, cultural festivals, sports tournaments, and professional workshops—into a centralized, interactive, and universally accessible mobile application."
+    "With the rapid proliferation of smartphones among students and faculty members, dedicated mobile campus portals have become paramount. A modernized Campus Events unifies all collegiate events—spanning technical symposiums, research conferences, cultural festivals, sports tournaments, and professional workshops—into a centralized, interactive, and universally accessible mobile application."
 )
 p.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
 
 doc.add_paragraph("1.2 RELEVANCE").runs[0].bold = True
 p = doc.add_paragraph(
-    "In an autonomous academic institution such as Jawaharlal College of Engineering and Technology (JCET), multiple engineering departments and student associations operate concurrent event calendars. Without a synchronized digital platform, students frequently miss registration deadlines or encounter conflicting schedules across departments. The Campus Events Calendar addresses this gap by offering real-time schedule discovery, department filtering, automated RSVP reservations, and calendar synchronization, significantly elevating collegiate engagement and institutional operational efficiency."
+    "In an autonomous academic institution such as Jawaharlal College of Engineering and Technology (JCET), multiple engineering departments and student associations operate concurrent event calendars. Without a synchronized digital platform, students frequently miss registration deadlines or encounter conflicting schedules across departments. The Campus Events addresses this gap by offering real-time schedule discovery, department filtering, automated RSVP reservations, and calendar synchronization, significantly elevating collegiate engagement and institutional operational efficiency."
 )
 p.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
 
@@ -549,7 +549,7 @@ doc.add_page_break()
 add_ch_title(doc, 2, "AIM AND OBJECTIVES")
 doc.add_paragraph("2.1 AIM").runs[0].bold = True
 p = doc.add_paragraph(
-    "To design, engineer, and deploy a robust, cross-platform Campus Events Calendar mobile application backed by a cloud-native relational database and modern Object-Oriented principles, delivering real-time event discovery, secure access control, automated RSVP tracking, and timetable synchronization for the academic community."
+    "To design, engineer, and deploy a robust, cross-platform Campus Events mobile application backed by a cloud-native relational database and modern Object-Oriented principles, delivering real-time event discovery, secure access control, automated RSVP tracking, and timetable synchronization for the academic community."
 )
 p.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
 
@@ -730,7 +730,7 @@ doc.add_page_break()
 # Chapter 6
 add_ch_title(doc, 6, "RESULTS AND DISCUSSION")
 p = doc.add_paragraph(
-    "The Campus Events Calendar was successfully developed, compiled, and tested on Android emulators and physical devices. "
+    "The Campus Events was successfully developed, compiled, and tested on Android emulators and physical devices. "
     "All functional requirements—including domain-restricted authentication, real-time event discovery, category filtering, "
     "RSVP seat reservations, and calendar synchronization—performed with optimal stability, sub-second query latency, and zero crashes."
 )
@@ -775,7 +775,7 @@ doc.add_page_break()
 # Chapter 7
 add_ch_title(doc, 7, "CONCLUSION")
 p = doc.add_paragraph(
-    "The Campus Events Calendar developed as part of this project successfully demonstrates the practical implementation of Object-Oriented Programming concepts, cloud-native database architecture, and mobile engineering using React Native and PostgreSQL. The application successfully fulfills all institutional requirements, offering a unified, reliable, and user-friendly mobile platform for campus event management.\n\n"
+    "The Campus Events developed as part of this project successfully demonstrates the practical implementation of Object-Oriented Programming concepts, cloud-native database architecture, and mobile engineering using React Native and PostgreSQL. The application successfully fulfills all institutional requirements, offering a unified, reliable, and user-friendly mobile platform for campus event management.\n\n"
     "By enforcing strict domain validation (@gmail.com / college domain) and database Row-Level Security, the system guarantees high data security and participant integrity. The performance benchmarks validated sub-second data synchronization and zero memory leaks. Future enhancements can incorporate QR-code attendance ticketing and automated push notifications."
 )
 p.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY

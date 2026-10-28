@@ -324,7 +324,7 @@ print("Building front matter pages 1 to 8...")
 # PAGE 1: TITLE COVER
 p1_content = f"""
 <div style="text-align: center; margin-top: 1mm;">
-    <h1 style="font-size: 15.5pt; font-weight: bold; margin: 4mm 0 4mm 0; letter-spacing: 0.5px; text-transform: uppercase;">CAMPUS EVENTS CALENDAR</h1>
+    <h1 style="font-size: 15.5pt; font-weight: bold; margin: 4mm 0 4mm 0; letter-spacing: 0.5px; text-transform: uppercase;">CAMPUS EVENTS</h1>
     
     <h2 style="font-size: 12.5pt; font-weight: bold; margin: 0 0 2mm 0; text-transform: uppercase;">PROJECT REPORT</h2>
     <div style="font-size: 10.5pt; font-weight: bold; margin-bottom: 5mm;">(25CCHADT305 – HYBRID APP DEVELOPMENT)</div>
@@ -382,7 +382,7 @@ p2_content = f"""
     <h1 style="font-size: 13.5pt; font-weight: bold; letter-spacing: 0.5px; text-align: center; margin: 0 0 5mm 0;">BONAFIDE CERTIFICATE</h1>
     
     <p class="body-text" style="text-indent: 10mm; margin-bottom: 5mm; line-height: 1.45;">
-        This is to certify that the project report entitled <b>“CAMPUS EVENTS CALENDAR”</b> submitted by <b>ARJUN P KOLIKKAL (JCE25CC019)</b>, of Third Semester, B.Tech in Computer Science & Engineering - CYBER SECURITY has been successfully carried out under our supervision and guidance in partial fulfillment of the requirements for the subject <b>25CCHADT305 – Hybrid App Development</b>, prescribed by Jawaharlal College of Engineering and Technology (Autonomous), affiliated to APJ Abdul Kalam Technological University, Kerala. It is further certified that this work is a bonafide record carried out by the above student during the academic year <b>2026–2027</b>.
+        This is to certify that the project report entitled <b>“CAMPUS EVENTS”</b> submitted by <b>ARJUN P KOLIKKAL (JCE25CC019)</b>, of Third Semester, B.Tech in Computer Science & Engineering - CYBER SECURITY has been successfully carried out under our supervision and guidance in partial fulfillment of the requirements for the subject <b>25CCHADT305 – Hybrid App Development</b>, prescribed by Jawaharlal College of Engineering and Technology (Autonomous), affiliated to APJ Abdul Kalam Technological University, Kerala. It is further certified that this work is a bonafide record carried out by the above student during the academic year <b>2026–2027</b>.
     </p>
     
     <div style="display: flex; justify-content: space-between; margin-top: 20mm; padding: 0 6mm;">
@@ -516,7 +516,7 @@ p8_content = """
     <h2 style="text-align: center; font-size: 13pt; font-weight: bold; margin: 0 0 6mm 0;">DECLARATION</h2>
     
     <p class="body-text" style="line-height: 1.5; margin-bottom: 6mm;">
-        I hereby declare that the project report <b>CAMPUS EVENTS CALENDAR</b> submitted for the partial fulfilment of the requirements of the subject <b>25CCHADT305 – Hybrid App Development</b>, prescribed by Jawaharlal College of Engineering and Technology (Autonomous), affiliated to APJ Abdul Kalam Technological University, Kerala is a bonafide work done by me under the guidance of <b>Prof. Dr. R. Satheesh Kumar</b>. The submission represents my ideas in my own words and where ideas or words of others have been included, I have adequately and accurately cited and referred the original sources. I also declare that I have adhered to ethics and integrity and have not misinterpreted or fabricated any data or idea or fact or source in my submission. I understand that any violation of the above will be a case for disciplinary action by the institution and/or the University and can also evoke penal actions from the sources which have thus not been properly cited or from whom proper permission has not been obtained. This report has not previously formed the basis for the award of any degree, diploma or similar title of any other University.
+        I hereby declare that the project report <b>CAMPUS EVENTS</b> submitted for the partial fulfilment of the requirements of the subject <b>25CCHADT305 – Hybrid App Development</b>, prescribed by Jawaharlal College of Engineering and Technology (Autonomous), affiliated to APJ Abdul Kalam Technological University, Kerala is a bonafide work done by me under the guidance of <b>Prof. Dr. R. Satheesh Kumar</b>. The submission represents my ideas in my own words and where ideas or words of others have been included, I have adequately and accurately cited and referred the original sources. I also declare that I have adhered to ethics and integrity and have not misinterpreted or fabricated any data or idea or fact or source in my submission. I understand that any violation of the above will be a case for disciplinary action by the institution and/or the University and can also evoke penal actions from the sources which have thus not been properly cited or from whom proper permission has not been obtained. This report has not previously formed the basis for the award of any degree, diploma or similar title of any other University.
     </p>
     
     <div style="display: flex; justify-content: flex-end; margin-top: 10mm; padding-right: 5mm;">
@@ -541,10 +541,10 @@ p9_content = """
 <div>
     <h1 class="ch-title" style="margin-top: 0;">ABSTRACT</h1>
     <p class="body-text" style="text-indent: 8mm;">
-        The <b>Campus Events Calendar</b> is a comprehensive, mobile-first academic platform developed to eliminate fragmentation in university event broadcasting and streamline student participation across extracurricular, technical, and academic activities. In contemporary collegiate institutions, announcements for symposiums, workshops, hackathons, and cultural fests are typically scattered across physical notice boards, unstructured messaging channels, and isolated departmental flyers, frequently resulting in scheduling conflicts, low student engagement, and inefficient participant management.
+        The <b>Campus Events</b> is a comprehensive, mobile-first academic platform developed to eliminate fragmentation in university event broadcasting and streamline student participation across extracurricular, technical, and academic activities. In contemporary collegiate institutions, announcements for symposiums, workshops, hackathons, and cultural fests are typically scattered across physical notice boards, unstructured messaging channels, and isolated departmental flyers, frequently resulting in scheduling conflicts, low student engagement, and inefficient participant management.
     </p>
     <p class="body-text" style="text-indent: 8mm;">
-        To resolve these challenges, the Campus Events Calendar delivers a modern cross-platform mobile application engineered with React Native and Expo SDK 52, connected to a high-performance Supabase PostgreSQL cloud backend. The system enforces strict domain-based authentication restricting account creation to verified institutional Google credentials (@gmail.com / college domain) to ensure campus safety and student accountability. Robust Row-Level Security (RLS) policies safeguard sensitive data, ensuring that students can only modify their personal RSVP records while administrative organizers manage departmental schedules.
+        To resolve these challenges, the Campus Events delivers a modern cross-platform mobile application engineered with React Native and Expo SDK 52, connected to a high-performance Supabase PostgreSQL cloud backend. The system enforces strict domain-based authentication restricting account creation to verified institutional Google credentials (@gmail.com / college domain) to ensure campus safety and student accountability. Robust Row-Level Security (RLS) policies safeguard sensitive data, ensuring that students can only modify their personal RSVP records while administrative organizers manage departmental schedules.
     </p>
     <p class="body-text" style="text-indent: 8mm;">
         Key capabilities include real-time event discovery with category filtering (Academic, Cultural, Sports, Technical, Workshops), intelligent multi-field search, instant RSVP reservation with dynamic capacity quotas, and personal bookmarking into a curated "My Events" agenda. Furthermore, local device calendar synchronization allows students to export event timelines directly into Google Calendar or system schedulers. Production deployment on Android emulator and physical devices demonstrates high responsiveness, zero memory leaks, and seamless offline data caching, establishing the platform as an indispensable digital ecosystem for modern academic institutions.
@@ -777,12 +777,12 @@ p15_content = """
         The evolution of mobile computing, cloud-native storage, and ubiquitous high-speed networking has transformed institutional communication within higher education. Traditionally, academic campuses relied on printed circulars, physical notice boards, bulletin boards, and informal messaging channels to disseminate information regarding upcoming activities. These conventional methods suffer from notable deficiencies, including limited reach, rapid obsolescence of paper flyers, lack of real-time scheduling updates, and absence of automated attendee tracking.
     </p>
     <p class="body-text">
-        With the rapid proliferation of smartphones among students and faculty members, dedicated mobile campus portals have become paramount. A modernized Campus Events Calendar unifies all collegiate events—spanning technical symposiums, research conferences, cultural festivals, sports tournaments, and professional workshops—into a centralized, interactive, and universally accessible mobile application.
+        With the rapid proliferation of smartphones among students and faculty members, dedicated mobile campus portals have become paramount. A modernized Campus Events unifies all collegiate events—spanning technical symposiums, research conferences, cultural festivals, sports tournaments, and professional workshops—into a centralized, interactive, and universally accessible mobile application.
     </p>
     
     <h3 class="sec-title">1.2 RELEVANCE</h3>
     <p class="body-text">
-        In an autonomous academic institution such as Jawaharlal College of Engineering and Technology (JCET), multiple engineering departments and student associations operate concurrent event calendars. Without a synchronized digital platform, students frequently miss registration deadlines or encounter conflicting schedules across departments. The Campus Events Calendar addresses this gap by offering real-time schedule discovery, department filtering, automated RSVP reservations, and calendar synchronization, significantly elevating collegiate engagement and institutional operational efficiency.
+        In an autonomous academic institution such as Jawaharlal College of Engineering and Technology (JCET), multiple engineering departments and student associations operate concurrent event calendars. Without a synchronized digital platform, students frequently miss registration deadlines or encounter conflicting schedules across departments. The Campus Events addresses this gap by offering real-time schedule discovery, department filtering, automated RSVP reservations, and calendar synchronization, significantly elevating collegiate engagement and institutional operational efficiency.
     </p>
 </div>
 """
@@ -823,7 +823,7 @@ p17_content = """
     
     <h3 class="sec-title">2.1 AIM</h3>
     <p class="body-text">
-        To design, engineer, and deploy a robust, cross-platform Campus Events Calendar mobile application backed by a cloud-native relational database and modern Object-Oriented principles, delivering real-time event discovery, secure access control, automated RSVP tracking, and timetable synchronization for the academic community.
+        To design, engineer, and deploy a robust, cross-platform Campus Events mobile application backed by a cloud-native relational database and modern Object-Oriented principles, delivering real-time event discovery, secure access control, automated RSVP tracking, and timetable synchronization for the academic community.
     </p>
     
     <h3 class="sec-title">2.2 OBJECTIVES</h3>
@@ -1003,7 +1003,7 @@ p22_content = """
     <h3 class="sec-title">5.1 SYSTEM DESIGN</h3>
     <h4 class="subsec-title">5.1.1 System Architecture</h4>
     <p class="body-text">
-        The Campus Events Calendar architecture follows a modern decoupled client-server model optimized for mobile efficiency:
+        The Campus Events architecture follows a modern decoupled client-server model optimized for mobile efficiency:
     </p>
     <ul class="bullet-list">
         <li><b>Client Layer (Mobile Application):</b> Built using React Native and Expo SDK 52, running a single universal JavaScript bundle on Android's Hermes high-performance engine.</li>
@@ -1059,7 +1059,7 @@ p24_content = f"""
     <h2 class="ch-subtitle">RESULTS AND DISCUSSION</h2>
     
     <p class="body-text">
-        The Campus Events Calendar was successfully developed, compiled, and rigorously tested on Android emulator (API 34) and physical Android hardware. The mobile application achieved all intended functional goals, demonstrating instant event discovery, responsive category filtering, secure domain-restricted authentication, and flawless real-time RSVP bookings.
+        The Campus Events was successfully developed, compiled, and rigorously tested on Android emulator (API 34) and physical Android hardware. The mobile application achieved all intended functional goals, demonstrating instant event discovery, responsive category filtering, secure domain-restricted authentication, and flawless real-time RSVP bookings.
     </p>
     <p class="body-text">
         The application was deployed via a release APK v1.0.1 (Build 6) containing universal multi-ABI native binaries (`x86_64`, `arm64-v8a`, and `armeabi-v7a`). Performance benchmarks confirmed a cold launch time of 1.1 seconds, 60fps scrolling across 100+ loaded event cards, and zero memory leaks over extended testing sessions.
@@ -1153,7 +1153,7 @@ p28_content = """
     <h2 class="ch-subtitle">CONCLUSION</h2>
     
     <p class="body-text">
-        The <b>Campus Events Calendar</b> developed as part of this academic project successfully demonstrates the practical implementation of Object-Oriented Programming principles, cloud-native database design, and modern mobile software engineering. The platform successfully resolves the chronic challenge of fragmented campus communication, delivering an elegant, centralized, and secure digital medium for organizing and participating in university events.
+        The <b>Campus Events</b> developed as part of this academic project successfully demonstrates the practical implementation of Object-Oriented Programming principles, cloud-native database design, and modern mobile software engineering. The platform successfully resolves the chronic challenge of fragmented campus communication, delivering an elegant, centralized, and secure digital medium for organizing and participating in university events.
     </p>
     <p class="body-text">
         By leveraging TypeScript, React Native (Expo SDK 52), and Supabase PostgreSQL with Row-Level Security, the application provides outstanding performance, robust data integrity, and strict institutional domain access control. Students can effortlessly explore upcoming symposiums, workshops, and sports meets, filter activities by department, reserve seats via instant RSVP, and sync sessions with their mobile calendars.
@@ -1209,7 +1209,7 @@ for rel_path, desc, content in code_files:
     all_code_lines.append(f"// ===========================================================================")
     all_code_lines.append(f"// FILE: {rel_path}")
     all_code_lines.append(f"// MODULE: {desc}")
-    all_code_lines.append(f"// PROJECT: CAMPUS EVENTS CALENDAR (JCET AUTONOMOUS)")
+    all_code_lines.append(f"// PROJECT: CAMPUS EVENTS (JCET AUTONOMOUS)")
     all_code_lines.append(f"// ===========================================================================")
     for line in content.splitlines():
         all_code_lines.append(line)
@@ -1230,7 +1230,7 @@ for code_page_idx in range(TOTAL_CODE_PAGES):
         chunk = [
             "// ===========================================================================",
             "// END OF CORE PRODUCTION CODE LISTING",
-            "// CAMPUS EVENTS CALENDAR MOBILE APPLICATION",
+            "// CAMPUS EVENTS MOBILE APPLICATION",
             "// DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING (CYBER SECURITY)",
             "// JAWAHARLAL COLLEGE OF ENGINEERING AND TECHNOLOGY (AUTONOMOUS)",
             "// ==========================================================================="
@@ -1259,7 +1259,7 @@ full_html = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Campus Events Calendar - Project Report</title>
+    <title>Campus Events - Project Report</title>
     <style>
 {css}
     </style>
