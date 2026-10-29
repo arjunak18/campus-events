@@ -394,7 +394,7 @@ p2_content = f"""
             <div style="font-size: 9.5pt;">(Project Guide)</div>
         </div>
         <div style="text-align: right;">
-            <div style="font-size: 10.5pt; font-weight: bold;">Dr. R. Satheesh Kumar</div>
+            <div style="font-size: 10.5pt; font-weight: bold;">Prof. Manoj M</div>
             <div style="font-size: 9.5pt;">(Professor and HoD)</div>
         </div>
     </div>
@@ -703,7 +703,7 @@ p10_content = """
         We express our sincere thanks to <b>Dr. N. Gunasekaran</b>, Principal of Jawaharlal College of Engineering and Technology, for his encouragement, leadership, and administrative backing throughout the course of our studies and project development.
     </p>
     <p class="body-text">
-        We express our deepest gratitude to <b>Prof. Dr. R. Satheesh Kumar</b>, Professor and Head of the Department of Computer Science and Engineering, for providing constant encouragement, leadership, and academic mentorship throughout our studies.
+        We express our special gratitude to <b>Prof. Manoj M</b>, Professor and Head of the Department of Computer Science and Engineering, for providing us constant guidance and encouragement throughout the project.
     </p>
     <p class="body-text">
         We express our sincere thanks and profound gratitude to our project guide, <b>Ms.Ashitha.C</b>, for her invaluable guidance, constructive suggestions, and continuous encouragement throughout the architecture and implementation phases of this project.

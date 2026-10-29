@@ -235,7 +235,7 @@ p_s1.add_run("(Project Guide)")
 c_s2 = tbl_sig.cell(0, 1)
 p_s2 = c_s2.paragraphs[0]
 p_s2.alignment = WD_ALIGN_PARAGRAPH.RIGHT
-p_s2.add_run("Dr. R. Satheesh Kumar\n").bold = True
+p_s2.add_run("Prof. Manoj M\n").bold = True
 p_s2.add_run("(Professor and HoD)")
 
 p_ex = doc.add_paragraph("\n\n")
@@ -702,7 +702,7 @@ p_ack_txt.add_run(
     "inspiring vision leading to the successful completion of this project.\n\n"
     "We express our sincere thanks to Dr. N. Gunasekaran, Principal of Jawaharlal College of Engineering and Technology, for his "
     "encouragement, leadership, and administrative backing throughout the course of our studies and project development.\n\n"
-    "We express our deepest gratitude to Prof. Dr. R. Satheesh Kumar, Professor and Head of the Department of Computer Science "
+    "We express our special gratitude to Prof. Manoj M, Professor and Head of the Department of Computer Science "
     "and Engineering, for providing constant encouragement, leadership, and academic mentorship throughout our studies.\n\n"
     "We express our sincere thanks and profound gratitude to our project guide, Ms.Ashitha.C, for her invaluable guidance, "
     "constructive suggestions, and continuous encouragement throughout the architecture and implementation phases of this project.\n\n"

@@ -169,7 +169,7 @@ add_card_content(
 
 add_card_content(
     s1, Inches(6.78), Inches(4.95), Inches(5.35), Inches(2.05),
-    "PROJECT SUPERVISION", "Prof. Dr. R. SATHEESH KUMAR",
+    "PROJECT SUPERVISION", "Prof. Manoj M",
     ["Designation: Professor and Head of Department",
      "Department: Computer Science and Engineering",
      "Institution: Jawaharlal College of Engineering and Technology"],
@@ -797,7 +797,7 @@ p_can.alignment = PP_ALIGN.CENTER
 p_can.space_after = Pt(6)
 
 p_gd = tf20.add_paragraph()
-p_gd.text = "Guided by: Prof. Dr. R. SATHEESH KUMAR (Professor and HoD, CSE)"
+p_gd.text = "Guided by: Ms.Ashitha.C (Project Guide)  |  HoD: Prof. Manoj M"
 p_gd.font.name = "Segoe UI"
 p_gd.font.size = Pt(12)
 p_gd.font.color.rgb = C_SECONDARY
