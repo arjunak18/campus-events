@@ -7,9 +7,8 @@ Generates:
 - mobile/assets/android-icon-monochrome.png (432x432)
 - mobile/assets/splash-icon.png (1024x1024)
 - mobile/assets/favicon.png (48x48)
-- Android native mipmaps (hdpi, mdpi, xhdpi, xxxhdpi)
-- Deliverables and Downloads copies
-- HTML visual showcase artifact
+- Android native mipmaps (hdpi, mdpi, xhdpi, xxhdpi, xxxhdpi)
+- Native splashscreen logos
 """
 
 import os
@@ -26,7 +25,6 @@ downloads_dir = r"C:\Users\USER\Downloads"
 
 # 1. Load source image
 master_img = Image.open(src_path).convert("RGBA")
-w, h = master_img.size
 
 # High-resolution master icon (1024x1024)
 icon_1024 = master_img.resize((1024, 1024), Image.Resampling.LANCZOS)
@@ -45,34 +43,32 @@ favicon_48.save(os.path.join(assets_dir, "favicon.png"), "PNG")
 favicon_48.save(os.path.join(website_dir, "favicon.png"), "PNG")
 
 # 4. Android Adaptive Icon:
-# In adaptive icons, canvas is 512x512.
-# The central safe zone is a circle of diameter 66-70% (approx 340-360px).
-# If we scale the icon to 72% (368x368) and place it centered on a transparent canvas for foreground,
-# and have a matching dark background canvas for background.
-bg_color = (8, 7, 24, 255) # Deep obsidian midnight navy
-android_bg = Image.new("RGBA", (512, 512), bg_color)
-# Gradient overlay for background to match master icon depth
-bg_scaled = master_img.resize((512, 512), Image.Resampling.LANCZOS)
-bg_blurred = bg_scaled.filter(ImageFilter.GaussianBlur(radius=8))
-bg_blurred.save(os.path.join(assets_dir, "android-icon-background.png"), "PNG")
+# Canvas is 512x512.
+# Safe zone is 66% (340px circle).
+# Background layer:
+bg_base = Image.new("RGBA", (512, 512), (8, 7, 24, 255))
+bg_glow = master_img.resize((512, 512), Image.Resampling.LANCZOS).filter(ImageFilter.GaussianBlur(radius=24))
+android_bg = Image.blend(bg_base, bg_glow, 0.45)
+android_bg.save(os.path.join(assets_dir, "android-icon-background.png"), "PNG")
 
-# Foreground: scaled down to 72% so the full icon artwork sits safely inside the circular mask
-fg_size = int(512 * 0.72) # ~368px
-fg_content = master_img.resize((fg_size, fg_size), Image.Resampling.LANCZOS)
+# Foreground layer (centered emblem with smooth squircle mask):
+emblem_dim = int(512 * 0.68) # 348px
+emblem_scaled = master_img.resize((emblem_dim, emblem_dim), Image.Resampling.LANCZOS)
+emblem_mask = Image.new("L", (emblem_dim, emblem_dim), 0)
+d_em = ImageDraw.Draw(emblem_mask)
+d_em.rounded_rectangle((0, 0, emblem_dim, emblem_dim), radius=int(emblem_dim * 0.22), fill=255)
+
 android_fg = Image.new("RGBA", (512, 512), (0, 0, 0, 0))
-offset = ((512 - fg_size) // 2, (512 - fg_size) // 2)
-android_fg.paste(fg_content, offset, fg_content)
+offset_fg = ((512 - emblem_dim) // 2, (512 - emblem_dim) // 2)
+android_fg.paste(emblem_scaled, offset_fg, emblem_mask)
 android_fg.save(os.path.join(assets_dir, "android-icon-foreground.png"), "PNG")
 
-# Monochrome icon (432x432)
-# Grayscale representation for Android 13+ themed icons
-mono_size = int(432 * 0.72)
+# Monochrome icon (432x432) for Android 13+ Material You
+mono_size = int(432 * 0.68)
 fg_mono_content = ImageOps.grayscale(master_img).resize((mono_size, mono_size), Image.Resampling.LANCZOS)
 android_mono = Image.new("RGBA", (432, 432), (0, 0, 0, 0))
-mono_rgba = Image.new("RGBA", (mono_size, mono_size), (255, 255, 255, 0))
-# Put white where luminance > threshold
 mono_arr = np.array(fg_mono_content)
-mono_alpha = (mono_arr > 60).astype(np.uint8) * 255
+mono_alpha = (mono_arr > 65).astype(np.uint8) * 255
 mono_img = Image.fromarray(np.dstack([np.full_like(mono_arr, 255), np.full_like(mono_arr, 255), np.full_like(mono_arr, 255), mono_alpha]))
 mono_offset = ((432 - mono_size) // 2, (432 - mono_size) // 2)
 android_mono.paste(mono_img, mono_offset, mono_img)
@@ -80,7 +76,6 @@ android_mono.save(os.path.join(assets_dir, "android-icon-monochrome.png"), "PNG"
 print("Saved adaptive icon layers.")
 
 # 5. Native Android mipmaps update
-# Dimensions mapping:
 mipmaps = {
     "mipmap-mdpi": {"icon": (48, 48), "adaptive": (108, 108)},
     "mipmap-hdpi": {"icon": (72, 72), "adaptive": (162, 162)},
@@ -97,19 +92,24 @@ for folder, dims in mipmaps.items():
     # 5.1 ic_launcher.webp (Square with rounded corners)
     ic_dim = dims["icon"]
     ic_img = master_img.resize(ic_dim, Image.Resampling.LANCZOS)
-    ic_img.save(os.path.join(target_dir, "ic_launcher.webp"), "WEBP")
+    ic_mask = Image.new("L", ic_dim, 0)
+    d_ic = ImageDraw.Draw(ic_mask)
+    d_ic.rounded_rectangle((0, 0, ic_dim[0], ic_dim[1]), radius=int(ic_dim[0] * 0.22), fill=255)
+    ic_final = Image.new("RGBA", ic_dim, (0, 0, 0, 0))
+    ic_final.paste(ic_img, (0, 0), ic_mask)
+    ic_final.save(os.path.join(target_dir, "ic_launcher.webp"), "WEBP")
     
     # 5.2 ic_launcher_round.webp (Circular mask)
-    mask = Image.new("L", ic_dim, 0)
-    draw = ImageDraw.Draw(mask)
-    draw.ellipse((0, 0, ic_dim[0], ic_dim[1]), fill=255)
+    mask_c = Image.new("L", ic_dim, 0)
+    draw_c = ImageDraw.Draw(mask_c)
+    draw_c.ellipse((0, 0, ic_dim[0], ic_dim[1]), fill=255)
     ic_round = Image.new("RGBA", ic_dim, (0, 0, 0, 0))
-    ic_round.paste(ic_img, (0, 0), mask=mask)
+    ic_round.paste(ic_img, (0, 0), mask=mask_c)
     ic_round.save(os.path.join(target_dir, "ic_launcher_round.webp"), "WEBP")
     
     # 5.3 ic_launcher_background.webp
     ad_dim = dims["adaptive"]
-    ad_bg = bg_blurred.resize(ad_dim, Image.Resampling.LANCZOS)
+    ad_bg = android_bg.resize(ad_dim, Image.Resampling.LANCZOS)
     ad_bg.save(os.path.join(target_dir, "ic_launcher_background.webp"), "WEBP")
     
     # 5.4 ic_launcher_foreground.webp
