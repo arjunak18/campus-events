@@ -261,7 +261,7 @@ table.acad-table th {
     
     <div style="font-size: 11pt; font-style: italic; margin-bottom: 3mm;">Guided by</div>
     <div style="font-size: 12pt; font-weight: bold; margin-bottom: 8mm;">
-        Prof. Dr. R. SATHEESH KUMAR
+        Ms.Ashitha.C
     </div>
     
     <div style="text-align: center; margin-top: 5mm;">
@@ -308,8 +308,8 @@ table.acad-table th {
     
     <div style="display: flex; justify-content: space-between; margin-top: 20mm; padding: 0 6mm;">
         <div style="text-align: left;">
-            <div style="font-size: 10.5pt; font-weight: bold;">Dr. R. Satheesh Kumar</div>
-            <div style="font-size: 9.5pt;">(Project Coordinator)</div>
+            <div style="font-size: 10.5pt; font-weight: bold;">Ms.Ashitha.C</div>
+            <div style="font-size: 9.5pt;">(Project Guide)</div>
         </div>
         <div style="text-align: right;">
             <div style="font-size: 10.5pt; font-weight: bold;">Dr. R. Satheesh Kumar</div>
@@ -467,7 +467,7 @@ table.acad-table th {
     <h2 style="text-align: center; font-size: 13pt; font-weight: bold; margin: 0 0 6mm 0;">DECLARATION</h2>
     
     <p class="body-text" style="line-height: 1.5; margin-bottom: 6mm;">
-        I hereby declare that the project report <b>CAMPUS EVENTS</b> submitted for the partial fulfilment of the requirements of the subject <b>25CCHADT305 – Hybrid App Development</b>, prescribed by Jawaharlal College of Engineering and Technology (Autonomous), affiliated to APJ Abdul Kalam Technological University, Kerala is a bonafide work done by me under the guidance of <b>Prof. Dr. R. Satheesh Kumar</b>. The submission represents my ideas in my own words and where ideas or words of others have been included, I have adequately and accurately cited and referred the original sources. I also declare that I have adhered to ethics and integrity and have not misinterpreted or fabricated any data or idea or fact or source in my submission. I understand that any violation of the above will be a case for disciplinary action by the institution and/or the University and can also evoke penal actions from the sources which have thus not been properly cited or from whom proper permission has not been obtained. This report has not previously formed the basis for the award of any degree, diploma or similar title of any other University.
+        I hereby declare that the project report <b>CAMPUS EVENTS</b> submitted for the partial fulfilment of the requirements of the subject <b>25CCHADT305 – Hybrid App Development</b>, prescribed by Jawaharlal College of Engineering and Technology (Autonomous), affiliated to APJ Abdul Kalam Technological University, Kerala is a bonafide work done by me under the guidance of <b>Ms.Ashitha.C</b>. The submission represents my ideas in my own words and where ideas or words of others have been included, I have adequately and accurately cited and referred the original sources. I also declare that I have adhered to ethics and integrity and have not misinterpreted or fabricated any data or idea or fact or source in my submission. I understand that any violation of the above will be a case for disciplinary action by the institution and/or the University and can also evoke penal actions from the sources which have thus not been properly cited or from whom proper permission has not been obtained. This report has not previously formed the basis for the award of any degree, diploma or similar title of any other University.
     </p>
     
     <div style="display: flex; justify-content: flex-end; margin-top: 10mm; padding-right: 5mm;">
@@ -538,7 +538,10 @@ table.acad-table th {
         We express our sincere thanks to <b>Dr. N. Gunasekaran</b>, Principal of Jawaharlal College of Engineering and Technology, for his encouragement, leadership, and administrative backing throughout the course of our studies and project development.
     </p>
     <p class="body-text">
-        We express our deepest gratitude to <b>Prof. Dr. R. Satheesh Kumar</b>, Professor and Head of the Department of Computer Science and Engineering, who also served as our Project Coordinator, for providing constant guidance, academic mentorship, and invaluable technical recommendations throughout the architecture and implementation phases.
+        We express our deepest gratitude to <b>Prof. Dr. R. Satheesh Kumar</b>, Professor and Head of the Department of Computer Science and Engineering, for providing constant encouragement, leadership, and academic mentorship throughout our studies.
+    </p>
+    <p class="body-text">
+        We express our sincere thanks and profound gratitude to our project guide, <b>Ms.Ashitha.C</b>, for her invaluable guidance, constructive suggestions, and continuous encouragement throughout the architecture and implementation phases of this project.
     </p>
     <p class="body-text">
         We also appreciate the valuable feedback and constructive suggestions offered by the evaluation panel members during our departmental project reviews. Last but not least, we place on record our profound sense of gratitude to our parents, family members, lab instructors, and fellow classmates whose unwavering moral support and encouragement motivated us at every stage.
@@ -1860,11 +1863,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) =&gt; 
     }
     const cleanEmail = gmailValidation.normalizedEmail!;
 
-    const { data, error } = await supabase.auth.signInWithPassword({ email: cleanEmail, password });
-    if (error) throw error;
-    if (data?.session) {
-      setSession(data.session);
-      setUser(data.session.user);</pre>
+    setIsLoading(true);
+    try {
+      let activeSession: Session | null = null;
+      let profileStored = false;
+</pre>
     </div>
     
         </div>
@@ -1887,21 +1890,133 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) =&gt; 
             
     <div>
         
-        <pre class="code-box">      await fetchServerProfile();
+        <pre class="code-box">      // 1. Call backend /auth/login to store user details in database and auto-provision user
+      try {
+        const res = await api.post&lt;{
+          success: boolean;
+          data: {
+            user: any;
+            session: Session | null;
+            profile: AppUser;
+          };
+        }&gt;('/auth/login', {
+          email: cleanEmail,
+          password: password,
+        });
+
+        if (res?.data?.session) {
+          activeSession = res.data.session;
+          await supabase.auth.setSession(activeSession);
+          setSession(activeSession);
+          setUser(activeSession.user);
+          if (res.data.profile) {
+            setAppUser(res.data.profile);
+            profileStored = true;
+          }
+        }
+      } catch {
+        // Backend could be temporarily spinning up; fallback to direct Supabase auth
+      }
+
+      // 2. Direct Supabase authentication (if backend session wasn't already set)
+      if (!activeSession) {
+        let { data, error } = await supabase.auth.signInWithPassword({ email: cleanEmail, password });
+
+        // If user not registered yet in Supabase Auth, auto-sign-up directly
+        if (error &amp;&amp; (error.message?.includes('Invalid login') || error.message?.includes('not found') || error.message?.includes('credentials'))) {
+          const signUpRes = await supabase.auth.signUp({
+            email: cleanEmail,
+            password: password,
+            options: {
+              data: {
+                display_name: cleanEmail.split('@')[0],
+                department: 'Cyber Security',</pre>
+    </div>
+    
+        </div>
+        <div class="running-footer">
+            <div class="running-footer-line"></div>
+            <div class="running-footer-content">
+                <span class="dept-title">DEPARTMENT OF CSE - CYBER SECURITY</span>
+                <span class="page-num">23</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="page">
+        
+        <div class="running-header">
+            <div class="running-header-text">HYBRID APP DEVELOPMENT  25CCHADT305</div>
+            <div class="running-header-line"></div>
+        </div>
+        <div style="flex: 1; display: flex; flex-direction: column; position: relative; z-index: 1;">
+            
+    <div>
+        
+        <pre class="code-box">                academic_year: '3rd Year',
+              },
+            },
+          });
+          if (signUpRes.data?.session) {
+            data = signUpRes.data;
+            error = null;
+          }
+        }
+
+        if (error &amp;&amp; !data?.session) {
+          throw error;
+        }
+
+        if (data?.session) {
+          activeSession = data.session;
+          setSession(data.session);
+          setUser(data.session.user);
+        }
+      }
+
+      // 3. Ensure server profile is fetched and sign-in is recorded in database
+      if (!profileStored) {
+        await fetchServerProfile();
+      }
+
       // Record sign-in in database
       try {
         await api.post('/auth/record-sign-in', { method: 'email_password' });
       } catch {
         // non-blocking
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const signInWithGoogle = async () =&gt; {
     if (!isSupabaseConfigured) {
       continueAsGuest();
-      return;
-    }
+      return;</pre>
+    </div>
+    
+        </div>
+        <div class="running-footer">
+            <div class="running-footer-line"></div>
+            <div class="running-footer-content">
+                <span class="dept-title">DEPARTMENT OF CSE - CYBER SECURITY</span>
+                <span class="page-num">24</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="page">
+        
+        <div class="running-header">
+            <div class="running-header-text">HYBRID APP DEVELOPMENT  25CCHADT305</div>
+            <div class="running-header-line"></div>
+        </div>
+        <div style="flex: 1; display: flex; flex-direction: column; position: relative; z-index: 1;">
+            
+    <div>
+        
+        <pre class="code-box">    }
 
     setIsLoading(true);
     try {
@@ -1927,7 +2042,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) =&gt; 
 
       if (result.type !== 'success' || !result.url) {
         return;
-      }</pre>
+      }
+
+      // Safe URL parsing for code or tokens
+      let code: string | null = null;
+      let accessToken: string | null = null;
+      let refreshToken: string | null = null;
+
+      try {
+        const parsedUrl = new URL(result.url);
+        code = parsedUrl.searchParams.get('code');
+        if (!code &amp;&amp; parsedUrl.hash) {
+          const hashParams = new URLSearchParams(parsedUrl.hash.replace(/^#/, ''));
+          accessToken = hashParams.get('access_token');
+          refreshToken = hashParams.get('refresh_token');
+        }</pre>
     </div>
     
         </div>
@@ -1935,7 +2064,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) =&gt; 
             <div class="running-footer-line"></div>
             <div class="running-footer-content">
                 <span class="dept-title">DEPARTMENT OF CSE - CYBER SECURITY</span>
-                <span class="page-num">23</span>
+                <span class="page-num">25</span>
             </div>
         </div>
     </div>
@@ -1950,21 +2079,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) =&gt; 
             
     <div>
         
-        <pre class="code-box">
-      // Safe URL parsing for code or tokens
-      let code: string | null = null;
-      let accessToken: string | null = null;
-      let refreshToken: string | null = null;
-
-      try {
-        const parsedUrl = new URL(result.url);
-        code = parsedUrl.searchParams.get('code');
-        if (!code &amp;&amp; parsedUrl.hash) {
-          const hashParams = new URLSearchParams(parsedUrl.hash.replace(/^#/, ''));
-          accessToken = hashParams.get('access_token');
-          refreshToken = hashParams.get('refresh_token');
-        }
-      } catch {
+        <pre class="code-box">      } catch {
         // Fallback parameter extraction via regex
         const codeMatch = result.url.match(/[?&amp;]code=([^&amp;#]+)/);
         if (codeMatch) code = decodeURIComponent(codeMatch[1]);
@@ -1990,7 +2105,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) =&gt; 
       await fetchServerProfile();
       // Record sign-in in database
       try {
-        await api.post('/auth/record-sign-in', { method: 'google' });</pre>
+        await api.post('/auth/record-sign-in', { method: 'google' });
+      } catch {
+        // non-blocking
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const signUp = async (
+    email: string,
+    password: string,
+    displayName: string,
+    extraData?: SignUpExtraData
+  ): Promise&lt;{ emailConfirmationRequired: boolean }&gt; =&gt; {</pre>
     </div>
     
         </div>
@@ -1998,7 +2127,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) =&gt; 
             <div class="running-footer-line"></div>
             <div class="running-footer-content">
                 <span class="dept-title">DEPARTMENT OF CSE - CYBER SECURITY</span>
-                <span class="page-num">24</span>
+                <span class="page-num">26</span>
             </div>
         </div>
     </div>
@@ -2013,21 +2142,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) =&gt; 
             
     <div>
         
-        <pre class="code-box">      } catch {
-        // non-blocking
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const signUp = async (
-    email: string,
-    password: string,
-    displayName: string,
-    extraData?: SignUpExtraData
-  ): Promise&lt;{ emailConfirmationRequired: boolean }&gt; =&gt; {
-    if (!isSupabaseConfigured) {
+        <pre class="code-box">    if (!isSupabaseConfigured) {
       continueAsGuest();
       return { emailConfirmationRequired: false };
     }
@@ -2053,7 +2168,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) =&gt; 
             college_id: extraData?.college_id,
           },
           emailRedirectTo: REDIRECT_URI,
-        },</pre>
+        },
+      });
+
+      if (error) {
+        if (error.message.toLowerCase().includes('already')) {
+          throw new Error('An account with this email already exists. Please sign in.');
+        }
+        throw error;
+      }
+
+      if (data.session) {
+        setSession(data.session);
+        setUser(data.session.user);
+        try {
+          await api.patch('/auth/me', {</pre>
     </div>
     
         </div>
@@ -2061,7 +2190,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) =&gt; 
             <div class="running-footer-line"></div>
             <div class="running-footer-content">
                 <span class="dept-title">DEPARTMENT OF CSE - CYBER SECURITY</span>
-                <span class="page-num">25</span>
+                <span class="page-num">27</span>
             </div>
         </div>
     </div>
@@ -2076,21 +2205,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) =&gt; 
             
     <div>
         
-        <pre class="code-box">      });
-
-      if (error) {
-        if (error.message.toLowerCase().includes('already')) {
-          throw new Error('An account with this email already exists. Please sign in.');
-        }
-        throw error;
-      }
-
-      if (data.session) {
-        setSession(data.session);
-        setUser(data.session.user);
-        try {
-          await api.patch('/auth/me', {
-            display_name: displayName,
+        <pre class="code-box">            display_name: displayName,
             department: extraData?.department,
             academic_year: extraData?.academic_year,
             college_id: extraData?.college_id,
@@ -2116,7 +2231,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) =&gt; 
       type: 'signup',
       email: cleanEmail,
       options: {
-        emailRedirectTo: REDIRECT_URI,</pre>
+        emailRedirectTo: REDIRECT_URI,
+      },
+    });
+    if (error) throw error;
+  };
+
+  const signOut = async () =&gt; {
+    if (isSupabaseConfigured) {
+      try {
+        await supabase.auth.signOut();
+      } catch {
+        // ignore
+      }
+    }
+    setSession(null);</pre>
     </div>
     
         </div>
@@ -2124,7 +2253,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) =&gt; 
             <div class="running-footer-line"></div>
             <div class="running-footer-content">
                 <span class="dept-title">DEPARTMENT OF CSE - CYBER SECURITY</span>
-                <span class="page-num">26</span>
+                <span class="page-num">28</span>
             </div>
         </div>
     </div>
@@ -2139,21 +2268,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) =&gt; 
             
     <div>
         
-        <pre class="code-box">      },
-    });
-    if (error) throw error;
-  };
-
-  const signOut = async () =&gt; {
-    if (isSupabaseConfigured) {
-      try {
-        await supabase.auth.signOut();
-      } catch {
-        // ignore
-      }
-    }
-    setSession(null);
-    setUser(null);
+        <pre class="code-box">    setUser(null);
     setAppUser(null);
   };
 
@@ -2179,7 +2294,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) =&gt; 
     &lt;AuthContext.Provider value={{
       session,
       user,
-      appUser,</pre>
+      appUser,
+      isLoading,
+      signIn,
+      signInWithGoogle,
+      signUp,
+      signOut,
+      resetPassword,
+      resendVerificationEmail,
+      updateProfile,
+      continueAsGuest,
+    }}&gt;
+      {children}
+    &lt;/AuthContext.Provider&gt;
+  );
+};</pre>
     </div>
     
         </div>
@@ -2187,7 +2316,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) =&gt; 
             <div class="running-footer-line"></div>
             <div class="running-footer-content">
                 <span class="dept-title">DEPARTMENT OF CSE - CYBER SECURITY</span>
-                <span class="page-num">27</span>
+                <span class="page-num">29</span>
             </div>
         </div>
     </div>
@@ -2202,21 +2331,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) =&gt; 
             
     <div>
         
-        <pre class="code-box">      isLoading,
-      signIn,
-      signInWithGoogle,
-      signUp,
-      signOut,
-      resetPassword,
-      resendVerificationEmail,
-      updateProfile,
-      continueAsGuest,
-    }}&gt;
-      {children}
-    &lt;/AuthContext.Provider&gt;
-  );
-};
-
+        <pre class="code-box">
 export const useAuth = () =&gt; useContext(AuthContext);
 
 
@@ -2242,7 +2357,21 @@ export interface EventQueryParams {
   end_date?: string;
   is_online?: boolean;
   isOnline?: boolean;
-  isFree?: boolean;</pre>
+  isFree?: boolean;
+  status?: string;
+  sort?: string;
+}
+
+const getFallbackEvents = (): Event[] =&gt; {
+  const now = new Date();
+  const today = now.toISOString().split('T')[0];
+  const tomorrow = new Date(now.getTime() + 86400000).toISOString().split('T')[0];
+  const inThreeDays = new Date(now.getTime() + 3 * 86400000).toISOString().split('T')[0];
+  const inSevenDays = new Date(now.getTime() + 7 * 86400000).toISOString().split('T')[0];
+  const inFourteenDays = new Date(now.getTime() + 14 * 86400000).toISOString().split('T')[0];
+
+  return [
+    {</pre>
     </div>
     
         </div>
@@ -2250,7 +2379,7 @@ export interface EventQueryParams {
             <div class="running-footer-line"></div>
             <div class="running-footer-content">
                 <span class="dept-title">DEPARTMENT OF CSE - CYBER SECURITY</span>
-                <span class="page-num">28</span>
+                <span class="page-num">30</span>
             </div>
         </div>
     </div>
@@ -2265,21 +2394,7 @@ export interface EventQueryParams {
             
     <div>
         
-        <pre class="code-box">  status?: string;
-  sort?: string;
-}
-
-const getFallbackEvents = (): Event[] =&gt; {
-  const now = new Date();
-  const today = now.toISOString().split('T')[0];
-  const tomorrow = new Date(now.getTime() + 86400000).toISOString().split('T')[0];
-  const inThreeDays = new Date(now.getTime() + 3 * 86400000).toISOString().split('T')[0];
-  const inSevenDays = new Date(now.getTime() + 7 * 86400000).toISOString().split('T')[0];
-  const inFourteenDays = new Date(now.getTime() + 14 * 86400000).toISOString().split('T')[0];
-
-  return [
-    {
-      id: 'e0000000-0000-0000-0000-000000000001',
+        <pre class="code-box">      id: 'e0000000-0000-0000-0000-000000000001',
       slug: 'annual-hackathon-2026',
       title: 'Inter-College Hackathon 2026',
       summary: '36-hour flagship hackathon solving real-world AI, Web3, and sustainability challenges.',
@@ -2305,7 +2420,21 @@ const getFallbackEvents = (): Event[] =&gt; {
       registration_deadline: inThreeDays,
       max_attendees: 300,
       current_attendees: 184,
-      eligibility: 'All enrolled undergraduate &amp; postgraduate students',</pre>
+      eligibility: 'All enrolled undergraduate &amp; postgraduate students',
+      is_free: true,
+      price_currency: 'INR',
+      visibility: 'public',
+      status: 'published',
+      is_featured: true,
+      tags: ['Hackathon', 'Coding', 'AI', 'Innovation'],
+      views_count: 512,
+      likes_count: 94,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    },
+    {
+      id: 'e0000000-0000-0000-0000-000000000002',
+      slug: 'ai-machine-learning-masterclass',</pre>
     </div>
     
         </div>
@@ -2313,7 +2442,7 @@ const getFallbackEvents = (): Event[] =&gt; {
             <div class="running-footer-line"></div>
             <div class="running-footer-content">
                 <span class="dept-title">DEPARTMENT OF CSE - CYBER SECURITY</span>
-                <span class="page-num">29</span>
+                <span class="page-num">31</span>
             </div>
         </div>
     </div>
@@ -2328,21 +2457,7 @@ const getFallbackEvents = (): Event[] =&gt; {
             
     <div>
         
-        <pre class="code-box">      is_free: true,
-      price_currency: 'INR',
-      visibility: 'public',
-      status: 'published',
-      is_featured: true,
-      tags: ['Hackathon', 'Coding', 'AI', 'Innovation'],
-      views_count: 512,
-      likes_count: 94,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    },
-    {
-      id: 'e0000000-0000-0000-0000-000000000002',
-      slug: 'ai-machine-learning-masterclass',
-      title: 'Hands-on Generative AI &amp; LLM Workshop',
+        <pre class="code-box">      title: 'Hands-on Generative AI &amp; LLM Workshop',
       summary: 'Build and deploy local LLM applications using LangChain, Ollama, and vector databases.',
       description: 'A deep-dive technical workshop led by AI industry practitioners. Learn the theory of transformer architectures and build a functional Retrieval-Augmented Generation (RAG) agent from scratch. Bring your laptops with Python installed.',
       poster_url: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&amp;auto=format&amp;fit=crop&amp;q=80',
@@ -2368,7 +2483,21 @@ const getFallbackEvents = (): Event[] =&gt; {
       current_attendees: 88,
       eligibility: 'Basic Python programming knowledge recommended',
       is_free: true,
-      price_currency: 'INR',</pre>
+      price_currency: 'INR',
+      visibility: 'public',
+      status: 'published',
+      is_featured: true,
+      tags: ['AI', 'LLM', 'Python', 'Workshop'],
+      views_count: 342,
+      likes_count: 67,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    },
+    {
+      id: 'e0000000-0000-0000-0000-000000000003',
+      slug: 'inter-college-cultural-fest-2026',
+      title: 'Inter-College Cultural Fest: Euphoria 2026',
+      summary: '3 days of dance, music, battle of the bands, drama, and celebrity concerts.',</pre>
     </div>
     
         </div>
@@ -2376,7 +2505,7 @@ const getFallbackEvents = (): Event[] =&gt; {
             <div class="running-footer-line"></div>
             <div class="running-footer-content">
                 <span class="dept-title">DEPARTMENT OF CSE - CYBER SECURITY</span>
-                <span class="page-num">30</span>
+                <span class="page-num">32</span>
             </div>
         </div>
     </div>
@@ -2391,21 +2520,7 @@ const getFallbackEvents = (): Event[] =&gt; {
             
     <div>
         
-        <pre class="code-box">      visibility: 'public',
-      status: 'published',
-      is_featured: true,
-      tags: ['AI', 'LLM', 'Python', 'Workshop'],
-      views_count: 342,
-      likes_count: 67,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    },
-    {
-      id: 'e0000000-0000-0000-0000-000000000003',
-      slug: 'inter-college-cultural-fest-2026',
-      title: 'Inter-College Cultural Fest: Euphoria 2026',
-      summary: '3 days of dance, music, battle of the bands, drama, and celebrity concerts.',
-      description: 'The premier inter-college cultural festival uniting talent across 40+ universities. Experience breathtaking musical competitions, street plays, DJ nights, art exhibitions, and culinary stalls.',
+        <pre class="code-box">      description: 'The premier inter-college cultural festival uniting talent across 40+ universities. Experience breathtaking musical competitions, street plays, DJ nights, art exhibitions, and culinary stalls.',
       poster_url: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800&amp;auto=format&amp;fit=crop&amp;q=80',
       category_id: 'b0000000-0000-0000-0000-000000000009',
       category: { id: 'b0000000-0000-0000-0000-000000000009', name: 'Cultural Events', slug: 'cultural-events' },
@@ -2431,7 +2546,21 @@ const getFallbackEvents = (): Event[] =&gt; {
       price_currency: 'INR',
       visibility: 'public',
       status: 'published',
-      is_featured: true,</pre>
+      is_featured: true,
+      tags: ['Cultural', 'Music', 'Festival', 'Dance'],
+      views_count: 890,
+      likes_count: 180,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    },
+    {
+      id: 'e0000000-0000-0000-0000-000000000004',
+      slug: 'national-cybersecurity-summit-ctf',
+      title: 'National Cybersecurity Summit &amp; CTF 2026',
+      summary: 'Capture The Flag competition and ethical hacking talks by top security analysts.',
+      description: 'Test your offensive and defensive security skills in a 12-hour CTF challenge covering web exploitation, cryptography, reverse engineering, and binary exploitation.',
+      poster_url: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&amp;auto=format&amp;fit=crop&amp;q=80',
+      category_id: 'b0000000-0000-0000-0000-000000000003',</pre>
     </div>
     
         </div>
@@ -2439,7 +2568,7 @@ const getFallbackEvents = (): Event[] =&gt; {
             <div class="running-footer-line"></div>
             <div class="running-footer-content">
                 <span class="dept-title">DEPARTMENT OF CSE - CYBER SECURITY</span>
-                <span class="page-num">31</span>
+                <span class="page-num">33</span>
             </div>
         </div>
     </div>
@@ -2454,21 +2583,7 @@ const getFallbackEvents = (): Event[] =&gt; {
             
     <div>
         
-        <pre class="code-box">      tags: ['Cultural', 'Music', 'Festival', 'Dance'],
-      views_count: 890,
-      likes_count: 180,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    },
-    {
-      id: 'e0000000-0000-0000-0000-000000000004',
-      slug: 'national-cybersecurity-summit-ctf',
-      title: 'National Cybersecurity Summit &amp; CTF 2026',
-      summary: 'Capture The Flag competition and ethical hacking talks by top security analysts.',
-      description: 'Test your offensive and defensive security skills in a 12-hour CTF challenge covering web exploitation, cryptography, reverse engineering, and binary exploitation.',
-      poster_url: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&amp;auto=format&amp;fit=crop&amp;q=80',
-      category_id: 'b0000000-0000-0000-0000-000000000003',
-      category: { id: 'b0000000-0000-0000-0000-000000000003', name: 'Cybersecurity', slug: 'cybersecurity' },
+        <pre class="code-box">      category: { id: 'b0000000-0000-0000-0000-000000000003', name: 'Cybersecurity', slug: 'cybersecurity' },
       start_date: inSevenDays,
       start_time: '11:00 AM',
       end_date: inSevenDays,
@@ -2494,7 +2609,21 @@ const getFallbackEvents = (): Event[] =&gt; {
       visibility: 'public',
       status: 'published',
       is_featured: false,
-      tags: ['Security', 'CTF', 'Hacking', 'Infosec'],</pre>
+      tags: ['Security', 'CTF', 'Hacking', 'Infosec'],
+      views_count: 420,
+      likes_count: 85,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    },
+    {
+      id: 'e0000000-0000-0000-0000-000000000005',
+      slug: 'campus-career-and-internship-expo',
+      title: 'Campus Career &amp; Internship Expo 2026',
+      summary: 'Connect directly with recruiters from 50+ leading companies for full-time and internship roles.',
+      description: 'Bring printed copies of your resume and dress professionally. On-the-spot interviews and technical rounds will be conducted by visiting recruiters across Tech, Finance, Consulting, and Core Engineering.',
+      poster_url: 'https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=800&amp;auto=format&amp;fit=crop&amp;q=80',
+      category_id: 'b0000000-0000-0000-0000-000000000013',
+      category: { id: 'b0000000-0000-0000-0000-000000000013', name: 'Career Events', slug: 'career-events' },</pre>
     </div>
     
         </div>
@@ -2502,7 +2631,7 @@ const getFallbackEvents = (): Event[] =&gt; {
             <div class="running-footer-line"></div>
             <div class="running-footer-content">
                 <span class="dept-title">DEPARTMENT OF CSE - CYBER SECURITY</span>
-                <span class="page-num">32</span>
+                <span class="page-num">34</span>
             </div>
         </div>
     </div>
@@ -2517,21 +2646,7 @@ const getFallbackEvents = (): Event[] =&gt; {
             
     <div>
         
-        <pre class="code-box">      views_count: 420,
-      likes_count: 85,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    },
-    {
-      id: 'e0000000-0000-0000-0000-000000000005',
-      slug: 'campus-career-and-internship-expo',
-      title: 'Campus Career &amp; Internship Expo 2026',
-      summary: 'Connect directly with recruiters from 50+ leading companies for full-time and internship roles.',
-      description: 'Bring printed copies of your resume and dress professionally. On-the-spot interviews and technical rounds will be conducted by visiting recruiters across Tech, Finance, Consulting, and Core Engineering.',
-      poster_url: 'https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=800&amp;auto=format&amp;fit=crop&amp;q=80',
-      category_id: 'b0000000-0000-0000-0000-000000000013',
-      category: { id: 'b0000000-0000-0000-0000-000000000013', name: 'Career Events', slug: 'career-events' },
-      start_date: inFourteenDays,
+        <pre class="code-box">      start_date: inFourteenDays,
       start_time: '09:30 AM',
       end_date: inFourteenDays,
       end_time: '06:00 PM',
@@ -2557,7 +2672,21 @@ const getFallbackEvents = (): Event[] =&gt; {
       is_featured: false,
       tags: ['Career', 'Jobs', 'Internships', 'Recruitment'],
       views_count: 760,
-      likes_count: 145,</pre>
+      likes_count: 145,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    }
+  ];
+};
+
+const localCreatedEvents: Event[] = [];
+
+export const getEvents = async (params?: EventQueryParams): Promise&lt;PaginatedResponse&lt;Event&gt;&gt; =&gt; {
+  const query = new URLSearchParams();
+  if (params) {
+    Object.entries(params).forEach(([key, value]) =&gt; {
+      if (value !== undefined &amp;&amp; value !== null &amp;&amp; value !== '') {
+        query.append(key, value.toString());</pre>
     </div>
     
         </div>
@@ -2565,7 +2694,7 @@ const getFallbackEvents = (): Event[] =&gt; {
             <div class="running-footer-line"></div>
             <div class="running-footer-content">
                 <span class="dept-title">DEPARTMENT OF CSE - CYBER SECURITY</span>
-                <span class="page-num">33</span>
+                <span class="page-num">35</span>
             </div>
         </div>
     </div>
@@ -2580,21 +2709,7 @@ const getFallbackEvents = (): Event[] =&gt; {
             
     <div>
         
-        <pre class="code-box">      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    }
-  ];
-};
-
-const localCreatedEvents: Event[] = [];
-
-export const getEvents = async (params?: EventQueryParams): Promise&lt;PaginatedResponse&lt;Event&gt;&gt; =&gt; {
-  const query = new URLSearchParams();
-  if (params) {
-    Object.entries(params).forEach(([key, value]) =&gt; {
-      if (value !== undefined &amp;&amp; value !== null &amp;&amp; value !== '') {
-        query.append(key, value.toString());
-      }
+        <pre class="code-box">      }
     });
   }
   const queryString = query.toString();
@@ -2620,7 +2735,21 @@ export const getEvents = async (params?: EventQueryParams): Promise&lt;Paginated
     const cat = params.category.toLowerCase();
     filtered = filtered.filter(e =&gt; e.category_id === params.category || e.category?.name?.toLowerCase() === cat || e.category?.slug?.toLowerCase() === cat);
   }
-  if (params?.dateFrom) {</pre>
+  if (params?.dateFrom) {
+    filtered = filtered.filter(e =&gt; e.start_date &gt;= params.dateFrom!);
+  }
+  if (params?.dateTo) {
+    filtered = filtered.filter(e =&gt; e.start_date &lt;= params.dateTo!);
+  }
+
+  return {
+    success: true,
+    data: filtered,
+    pagination: {
+      page: params?.page || 1,
+      limit: params?.limit || 20,
+      total: filtered.length,
+      totalPages: 1,</pre>
     </div>
     
         </div>
@@ -2628,7 +2757,7 @@ export const getEvents = async (params?: EventQueryParams): Promise&lt;Paginated
             <div class="running-footer-line"></div>
             <div class="running-footer-content">
                 <span class="dept-title">DEPARTMENT OF CSE - CYBER SECURITY</span>
-                <span class="page-num">34</span>
+                <span class="page-num">36</span>
             </div>
         </div>
     </div>
@@ -2643,21 +2772,7 @@ export const getEvents = async (params?: EventQueryParams): Promise&lt;Paginated
             
     <div>
         
-        <pre class="code-box">    filtered = filtered.filter(e =&gt; e.start_date &gt;= params.dateFrom!);
-  }
-  if (params?.dateTo) {
-    filtered = filtered.filter(e =&gt; e.start_date &lt;= params.dateTo!);
-  }
-
-  return {
-    success: true,
-    data: filtered,
-    pagination: {
-      page: params?.page || 1,
-      limit: params?.limit || 20,
-      total: filtered.length,
-      totalPages: 1,
-    },
+        <pre class="code-box">    },
   };
 };
 
@@ -2683,7 +2798,21 @@ export const createEvent = async (data: Partial&lt;Event&gt;): Promise&lt;Event&
   } catch {
     // ignore
   }
-</pre>
+
+  const newEvent: Event = {
+    id: `ev-${Date.now()}`,
+    title: data.title || 'Campus Event',
+    slug: data.slug || `event-${Date.now()}`,
+    summary: data.summary,
+    description: data.description || '',
+    poster_url: data.poster_url || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800',
+    category_id: data.category_id,
+    category: data.category || { id: 'cat-1', name: 'Campus Event', slug: 'campus-event' },
+    start_date: data.start_date || new Date().toISOString().split('T')[0],
+    start_time: data.start_time || '10:00 AM',
+    end_date: data.end_date || data.start_date || new Date().toISOString().split('T')[0],
+    end_time: data.end_time || '12:00 PM',
+    timezone: 'Asia/Kolkata',</pre>
     </div>
     
         </div>
@@ -2691,7 +2820,7 @@ export const createEvent = async (data: Partial&lt;Event&gt;): Promise&lt;Event&
             <div class="running-footer-line"></div>
             <div class="running-footer-content">
                 <span class="dept-title">DEPARTMENT OF CSE - CYBER SECURITY</span>
-                <span class="page-num">35</span>
+                <span class="page-num">37</span>
             </div>
         </div>
     </div>
@@ -2706,21 +2835,7 @@ export const createEvent = async (data: Partial&lt;Event&gt;): Promise&lt;Event&
             
     <div>
         
-        <pre class="code-box">  const newEvent: Event = {
-    id: `ev-${Date.now()}`,
-    title: data.title || 'Campus Event',
-    slug: data.slug || `event-${Date.now()}`,
-    summary: data.summary,
-    description: data.description || '',
-    poster_url: data.poster_url || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800',
-    category_id: data.category_id,
-    category: data.category || { id: 'cat-1', name: 'Campus Event', slug: 'campus-event' },
-    start_date: data.start_date || new Date().toISOString().split('T')[0],
-    start_time: data.start_time || '10:00 AM',
-    end_date: data.end_date || data.start_date || new Date().toISOString().split('T')[0],
-    end_time: data.end_time || '12:00 PM',
-    timezone: 'Asia/Kolkata',
-    is_all_day: false,
+        <pre class="code-box">    is_all_day: false,
     venue: data.venue || 'Campus Auditorium',
     is_online: data.is_online || false,
     meeting_url: data.meeting_url,
@@ -2746,7 +2861,21 @@ export const createEvent = async (data: Partial&lt;Event&gt;): Promise&lt;Event&
   return newEvent;
 };
 
-export const updateEvent = async (id: string, data: Partial&lt;Event&gt;): Promise&lt;Event&gt; =&gt; {</pre>
+export const updateEvent = async (id: string, data: Partial&lt;Event&gt;): Promise&lt;Event&gt; =&gt; {
+  try {
+    const res = await api.patch&lt;ApiResponse&lt;Event&gt;&gt;(`/events/${id}`, data);
+    if (res.data) return res.data;
+  } catch {
+    // ignore
+  }
+  const idx = localCreatedEvents.findIndex(e =&gt; e.id === id);
+  if (idx !== -1) {
+    localCreatedEvents[idx] = { ...localCreatedEvents[idx], ...data };
+    return localCreatedEvents[idx];
+  }
+  return { ...getFallbackEvents()[0], ...data };
+};
+</pre>
     </div>
     
         </div>
@@ -2754,7 +2883,7 @@ export const updateEvent = async (id: string, data: Partial&lt;Event&gt;): Promi
             <div class="running-footer-line"></div>
             <div class="running-footer-content">
                 <span class="dept-title">DEPARTMENT OF CSE - CYBER SECURITY</span>
-                <span class="page-num">36</span>
+                <span class="page-num">38</span>
             </div>
         </div>
     </div>
@@ -2769,21 +2898,7 @@ export const updateEvent = async (id: string, data: Partial&lt;Event&gt;): Promi
             
     <div>
         
-        <pre class="code-box">  try {
-    const res = await api.patch&lt;ApiResponse&lt;Event&gt;&gt;(`/events/${id}`, data);
-    if (res.data) return res.data;
-  } catch {
-    // ignore
-  }
-  const idx = localCreatedEvents.findIndex(e =&gt; e.id === id);
-  if (idx !== -1) {
-    localCreatedEvents[idx] = { ...localCreatedEvents[idx], ...data };
-    return localCreatedEvents[idx];
-  }
-  return { ...getFallbackEvents()[0], ...data };
-};
-
-export const deleteEvent = async (id: string): Promise&lt;void&gt; =&gt; {
+        <pre class="code-box">export const deleteEvent = async (id: string): Promise&lt;void&gt; =&gt; {
   try {
     await api.delete&lt;void&gt;(`/events/${id}`);
   } catch {
@@ -2809,7 +2924,21 @@ export const getEventsByDate = async (date: string, collegeId?: string): Promise
 };
 
 export const getUpcomingEvents = async (limit: number = 6): Promise&lt;Event[]&gt; =&gt; {
-  const today = new Date().toISOString().split('T')[0];</pre>
+  const today = new Date().toISOString().split('T')[0];
+  try {
+    const query = new URLSearchParams({ dateFrom: today, sort: 'date', limit: limit.toString() });
+    const res = await api.get&lt;PaginatedResponse&lt;Event&gt;&gt;(`/events?${query.toString()}`);
+    if (res.data &amp;&amp; res.data.length &gt; 0) return res.data;
+  } catch {
+    // ignore
+  }
+  const all = await getEvents({ dateFrom: today, limit });
+  return all.data.slice(0, limit);
+};
+
+export const getPopularEvents = async (limit: number = 6): Promise&lt;Event[]&gt; =&gt; {
+  try {
+    const query = new URLSearchParams({ sort: 'popularity', limit: limit.toString() });</pre>
     </div>
     
         </div>
@@ -2817,7 +2946,7 @@ export const getUpcomingEvents = async (limit: number = 6): Promise&lt;Event[]&g
             <div class="running-footer-line"></div>
             <div class="running-footer-content">
                 <span class="dept-title">DEPARTMENT OF CSE - CYBER SECURITY</span>
-                <span class="page-num">37</span>
+                <span class="page-num">39</span>
             </div>
         </div>
     </div>
@@ -2832,21 +2961,7 @@ export const getUpcomingEvents = async (limit: number = 6): Promise&lt;Event[]&g
             
     <div>
         
-        <pre class="code-box">  try {
-    const query = new URLSearchParams({ dateFrom: today, sort: 'date', limit: limit.toString() });
-    const res = await api.get&lt;PaginatedResponse&lt;Event&gt;&gt;(`/events?${query.toString()}`);
-    if (res.data &amp;&amp; res.data.length &gt; 0) return res.data;
-  } catch {
-    // ignore
-  }
-  const all = await getEvents({ dateFrom: today, limit });
-  return all.data.slice(0, limit);
-};
-
-export const getPopularEvents = async (limit: number = 6): Promise&lt;Event[]&gt; =&gt; {
-  try {
-    const query = new URLSearchParams({ sort: 'popularity', limit: limit.toString() });
-    const res = await api.get&lt;PaginatedResponse&lt;Event&gt;&gt;(`/events?${query.toString()}`);
+        <pre class="code-box">    const res = await api.get&lt;PaginatedResponse&lt;Event&gt;&gt;(`/events?${query.toString()}`);
     if (res.data &amp;&amp; res.data.length &gt; 0) return res.data;
   } catch {
     // ignore
@@ -2872,7 +2987,21 @@ import { useAppTheme } from '../../hooks/useTheme';
 import { Ionicons } from '@expo/vector-icons';
 import { validateGmailAddress } from '../../utils/validators';
 import api from '../../services/api';
-</pre>
+
+export default function LoginScreen() {
+  const { signIn, signInWithGoogle, continueAsGuest, resendVerificationEmail, isLoading } = useAuth();
+  const { colors, typography, spacing, borderRadius } = useAppTheme();
+  
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
+  const [isUnconfirmed, setIsUnconfirmed] = useState(false);
+  const [resending, setResending] = useState(false);
+
+  const handleLogin = async () =&gt; {
+    const cleanEmail = email.trim().toLowerCase();
+    if (!cleanEmail || !password.trim()) {
+      setErrorMsg('Please enter both email and password.');</pre>
     </div>
     
         </div>
@@ -2880,7 +3009,7 @@ import api from '../../services/api';
             <div class="running-footer-line"></div>
             <div class="running-footer-content">
                 <span class="dept-title">DEPARTMENT OF CSE - CYBER SECURITY</span>
-                <span class="page-num">38</span>
+                <span class="page-num">40</span>
             </div>
         </div>
     </div>
@@ -2895,21 +3024,7 @@ import api from '../../services/api';
             
     <div>
         
-        <pre class="code-box">export default function LoginScreen() {
-  const { signIn, signInWithGoogle, continueAsGuest, resendVerificationEmail, isLoading } = useAuth();
-  const { colors, typography, spacing, borderRadius } = useAppTheme();
-  
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [errorMsg, setErrorMsg] = useState('');
-  const [isUnconfirmed, setIsUnconfirmed] = useState(false);
-  const [resending, setResending] = useState(false);
-
-  const handleLogin = async () =&gt; {
-    const cleanEmail = email.trim().toLowerCase();
-    if (!cleanEmail || !password.trim()) {
-      setErrorMsg('Please enter both email and password.');
-      return;
+        <pre class="code-box">      return;
     }
 
     const gmailValidation = validateGmailAddress(cleanEmail);
@@ -2924,45 +3039,7 @@ import api from '../../services/api';
       await signIn(cleanEmail, password);
       router.replace('/(tabs)/home');
     } catch (e: any) {
-      // Check status from backend for actionable feedback
-      try {
-        const res = await api.post&lt;{ success: boolean; data: { exists: boolean; confirmed: boolean } }&gt;('/auth/check-status', {
-          email: cleanEmail,
-        });
-        if (res?.data?.exists &amp;&amp; !res?.data?.confirmed) {
-          setIsUnconfirmed(true);
-          return;
-        }
-        if (res?.data &amp;&amp; !res?.data?.exists) {
-          setErrorMsg('No account found with this email. Please sign up first.');
-          return;</pre>
-    </div>
-    
-        </div>
-        <div class="running-footer">
-            <div class="running-footer-line"></div>
-            <div class="running-footer-content">
-                <span class="dept-title">DEPARTMENT OF CSE - CYBER SECURITY</span>
-                <span class="page-num">39</span>
-            </div>
-        </div>
-    </div>
-    
-    <div class="page">
-        
-        <div class="running-header">
-            <div class="running-header-text">HYBRID APP DEVELOPMENT  25CCHADT305</div>
-            <div class="running-header-line"></div>
-        </div>
-        <div style="flex: 1; display: flex; flex-direction: column; position: relative; z-index: 1;">
-            
-    <div>
-        
-        <pre class="code-box">        }
-      } catch {
-        // ignore check-status fallback
-      }
-      setErrorMsg(e.message || 'Invalid email or password.');
+      setErrorMsg(e.message || 'Unable to sign in. Please verify your credentials and try again.');
     }
   };
 
@@ -2987,18 +3064,7 @@ import api from '../../services/api';
       &lt;KeyboardAvoidingView 
         style={{ flex: 1 }} 
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      &gt;
-        &lt;ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', padding: spacing.lg }}&gt;
-        {/* App Branding */}
-        &lt;View style={{ alignItems: 'center', marginBottom: spacing.xl }}&gt;
-          &lt;View style={{
-            width: 64,
-            height: 64,
-            borderRadius: 32,
-            backgroundColor: colors.accent + '22',
-            justifyContent: 'center',
-            alignItems: 'center',
-            marginBottom: spacing.md,</pre>
+      &gt;</pre>
     </div>
     
         </div>
@@ -3006,7 +3072,7 @@ import api from '../../services/api';
             <div class="running-footer-line"></div>
             <div class="running-footer-content">
                 <span class="dept-title">DEPARTMENT OF CSE - CYBER SECURITY</span>
-                <span class="page-num">40</span>
+                <span class="page-num">41</span>
             </div>
         </div>
     </div>
@@ -3021,7 +3087,18 @@ import api from '../../services/api';
             
     <div>
         
-        <pre class="code-box">          }}&gt;
+        <pre class="code-box">        &lt;ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', padding: spacing.lg }}&gt;
+        {/* App Branding */}
+        &lt;View style={{ alignItems: 'center', marginBottom: spacing.xl }}&gt;
+          &lt;View style={{
+            width: 64,
+            height: 64,
+            borderRadius: 32,
+            backgroundColor: colors.accent + '22',
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginBottom: spacing.md,
+          }}&gt;
             &lt;Ionicons name="calendar" size={36} color={colors.accent} /&gt;
           &lt;/View&gt;
           &lt;Text style={[typography.heading1, { color: colors.text, textAlign: 'center' }]}&gt;
@@ -3050,18 +3127,7 @@ import api from '../../services/api';
             &lt;/Text&gt;
             &lt;View style={{ flexDirection: 'row', gap: spacing.sm }}&gt;
               &lt;TouchableOpacity
-                disabled={resending}
-                onPress={async () =&gt; {
-                  const cleanEmail = email.trim().toLowerCase();
-                  setResending(true);
-                  try {
-                    await resendVerificationEmail(cleanEmail);
-                    Alert.alert('Link Resent! 📬', `A fresh confirmation link has been sent to ${cleanEmail}.`);
-                  } catch (err: any) {
-                    Alert.alert('Error', err.message || 'Could not resend link.');
-                  } finally {
-                    setResending(false);
-                  }</pre>
+                disabled={resending}</pre>
     </div>
     
         </div>
@@ -3069,7 +3135,7 @@ import api from '../../services/api';
             <div class="running-footer-line"></div>
             <div class="running-footer-content">
                 <span class="dept-title">DEPARTMENT OF CSE - CYBER SECURITY</span>
-                <span class="page-num">41</span>
+                <span class="page-num">42</span>
             </div>
         </div>
     </div>
@@ -3084,7 +3150,18 @@ import api from '../../services/api';
             
     <div>
         
-        <pre class="code-box">                }}
+        <pre class="code-box">                onPress={async () =&gt; {
+                  const cleanEmail = email.trim().toLowerCase();
+                  setResending(true);
+                  try {
+                    await resendVerificationEmail(cleanEmail);
+                    Alert.alert('Link Resent! 📬', `A fresh confirmation link has been sent to ${cleanEmail}.`);
+                  } catch (err: any) {
+                    Alert.alert('Error', err.message || 'Could not resend link.');
+                  } finally {
+                    setResending(false);
+                  }
+                }}
                 style={{
                   backgroundColor: colors.accent,
                   paddingVertical: 8,
@@ -3113,18 +3190,7 @@ import api from '../../services/api';
                 &lt;/Text&gt;
               &lt;/TouchableOpacity&gt;
             &lt;/View&gt;
-          &lt;/View&gt;
-        ) : errorMsg ? (
-          &lt;View style={{
-            backgroundColor: colors.error + '22',
-            borderWidth: 1,
-            borderColor: colors.error,
-            padding: spacing.md,
-            borderRadius: borderRadius.md,
-            marginBottom: spacing.md,
-          }}&gt;
-            &lt;Text style={{ color: colors.error, fontSize: 13, fontWeight: '500' }}&gt;
-              {errorMsg}</pre>
+          &lt;/View&gt;</pre>
     </div>
     
         </div>
@@ -3132,7 +3198,7 @@ import api from '../../services/api';
             <div class="running-footer-line"></div>
             <div class="running-footer-content">
                 <span class="dept-title">DEPARTMENT OF CSE - CYBER SECURITY</span>
-                <span class="page-num">42</span>
+                <span class="page-num">43</span>
             </div>
         </div>
     </div>
@@ -3147,7 +3213,18 @@ import api from '../../services/api';
             
     <div>
         
-        <pre class="code-box">            &lt;/Text&gt;
+        <pre class="code-box">        ) : errorMsg ? (
+          &lt;View style={{
+            backgroundColor: colors.error + '22',
+            borderWidth: 1,
+            borderColor: colors.error,
+            padding: spacing.md,
+            borderRadius: borderRadius.md,
+            marginBottom: spacing.md,
+          }}&gt;
+            &lt;Text style={{ color: colors.error, fontSize: 13, fontWeight: '500' }}&gt;
+              {errorMsg}
+            &lt;/Text&gt;
           &lt;/View&gt;
         ) : null}
 
@@ -3176,18 +3253,7 @@ import api from '../../services/api';
             &lt;Text style={[typography.caption, { color: colors.accent }]}&gt;
               Forgot Password?
             &lt;/Text&gt;
-          &lt;/TouchableOpacity&gt;
-        &lt;/View&gt;
-
-        &lt;Button
-          title="Sign In with Email"
-          variant="primary"
-          onPress={handleLogin}
-          isLoading={isLoading}
-          style={{ marginBottom: spacing.md }}
-        /&gt;
-
-        {/* Separator */}</pre>
+          &lt;/TouchableOpacity&gt;</pre>
     </div>
     
         </div>
@@ -3195,7 +3261,7 @@ import api from '../../services/api';
             <div class="running-footer-line"></div>
             <div class="running-footer-content">
                 <span class="dept-title">DEPARTMENT OF CSE - CYBER SECURITY</span>
-                <span class="page-num">43</span>
+                <span class="page-num">44</span>
             </div>
         </div>
     </div>
@@ -3210,7 +3276,18 @@ import api from '../../services/api';
             
     <div>
         
-        <pre class="code-box">        &lt;View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: spacing.md }}&gt;
+        <pre class="code-box">        &lt;/View&gt;
+
+        &lt;Button
+          title="Sign In with Email"
+          variant="primary"
+          onPress={handleLogin}
+          isLoading={isLoading}
+          style={{ marginBottom: spacing.md }}
+        /&gt;
+
+        {/* Separator */}
+        &lt;View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: spacing.md }}&gt;
           &lt;View style={{ flex: 1, height: 1, backgroundColor: colors.separator }} /&gt;
           &lt;Text style={[typography.caption, { color: colors.textDisabled, marginHorizontal: spacing.md }]}&gt;
             OR
@@ -3239,18 +3316,7 @@ import api from '../../services/api';
             Continue with Google
           &lt;/Text&gt;
         &lt;/TouchableOpacity&gt;
-
-        {/* Guest Access Option */}
-        &lt;TouchableOpacity
-          onPress={handleGuestAccess}
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-            paddingVertical: spacing.md,
-            borderRadius: borderRadius.md,
-            backgroundColor: colors.secondary,
-            marginBottom: spacing.xl,</pre>
+</pre>
     </div>
     
         </div>
@@ -3258,7 +3324,7 @@ import api from '../../services/api';
             <div class="running-footer-line"></div>
             <div class="running-footer-content">
                 <span class="dept-title">DEPARTMENT OF CSE - CYBER SECURITY</span>
-                <span class="page-num">44</span>
+                <span class="page-num">45</span>
             </div>
         </div>
     </div>
@@ -3273,7 +3339,18 @@ import api from '../../services/api';
             
     <div>
         
-        <pre class="code-box">            borderWidth: 1,
+        <pre class="code-box">        {/* Guest Access Option */}
+        &lt;TouchableOpacity
+          onPress={handleGuestAccess}
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            paddingVertical: spacing.md,
+            borderRadius: borderRadius.md,
+            backgroundColor: colors.secondary,
+            marginBottom: spacing.xl,
+            borderWidth: 1,
             borderColor: colors.separator,
           }}
         &gt;
@@ -3302,18 +3379,7 @@ import api from '../../services/api';
 
 
 // ===========================================================================
-// FILE: mobile/app/events/[id].tsx
-// MODULE: Event Detail View &amp; Interactive Registration Module
-// PROJECT: CAMPUS EVENTS (JCET AUTONOMOUS)
-// ===========================================================================
-import React, { useState } from 'react';
-import { View, Text, ScrollView, Image, TouchableOpacity, Alert, Linking, Share } from 'react-native';
-import { ScreenWrapper } from '../../components/ui/ScreenWrapper';
-import { Button } from '../../components/ui/Button';
-import { Badge } from '../../components/ui/Badge';
-import { LoadingSpinner } from '../../components/ui/LoadingSpinner';
-import { useAppTheme } from '../../hooks/useTheme';
-import { useEvent } from '../../hooks/useEvents';</pre>
+// FILE: mobile/app/events/[id].tsx</pre>
     </div>
     
         </div>
@@ -3321,7 +3387,7 @@ import { useEvent } from '../../hooks/useEvents';</pre>
             <div class="running-footer-line"></div>
             <div class="running-footer-content">
                 <span class="dept-title">DEPARTMENT OF CSE - CYBER SECURITY</span>
-                <span class="page-num">45</span>
+                <span class="page-num">46</span>
             </div>
         </div>
     </div>
@@ -3336,7 +3402,18 @@ import { useEvent } from '../../hooks/useEvents';</pre>
             
     <div>
         
-        <pre class="code-box">import { useRegisterForEvent, useCancelRegistration, useMyRegistrations } from '../../hooks/useRegistrations';
+        <pre class="code-box">// MODULE: Event Detail View &amp; Interactive Registration Module
+// PROJECT: CAMPUS EVENTS (JCET AUTONOMOUS)
+// ===========================================================================
+import React, { useState } from 'react';
+import { View, Text, ScrollView, Image, TouchableOpacity, Alert, Linking, Share } from 'react-native';
+import { ScreenWrapper } from '../../components/ui/ScreenWrapper';
+import { Button } from '../../components/ui/Button';
+import { Badge } from '../../components/ui/Badge';
+import { LoadingSpinner } from '../../components/ui/LoadingSpinner';
+import { useAppTheme } from '../../hooks/useTheme';
+import { useEvent } from '../../hooks/useEvents';
+import { useRegisterForEvent, useCancelRegistration, useMyRegistrations } from '../../hooks/useRegistrations';
 import { useSaveEvent, useUnsaveEvent, useSavedEvents } from '../../hooks/useSavedEvents';
 import { useAuth } from '../../hooks/useAuth';
 import { useLocalSearchParams, router } from 'expo-router';
@@ -3365,18 +3442,7 @@ export default function EventDetailScreen() {
     ? mySaved
     : (Array.isArray((mySaved as any)?.data) ? (mySaved as any).data : []);
 
-  const isRegistered = regList.some((r: any) =&gt; r?.event_id === id &amp;&amp; r?.status !== 'cancelled');
-  const isSaved = savedList.some((s: any) =&gt; s?.event_id === id);
-
-  const [reportModalVisible, setReportModalVisible] = useState(false);
-
-  if (isLoading) {
-    return (
-      &lt;ScreenWrapper style={{ justifyContent: 'center', alignItems: 'center' }}&gt;
-        &lt;LoadingSpinner /&gt;
-      &lt;/ScreenWrapper&gt;
-    );
-  }</pre>
+  const isRegistered = regList.some((r: any) =&gt; r?.event_id === id &amp;&amp; r?.status !== 'cancelled');</pre>
     </div>
     
         </div>
@@ -3384,7 +3450,7 @@ export default function EventDetailScreen() {
             <div class="running-footer-line"></div>
             <div class="running-footer-content">
                 <span class="dept-title">DEPARTMENT OF CSE - CYBER SECURITY</span>
-                <span class="page-num">46</span>
+                <span class="page-num">47</span>
             </div>
         </div>
     </div>
@@ -3399,7 +3465,18 @@ export default function EventDetailScreen() {
             
     <div>
         
-        <pre class="code-box">
+        <pre class="code-box">  const isSaved = savedList.some((s: any) =&gt; s?.event_id === id);
+
+  const [reportModalVisible, setReportModalVisible] = useState(false);
+
+  if (isLoading) {
+    return (
+      &lt;ScreenWrapper style={{ justifyContent: 'center', alignItems: 'center' }}&gt;
+        &lt;LoadingSpinner /&gt;
+      &lt;/ScreenWrapper&gt;
+    );
+  }
+
   if (error || !event) {
     return (
       &lt;ScreenWrapper style={{ justifyContent: 'center', alignItems: 'center', padding: spacing.xl }}&gt;
@@ -3428,18 +3505,7 @@ export default function EventDetailScreen() {
 
   const handleToggleSave = () =&gt; {
     if (!user) {
-      Alert.alert(
-        'Sign In Required 🔐',
-        'Please sign in with your verified Gmail account to save events to your bookmarks.',
-        [
-          { text: 'Cancel', style: 'cancel' },
-          { text: 'Sign In', onPress: () =&gt; router.push('/auth/login') }
-        ]
-      );
-      return;
-    }
-    if (isSaved) {
-      unsaveMutation.mutate(event.id);</pre>
+      Alert.alert(</pre>
     </div>
     
         </div>
@@ -3447,7 +3513,7 @@ export default function EventDetailScreen() {
             <div class="running-footer-line"></div>
             <div class="running-footer-content">
                 <span class="dept-title">DEPARTMENT OF CSE - CYBER SECURITY</span>
-                <span class="page-num">47</span>
+                <span class="page-num">48</span>
             </div>
         </div>
     </div>
@@ -3462,7 +3528,18 @@ export default function EventDetailScreen() {
             
     <div>
         
-        <pre class="code-box">    } else {
+        <pre class="code-box">        'Sign In Required 🔐',
+        'Please sign in with your verified Gmail account to save events to your bookmarks.',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          { text: 'Sign In', onPress: () =&gt; router.push('/auth/login') }
+        ]
+      );
+      return;
+    }
+    if (isSaved) {
+      unsaveMutation.mutate(event.id);
+    } else {
       saveMutation.mutate(event.id);
     }
   };
@@ -3491,18 +3568,7 @@ export default function EventDetailScreen() {
     }
 
     try {
-      await registerMutation.mutateAsync(event.id);
-      Alert.alert('Registration Confirmed! 🎉', 'You have registered for this event. View it anytime in My Events.');
-    } catch (e: any) {
-      Alert.alert('Registration Notice', e.message || 'Unable to register at this time.');
-    }
-  };
-
-  const handleCancelRegistration = () =&gt; {
-    Alert.alert(
-      'Cancel Registration',
-      'Are you sure you want to withdraw your registration for this event?',
-      [</pre>
+      await registerMutation.mutateAsync(event.id);</pre>
     </div>
     
         </div>
@@ -3510,7 +3576,7 @@ export default function EventDetailScreen() {
             <div class="running-footer-line"></div>
             <div class="running-footer-content">
                 <span class="dept-title">DEPARTMENT OF CSE - CYBER SECURITY</span>
-                <span class="page-num">48</span>
+                <span class="page-num">49</span>
             </div>
         </div>
     </div>
@@ -3525,7 +3591,18 @@ export default function EventDetailScreen() {
             
     <div>
         
-        <pre class="code-box">        { text: 'Keep Registration', style: 'cancel' },
+        <pre class="code-box">      Alert.alert('Registration Confirmed! 🎉', 'You have registered for this event. View it anytime in My Events.');
+    } catch (e: any) {
+      Alert.alert('Registration Notice', e.message || 'Unable to register at this time.');
+    }
+  };
+
+  const handleCancelRegistration = () =&gt; {
+    Alert.alert(
+      'Cancel Registration',
+      'Are you sure you want to withdraw your registration for this event?',
+      [
+        { text: 'Keep Registration', style: 'cancel' },
         {
           text: 'Confirm Withdrawal',
           style: 'destructive',
@@ -3554,18 +3631,7 @@ export default function EventDetailScreen() {
           {
             text: 'Submit Report',
             onPress: (text?: string) =&gt; Alert.alert('Report Submitted', 'Thank you. Administrators will review this report.'),
-          },
-        ])
-      : Alert.alert('Report Event', 'Report received. Our moderation team has been notified.');
-  };
-
-  const categoryName = typeof event.category === 'object' &amp;&amp; event.category?.name 
-    ? event.category.name 
-    : 'Campus Activity';
-
-  const isRegistrationClosed = event.registration_deadline &amp;&amp; new Date(event.registration_deadline) &lt; new Date();
-  const isFull = event.max_attendees &amp;&amp; event.current_attendees &gt;= event.max_attendees;
-</pre>
+          },</pre>
     </div>
     
         </div>
@@ -3573,7 +3639,7 @@ export default function EventDetailScreen() {
             <div class="running-footer-line"></div>
             <div class="running-footer-content">
                 <span class="dept-title">DEPARTMENT OF CSE - CYBER SECURITY</span>
-                <span class="page-num">49</span>
+                <span class="page-num">50</span>
             </div>
         </div>
     </div>
@@ -3588,7 +3654,18 @@ export default function EventDetailScreen() {
             
     <div>
         
-        <pre class="code-box">  return (
+        <pre class="code-box">        ])
+      : Alert.alert('Report Event', 'Report received. Our moderation team has been notified.');
+  };
+
+  const categoryName = typeof event.category === 'object' &amp;&amp; event.category?.name 
+    ? event.category.name 
+    : 'Campus Activity';
+
+  const isRegistrationClosed = event.registration_deadline &amp;&amp; new Date(event.registration_deadline) &lt; new Date();
+  const isFull = event.max_attendees &amp;&amp; event.current_attendees &gt;= event.max_attendees;
+
+  return (
     &lt;ScreenWrapper style={{ padding: 0 }}&gt;
       &lt;ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}&gt;
         {/* Poster Header */}
@@ -3617,18 +3694,7 @@ export default function EventDetailScreen() {
                 width: 40,
                 height: 40,
                 borderRadius: 20,
-                backgroundColor: 'rgba(0,0,0,0.6)',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-              accessibilityLabel="Go back"
-            &gt;
-              &lt;Ionicons name="arrow-back" size={22} color="#FFFFFF" /&gt;
-            &lt;/TouchableOpacity&gt;
-
-            &lt;View style={{ flexDirection: 'row', gap: spacing.sm }}&gt;
-              &lt;TouchableOpacity
-                onPress={handleToggleSave}</pre>
+                backgroundColor: 'rgba(0,0,0,0.6)',</pre>
     </div>
     
         </div>
@@ -3636,7 +3702,7 @@ export default function EventDetailScreen() {
             <div class="running-footer-line"></div>
             <div class="running-footer-content">
                 <span class="dept-title">DEPARTMENT OF CSE - CYBER SECURITY</span>
-                <span class="page-num">50</span>
+                <span class="page-num">51</span>
             </div>
         </div>
     </div>
@@ -3651,7 +3717,18 @@ export default function EventDetailScreen() {
             
     <div>
         
-        <pre class="code-box">                style={{
+        <pre class="code-box">                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+              accessibilityLabel="Go back"
+            &gt;
+              &lt;Ionicons name="arrow-back" size={22} color="#FFFFFF" /&gt;
+            &lt;/TouchableOpacity&gt;
+
+            &lt;View style={{ flexDirection: 'row', gap: spacing.sm }}&gt;
+              &lt;TouchableOpacity
+                onPress={handleToggleSave}
+                style={{
                   width: 40,
                   height: 40,
                   borderRadius: 20,
@@ -3680,81 +3757,7 @@ export default function EventDetailScreen() {
               &lt;/TouchableOpacity&gt;
             &lt;/View&gt;
           &lt;/View&gt;
-        &lt;/View&gt;
-
-        {/* Content Details */}
-        &lt;View style={{ padding: spacing.lg }}&gt;
-          &lt;View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.xs }}&gt;
-            &lt;Badge label={categoryName} variant="accent" /&gt;
-            &lt;Text style={[typography.caption, { color: colors.accent, fontWeight: 'bold' }]}&gt;
-              {event.is_free ? 'FREE ENTRY' : `INR ${event.price || 0}`}
-            &lt;/Text&gt;
-          &lt;/View&gt;
-
-          &lt;Text style={[typography.heading1, { color: colors.text, marginVertical: spacing.xs }]}&gt;</pre>
-    </div>
-    
-        </div>
-        <div class="running-footer">
-            <div class="running-footer-line"></div>
-            <div class="running-footer-content">
-                <span class="dept-title">DEPARTMENT OF CSE - CYBER SECURITY</span>
-                <span class="page-num">51</span>
-            </div>
-        </div>
-    </div>
-    
-    <div class="page">
-        
-        <div class="running-header">
-            <div class="running-header-text">HYBRID APP DEVELOPMENT  25CCHADT305</div>
-            <div class="running-header-line"></div>
-        </div>
-        <div style="flex: 1; display: flex; flex-direction: column; position: relative; z-index: 1;">
-            
-    <div>
-        
-        <pre class="code-box">            {event.title}
-          &lt;/Text&gt;
-
-          {event.summary ? (
-            &lt;Text style={[typography.body, { color: colors.textSecondary, marginBottom: spacing.md }]}&gt;
-              {event.summary}
-            &lt;/Text&gt;
-          ) : null}
-
-          {/* Date &amp; Time Row */}
-          &lt;View style={{
-            flexDirection: 'row',
-            backgroundColor: colors.secondary,
-            borderRadius: borderRadius.md,
-            padding: spacing.md,
-            marginBottom: spacing.sm,
-            borderWidth: 1,
-            borderColor: colors.separator,
-          }}&gt;
-            &lt;Ionicons name="calendar-outline" size={24} color={colors.accent} style={{ marginRight: spacing.md }} /&gt;
-            &lt;View style={{ flex: 1 }}&gt;
-              &lt;Text style={[typography.body, { color: colors.text, fontWeight: 'bold' }]}&gt;
-                {formatDate(event.start_date)}
-              &lt;/Text&gt;
-              &lt;Text style={[typography.caption, { color: colors.textSecondary }]}&gt;
-                {formatTime(event.start_time)} {event.end_time ? `- ${formatTime(event.end_time)}` : ''} ({event.timezone || 'Asia/Kolkata'})
-              &lt;/Text&gt;
-            &lt;/View&gt;
-          &lt;/View&gt;
-
-          {/* Venue / Meeting Location Row */}
-          &lt;View style={{
-            flexDirection: 'row',
-            backgroundColor: colors.secondary,
-            borderRadius: borderRadius.md,
-            padding: spacing.md,
-            marginBottom: spacing.md,
-            borderWidth: 1,
-            borderColor: colors.separator,
-          }}&gt;
-            &lt;Ionicons name={event.is_online ? "videocam-outline" : "location-outline"} size={24} color={colors.accentSecondary} style={{ marginRight: spacing.md }} /&gt;</pre>
+        &lt;/View&gt;</pre>
     </div>
     
         </div>

@@ -109,9 +109,8 @@ p2 = c2.paragraphs[0]
 p2.alignment = WD_ALIGN_PARAGRAPH.RIGHT
 r_gd = p2.add_run("Guided by\n")
 r_gd.bold = True
-r_gname = p2.add_run("Prof. Dr. R. SATHEESH KUMAR\n")
+r_gname = p2.add_run("Ms.Ashitha.C\n")
 r_gname.bold = True
-p2.add_run("Professor and HoD, CSE")
 
 # Bottom emblem removed as requested)
 
@@ -121,7 +120,7 @@ r_col = p_col.add_run(
     "DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING (CYBER SECURITY)\n"
     "JAWAHARLAL COLLEGE OF ENGINEERING AND TECHNOLOGY\n"
     "LAKKIDI, MANGALAM P.O, PALAKKAD, KERALA - 679301\n"
-    "APRIL 2026"
+    "OCTOBER 2026"
 )
 r_col.bold = True
 r_col.font.size = Pt(9.5)
@@ -193,8 +192,8 @@ tbl_sig.columns[1].width = Inches(3.1)
 
 c_s1 = tbl_sig.cell(0, 0)
 p_s1 = c_s1.paragraphs[0]
-p_s1.add_run("Dr. R. Satheesh Kumar\n").bold = True
-p_s1.add_run("(Project Coordinator)")
+p_s1.add_run("Ms.Ashitha.C\n").bold = True
+p_s1.add_run("(Project Guide)")
 
 c_s2 = tbl_sig.cell(0, 1)
 p_s2 = c_s2.paragraphs[0]
@@ -388,13 +387,13 @@ p_dec = doc.add_paragraph()
 p_dec.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
 p_dec.paragraph_format.line_spacing = 1.3
 p_dec.add_run(
-    "We hereby declare that the project report CAMPUS EVENTS submitted for the partial fulfilment "
-    "of the requirements of the Third Semester subject 24CSOPJT405 – Object Oriented Programming in Java, "
+    "I hereby declare that the project report CAMPUS EVENTS submitted for the partial fulfilment "
+    "of the requirements of the subject 25CCHADT305 – Hybrid App Development, "
     "prescribed by Jawaharlal College of Engineering and Technology (Autonomous), affiliated to APJ Abdul Kalam "
-    "Technological University, Kerala is a bonafide work done by us under the guidance of Prof. Dr. R. Satheesh Kumar. "
-    "The submission represents our ideas in our own words and where ideas or words of others have been included, we have "
-    "adequately and accurately cited and referred the original sources. We also declare that we have adhered to ethics "
-    "and integrity and have not misinterpreted or fabricated any data or idea or fact or source in our submission. We "
+    "Technological University, Kerala is a bonafide work done by me under the guidance of Ms.Ashitha.C. "
+    "The submission represents my ideas in my own words and where ideas or words of others have been included, I have "
+    "adequately and accurately cited and referred the original sources. I also declare that I have adhered to ethics "
+    "and integrity and have not misinterpreted or fabricated any data or idea or fact or source in my submission. I "
     "understand that any violation of the above will be a case for disciplinary action by the institution and/or the "
     "University and can also evoke penal actions from the sources which have thus not been properly cited or from whom "
     "proper permission has not been obtained. This report has not previously formed the basis for the award of any "
@@ -485,8 +484,9 @@ p_ack_txt.add_run(
     "We express our sincere thanks to Dr. N. Gunasekaran, Principal of Jawaharlal College of Engineering and Technology, for his "
     "encouragement, leadership, and administrative backing throughout the course of our studies and project development.\n\n"
     "We express our deepest gratitude to Prof. Dr. R. Satheesh Kumar, Professor and Head of the Department of Computer Science "
-    "and Engineering, who also served as our Project Coordinator, for providing constant guidance, academic mentorship, and "
-    "invaluable technical recommendations throughout the architecture and implementation phases.\n\n"
+    "and Engineering, for providing constant encouragement, leadership, and academic mentorship throughout our studies.\n\n"
+    "We express our sincere thanks and profound gratitude to our project guide, Ms.Ashitha.C, for her invaluable guidance, "
+    "constructive suggestions, and continuous encouragement throughout the architecture and implementation phases of this project.\n\n"
     "We also appreciate the valuable feedback and constructive suggestions offered by the evaluation panel members during our "
     "departmental project reviews. Last but not least, we place on record our profound sense of gratitude to our parents, family "
     "members, lab instructors, and fellow classmates whose unwavering moral support and encouragement motivated us at every stage.\n\n"

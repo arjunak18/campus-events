@@ -345,7 +345,7 @@ p1_content = f"""
     
     <div style="font-size: 11pt; font-style: italic; margin-bottom: 3mm;">Guided by</div>
     <div style="font-size: 12pt; font-weight: bold; margin-bottom: 8mm;">
-        Prof. Dr. R. SATHEESH KUMAR
+        Ms.Ashitha.C
     </div>
     
     <div style="text-align: center; margin-top: 5mm;">
@@ -387,8 +387,8 @@ p2_content = f"""
     
     <div style="display: flex; justify-content: space-between; margin-top: 20mm; padding: 0 6mm;">
         <div style="text-align: left;">
-            <div style="font-size: 10.5pt; font-weight: bold;">Dr. R. Satheesh Kumar</div>
-            <div style="font-size: 9.5pt;">(Project Coordinator)</div>
+            <div style="font-size: 10.5pt; font-weight: bold;">Ms.Ashitha.C</div>
+            <div style="font-size: 9.5pt;">(Project Guide)</div>
         </div>
         <div style="text-align: right;">
             <div style="font-size: 10.5pt; font-weight: bold;">Dr. R. Satheesh Kumar</div>
@@ -516,7 +516,7 @@ p8_content = """
     <h2 style="text-align: center; font-size: 13pt; font-weight: bold; margin: 0 0 6mm 0;">DECLARATION</h2>
     
     <p class="body-text" style="line-height: 1.5; margin-bottom: 6mm;">
-        I hereby declare that the project report <b>CAMPUS EVENTS</b> submitted for the partial fulfilment of the requirements of the subject <b>25CCHADT305 – Hybrid App Development</b>, prescribed by Jawaharlal College of Engineering and Technology (Autonomous), affiliated to APJ Abdul Kalam Technological University, Kerala is a bonafide work done by me under the guidance of <b>Prof. Dr. R. Satheesh Kumar</b>. The submission represents my ideas in my own words and where ideas or words of others have been included, I have adequately and accurately cited and referred the original sources. I also declare that I have adhered to ethics and integrity and have not misinterpreted or fabricated any data or idea or fact or source in my submission. I understand that any violation of the above will be a case for disciplinary action by the institution and/or the University and can also evoke penal actions from the sources which have thus not been properly cited or from whom proper permission has not been obtained. This report has not previously formed the basis for the award of any degree, diploma or similar title of any other University.
+        I hereby declare that the project report <b>CAMPUS EVENTS</b> submitted for the partial fulfilment of the requirements of the subject <b>25CCHADT305 – Hybrid App Development</b>, prescribed by Jawaharlal College of Engineering and Technology (Autonomous), affiliated to APJ Abdul Kalam Technological University, Kerala is a bonafide work done by me under the guidance of <b>Ms.Ashitha.C</b>. The submission represents my ideas in my own words and where ideas or words of others have been included, I have adequately and accurately cited and referred the original sources. I also declare that I have adhered to ethics and integrity and have not misinterpreted or fabricated any data or idea or fact or source in my submission. I understand that any violation of the above will be a case for disciplinary action by the institution and/or the University and can also evoke penal actions from the sources which have thus not been properly cited or from whom proper permission has not been obtained. This report has not previously formed the basis for the award of any degree, diploma or similar title of any other University.
     </p>
     
     <div style="display: flex; justify-content: flex-end; margin-top: 10mm; padding-right: 5mm;">
@@ -567,7 +567,10 @@ p10_content = """
         We express our sincere thanks to <b>Dr. N. Gunasekaran</b>, Principal of Jawaharlal College of Engineering and Technology, for his encouragement, leadership, and administrative backing throughout the course of our studies and project development.
     </p>
     <p class="body-text">
-        We express our deepest gratitude to <b>Prof. Dr. R. Satheesh Kumar</b>, Professor and Head of the Department of Computer Science and Engineering, who also served as our Project Coordinator, for providing constant guidance, academic mentorship, and invaluable technical recommendations throughout the architecture and implementation phases.
+        We express our deepest gratitude to <b>Prof. Dr. R. Satheesh Kumar</b>, Professor and Head of the Department of Computer Science and Engineering, for providing constant encouragement, leadership, and academic mentorship throughout our studies.
+    </p>
+    <p class="body-text">
+        We express our sincere thanks and profound gratitude to our project guide, <b>Ms.Ashitha.C</b>, for her invaluable guidance, constructive suggestions, and continuous encouragement throughout the architecture and implementation phases of this project.
     </p>
     <p class="body-text">
         We also appreciate the valuable feedback and constructive suggestions offered by the evaluation panel members during our departmental project reviews. Last but not least, we place on record our profound sense of gratitude to our parents, family members, lab instructors, and fellow classmates whose unwavering moral support and encouragement motivated us at every stage.
