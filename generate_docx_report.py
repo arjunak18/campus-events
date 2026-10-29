@@ -463,14 +463,12 @@ r = p.add_run("COURSE OUTCOMES (COS)\n")
 r.bold = True
 r.underline = True
 
-p_sub = doc.add_paragraph("At the end of the course students should be able to:")
-
 tbl_co = doc.add_table(rows=6, cols=3)
 tbl_co.alignment = WD_TABLE_ALIGNMENT.CENTER
 set_table_borders(tbl_co)
-tbl_co.columns[0].width = Inches(0.7)
+tbl_co.columns[0].width = Inches(0.9)
 tbl_co.columns[1].width = Inches(4.3)
-tbl_co.columns[2].width = Inches(1.2)
+tbl_co.columns[2].width = Inches(1.0)
 
 # Header
 h0 = tbl_co.cell(0, 0)
@@ -479,101 +477,121 @@ h2 = tbl_co.cell(0, 2)
 for h in [h0, h1, h2]:
     set_cell_shading(h, "F2F2F2")
     set_cell_margins(h, 60, 60, 100, 100)
+p_h0 = h0.paragraphs[0]
+p_h0.alignment = WD_ALIGN_PARAGRAPH.CENTER
+r = p_h0.add_run("CO Number")
+r.bold = True
+r.font.size = Pt(8.5)
+
 p_h1 = h1.paragraphs[0]
 p_h1.alignment = WD_ALIGN_PARAGRAPH.CENTER
-r = p_h1.add_run("Course Outcome")
+r = p_h1.add_run("Course Outcome Statement")
 r.bold = True
-r.font.size = Pt(9)
+r.font.size = Pt(8.5)
+
 p_h2 = h2.paragraphs[0]
 p_h2.alignment = WD_ALIGN_PARAGRAPH.CENTER
-r = p_h2.add_run("Bloom’s Knowledge Level (KL)")
+r = p_h2.add_run("Weightage in %")
 r.bold = True
 r.font.size = Pt(8.5)
 
 co_rows = [
-    ("CO1", "Explain the architecture and lifecycle of cross-platform hybrid mobile applications, including component hierarchy and reactive state management.", "K2"),
-    ("CO2", "Utilize React Native, TypeScript, and Expo ecosystem to design interactive, responsive, and accessible mobile user interfaces.", "K3"),
-    ("CO3", "Develop secure backend integrations with cloud PostgreSQL databases using Supabase, enforcing Row-Level Security (RLS) policies.", "K3"),
-    ("CO4", "Implement native device hardware capabilities, local storage caching, and calendar scheduling synchronization.", "K3"),
-    ("CO5", "Deploy, test, and debug standalone Android application packages (APK) on physical devices with error logging and monitoring.", "K3")
+    ("CO1", "Describe and compare mobile development approaches (native, web, hybrid) and the architecture of hybrid frameworks.(Understanding)", "20"),
+    ("CO2", "Design user interfaces and navigation workflows for hybrid applications using responsive layouts, UI components, and state management concepts.(Applying)", "20"),
+    ("CO3", "Develop functional hybrid applications by integrating backend services, authentication, and native device features such as sensors, camera, and notifications.(Applying)", "20"),
+    ("CO4", "Test, debug, optimize, and deploy hybrid applications using build pipelines, performance tools, secure storage, and publishing standards.(Analyze)", "20"),
+    ("CO5", "Create and present a complete hybrid mobile application project demonstrating end-to-end development using Visual Studio Code, version control, documentation, and modern best practices.(Creating)", "20")
 ]
-for idx, (code, desc, kl) in enumerate(co_rows):
+for idx, (code, desc, wt) in enumerate(co_rows):
     c0 = tbl_co.cell(idx+1, 0)
     c1 = tbl_co.cell(idx+1, 1)
     c2 = tbl_co.cell(idx+1, 2)
     for c in [c0, c1, c2]:
         c.vertical_alignment = WD_ALIGN_VERTICAL.CENTER
-        set_cell_margins(c, 60, 60, 100, 100)
-    p0 = c0.paragraphs[0]
-    p0.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    r0 = p0.add_run(code)
-    r0.bold = True
-    r0.font.size = Pt(9)
-    p1 = c1.paragraphs[0]
-    r1 = p1.add_run(desc)
-    r1.font.size = Pt(9)
-    p2 = c2.paragraphs[0]
-    p2.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    r2 = p2.add_run(kl)
-    r2.bold = True
-    r2.font.size = Pt(9)
-
-p_note1 = doc.add_paragraph("Note: K1- Remember, K2- Understand, K3- Apply, K4- Analyse, K5- Evaluate, K6- Create")
-p_note1.runs[0].italic = True
-p_note1.runs[0].font.size = Pt(8.5)
-
-p_copo_hdr = doc.add_paragraph("CO-PO Mapping Table:")
-p_copo_hdr.runs[0].bold = True
-
-tbl_copo = doc.add_table(rows=6, cols=13)
-tbl_copo.alignment = WD_TABLE_ALIGNMENT.CENTER
-set_table_borders(tbl_copo)
-tbl_copo.columns[0].width = Inches(0.7)
-for col_i in range(1, 13):
-    tbl_copo.columns[col_i].width = Inches(0.45)
-
-for col_i in range(13):
-    cell = tbl_copo.cell(0, col_i)
-    set_cell_shading(cell, "F2F2F2")
-    set_cell_margins(cell, 40, 40, 40, 40)
-    p = cell.paragraphs[0]
-    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    if col_i > 0:
-        r = p.add_run(f"PO{col_i}")
-        r.bold = True
-        r.font.size = Pt(8)
-
-copo_matrix_data = [
-    ("CO1", [3, 3, "", "", "", "", "", "", "", "", "", 3]),
-    ("CO2", [3, 3, 3, "", "", "", "", "", "", "", "", 3]),
-    ("CO3", [3, 3, 3, "", 3, "", "", "", "", "", "", 3]),
-    ("CO4", [3, 3, 3, "", 3, "", "", "", "", "", "", 3]),
-    ("CO5", [3, 3, 3, "", 3, "", "", "", "", "", "", 3])
-]
-for row_i, (code, vals) in enumerate(copo_matrix_data):
-    c0 = tbl_copo.cell(row_i+1, 0)
-    set_cell_margins(c0, 40, 40, 40, 40)
+        set_cell_margins(c, 50, 50, 80, 80)
     p0 = c0.paragraphs[0]
     p0.alignment = WD_ALIGN_PARAGRAPH.CENTER
     r0 = p0.add_run(code)
     r0.bold = True
     r0.font.size = Pt(8.5)
+    p1 = c1.paragraphs[0]
+    r1 = p1.add_run(desc)
+    r1.font.size = Pt(8.5)
+    p2 = c2.paragraphs[0]
+    p2.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    r2 = p2.add_run(wt)
+    r2.bold = True
+    r2.font.size = Pt(8.5)
+
+doc.add_paragraph("")
+
+# Table 2: Mapping with Programme Outcomes and Programme Specific Outcomes
+tbl_copo = doc.add_table(rows=8, cols=16)
+tbl_copo.alignment = WD_TABLE_ALIGNMENT.CENTER
+set_table_borders(tbl_copo)
+
+# Col widths
+tbl_copo.columns[0].width = Inches(0.55)
+for col_i in range(1, 16):
+    tbl_copo.columns[col_i].width = Inches(0.38)
+
+# Row 0: Title banner spanning all cols
+top_cell = tbl_copo.cell(0, 0)
+for c in tbl_copo.rows[0].cells:
+    set_cell_shading(c, "BFBFBF")
+    set_cell_margins(c, 40, 40, 40, 40)
+# Merge row 0
+a = tbl_copo.cell(0, 0)
+b = tbl_copo.cell(0, 15)
+a.merge(b)
+p_top = a.paragraphs[0]
+r_top = p_top.add_run("Mapping with Programme Outcomes and Programme Specific Outcomes")
+r_top.bold = True
+r_top.font.size = Pt(8.5)
+
+# Row 1: Headers
+hdrs = ["COs", "PO01", "PO2", "PO3", "PO4", "PO5", "PO06", "PO7", "PO8", "PO9", "PO10", "PO11", "PO12", "PSO1", "PSO2", "PSO3"]
+for col_i, h in enumerate(hdrs):
+    cell = tbl_copo.cell(1, col_i)
+    set_cell_shading(cell, "F2F2F2")
+    set_cell_margins(cell, 30, 30, 30, 30)
+    p = cell.paragraphs[0]
+    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    r = p.add_run(h)
+    r.bold = True
+    r.font.size = Pt(7.5)
+
+copo_data = [
+    ("CO1", ["3", "2", "1", "–", "2", "–", "–", "–", "–", "–", "–", "2", "2", "3", "2"]),
+    ("CO2", ["2", "2", "3", "1", "2", "–", "–", "–", "1", "2", "1", "2", "1", "3", "3"]),
+    ("CO3", ["2", "3", "3", "2", "3", "–", "–", "–", "1", "1", "2", "2", "2", "3", "3"]),
+    ("CO4", ["2", "3", "2", "3", "3", "–", "–", "1", "1", "2", "3", "3", "1", "3", "2"]),
+    ("CO5", ["2", "2", "3", "2", "3", "1", "–", "2", "3", "3", "3", "3", "1", "2", "3"]),
+    ("AVG", ["2.2", "2.4", "2.4", "2", "2.6", "1", "0", "1.5", "1.5", "2", "2.25", "2.4", "1.4", "2.8", "2.6"])
+]
+
+for row_i, (code, vals) in enumerate(copo_data):
+    row_num = row_i + 2
+    c0 = tbl_copo.cell(row_num, 0)
+    set_cell_margins(c0, 30, 30, 30, 30)
+    if code == "AVG":
+        set_cell_shading(c0, "FAFAFA")
+    p0 = c0.paragraphs[0]
+    p0.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    r0 = p0.add_run(code)
+    r0.bold = True
+    r0.font.size = Pt(8)
     for col_j, val in enumerate(vals):
-        cj = tbl_copo.cell(row_i+1, col_j+1)
-        set_cell_margins(cj, 40, 40, 40, 40)
+        cj = tbl_copo.cell(row_num, col_j+1)
+        set_cell_margins(cj, 30, 30, 30, 30)
+        if code == "AVG":
+            set_cell_shading(cj, "FAFAFA")
         pj = cj.paragraphs[0]
         pj.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        if val != "":
-            rj = pj.add_run(str(val))
-            rj.font.size = Pt(8.5)
-
-p_note2 = doc.add_paragraph("Note: 1: Slight (Low), 2: Moderate (Medium), 3: Substantial (High), -: No Correlation")
-p_note2.runs[0].italic = True
-p_note2.runs[0].font.size = Pt(8.5)
-
-# Bottom emblem removed as requested)
-
-doc.add_page_break()
+        rj = pj.add_run(val)
+        if code == "AVG":
+            rj.bold = True
+        rj.font.size = Pt(8)
 
 # ----------------- PAGE 8: DECLARATION -----------------
 if os.path.exists(banner_path):
