@@ -39,23 +39,7 @@ export default function LoginScreen() {
       await signIn(cleanEmail, password);
       router.replace('/(tabs)/home');
     } catch (e: any) {
-      // Check status from backend for actionable feedback
-      try {
-        const res = await api.post<{ success: boolean; data: { exists: boolean; confirmed: boolean } }>('/auth/check-status', {
-          email: cleanEmail,
-        });
-        if (res?.data?.exists && !res?.data?.confirmed) {
-          setIsUnconfirmed(true);
-          return;
-        }
-        if (res?.data && !res?.data?.exists) {
-          setErrorMsg('No account found with this email. Please sign up first.');
-          return;
-        }
-      } catch {
-        // ignore check-status fallback
-      }
-      setErrorMsg(e.message || 'Invalid email or password.');
+      setErrorMsg(e.message || 'Unable to sign in. Please verify your credentials and try again.');
     }
   };
 

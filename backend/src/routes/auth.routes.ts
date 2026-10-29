@@ -2,11 +2,12 @@ import { Router } from 'express';
 import { authController } from '../controllers/auth.controller';
 import { authenticate } from '../middleware/auth';
 import { validate } from '../middleware/validate';
-import { registerProfileSchema, updateProfileSchema, signUpSchema } from '../schemas/auth.schema';
+import { registerProfileSchema, updateProfileSchema, signUpSchema, loginSchema } from '../schemas/auth.schema';
 import { authLimiter } from '../middleware/rateLimiter';
 
 const router = Router();
 
+router.post('/login', authLimiter, validate({ body: loginSchema }), authController.login);
 router.post('/signup', authLimiter, validate({ body: signUpSchema }), authController.signUp);
 router.post('/check-status', authLimiter, authController.checkStatus);
 router.post('/record-sign-in', authenticate, authController.recordSignIn);

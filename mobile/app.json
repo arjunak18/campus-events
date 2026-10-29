@@ -2,7 +2,7 @@
   "expo": {
     "name": "campus-events",
     "slug": "campus-events",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
@@ -23,7 +23,7 @@
       }
     },
     "android": {
-      "versionCode": 7,
+      "versionCode": 8,
       "adaptiveIcon": {
         "backgroundColor": "#080718",
         "foregroundImage": "./assets/android-icon-foreground.png",

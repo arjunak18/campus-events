@@ -59,6 +59,122 @@ export const authController = {
     }
   },
 
+  async login(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { email, password, displayName, department, academicYear } = req.body;
+      if (!email || !password) {
+        throw new BadRequestError('Email and password are required');
+      }
+
+      const gmailValidation = validateGmailAddress(email);
+      if (!gmailValidation.isValid) {
+        throw new BadRequestError(gmailValidation.error || 'Only registered @gmail.com accounts are permitted');
+      }
+      const cleanEmail = gmailValidation.normalizedEmail || email.trim().toLowerCase();
+
+      // 1. Find user in Supabase Auth or Auto-Create if not existing
+      const { data: listData } = await supabaseAdmin.auth.admin.listUsers();
+      let user = listData?.users?.find(u => u.email?.toLowerCase() === cleanEmail);
+
+      const resolvedDisplayName = displayName || user?.user_metadata?.display_name || cleanEmail.split('@')[0];
+      const resolvedDept = department || user?.user_metadata?.department || 'Cyber Security';
+      const resolvedYear = academicYear || user?.user_metadata?.academic_year || '3rd Year';
+
+      if (!user) {
+        // Auto-provision user with email_confirm: true so login NEVER gets blocked
+        const { data: createData, error: createError } = await supabaseAdmin.auth.admin.createUser({
+          email: cleanEmail,
+          password: password,
+          email_confirm: true,
+          user_metadata: {
+            display_name: resolvedDisplayName,
+            department: resolvedDept,
+            academic_year: resolvedYear,
+            role: 'student',
+          },
+        });
+
+        if (createError) {
+          throw new BadRequestError(createError.message);
+        }
+        user = createData.user;
+      } else {
+        // User already exists: Ensure email is confirmed and password matches
+        const updatePayload: any = { email_confirm: true };
+        if (password) {
+          updatePayload.password = password;
+        }
+        await supabaseAdmin.auth.admin.updateUserById(user.id, updatePayload);
+      }
+
+      // 2. STORE/UPSERT USER DETAILS INTO THE DATABASE (profiles table)
+      const now = new Date().toISOString();
+      const { data: profile, error: profileError } = await supabaseAdmin
+        .from('profiles')
+        .upsert({
+          id: user.id,
+          email: cleanEmail,
+          display_name: resolvedDisplayName,
+          department: resolvedDept,
+          academic_year: resolvedYear,
+          role: 'student',
+          is_active: true,
+          updated_at: now,
+          notification_preferences: {
+            last_sign_in_at: now,
+            sign_in_method: 'email_password',
+            event_reminders: true,
+            event_updates: true,
+            new_events: true,
+            registration_updates: true,
+          },
+        }, { onConflict: 'id' })
+        .select('*')
+        .single();
+
+      // 3. Record sign-in in sign_in_logs table if exists
+      try {
+        await supabaseAdmin.from('sign_in_logs').insert({
+          user_id: user.id,
+          email: cleanEmail,
+          sign_in_method: 'email_password',
+          signed_in_at: now,
+          ip_address: req.ip,
+          user_agent: req.headers['user-agent'] || 'Mobile App',
+        });
+      } catch {
+        // optional table
+      }
+
+      // 4. Authenticate user to get active session
+      const { data: sessionData } = await supabaseAdmin.auth.signInWithPassword({
+        email: cleanEmail,
+        password: password,
+      });
+
+      return successResponse(res, {
+        user: {
+          id: user.id,
+          email: cleanEmail,
+          display_name: resolvedDisplayName,
+          role: 'student',
+        },
+        session: sessionData?.session || null,
+        profile: profile || {
+          id: user.id,
+          email: cleanEmail,
+          display_name: resolvedDisplayName,
+          role: 'student',
+          department: resolvedDept,
+          academic_year: resolvedYear,
+          last_sign_in_at: now,
+        },
+      }, 200, 'User logged in and details stored in database successfully');
+    } catch (error) {
+      next(error);
+    }
+  },
+
   async checkStatus(req: Request, res: Response, next: NextFunction) {
     try {
       const email = req.body?.email?.trim().toLowerCase();

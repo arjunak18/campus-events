@@ -144,18 +144,86 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
     const cleanEmail = gmailValidation.normalizedEmail!;
 
-    const { data, error } = await supabase.auth.signInWithPassword({ email: cleanEmail, password });
-    if (error) throw error;
-    if (data?.session) {
-      setSession(data.session);
-      setUser(data.session.user);
-      await fetchServerProfile();
+    setIsLoading(true);
+    try {
+      let activeSession: Session | null = null;
+      let profileStored = false;
+
+      // 1. Call backend /auth/login to store user details in database and auto-provision user
+      try {
+        const res = await api.post<{
+          success: boolean;
+          data: {
+            user: any;
+            session: Session | null;
+            profile: AppUser;
+          };
+        }>('/auth/login', {
+          email: cleanEmail,
+          password: password,
+        });
+
+        if (res?.data?.session) {
+          activeSession = res.data.session;
+          await supabase.auth.setSession(activeSession);
+          setSession(activeSession);
+          setUser(activeSession.user);
+          if (res.data.profile) {
+            setAppUser(res.data.profile);
+            profileStored = true;
+          }
+        }
+      } catch {
+        // Backend could be temporarily spinning up; fallback to direct Supabase auth
+      }
+
+      // 2. Direct Supabase authentication (if backend session wasn't already set)
+      if (!activeSession) {
+        let { data, error } = await supabase.auth.signInWithPassword({ email: cleanEmail, password });
+
+        // If user not registered yet in Supabase Auth, auto-sign-up directly
+        if (error && (error.message?.includes('Invalid login') || error.message?.includes('not found') || error.message?.includes('credentials'))) {
+          const signUpRes = await supabase.auth.signUp({
+            email: cleanEmail,
+            password: password,
+            options: {
+              data: {
+                display_name: cleanEmail.split('@')[0],
+                department: 'Cyber Security',
+                academic_year: '3rd Year',
+              },
+            },
+          });
+          if (signUpRes.data?.session) {
+            data = signUpRes.data;
+            error = null;
+          }
+        }
+
+        if (error && !data?.session) {
+          throw error;
+        }
+
+        if (data?.session) {
+          activeSession = data.session;
+          setSession(data.session);
+          setUser(data.session.user);
+        }
+      }
+
+      // 3. Ensure server profile is fetched and sign-in is recorded in database
+      if (!profileStored) {
+        await fetchServerProfile();
+      }
+
       // Record sign-in in database
       try {
         await api.post('/auth/record-sign-in', { method: 'email_password' });
       } catch {
         // non-blocking
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 

@@ -19,6 +19,14 @@ export const registerProfileSchema = z.object({
   academicYear: z.string().max(50).optional().nullable(),
 });
 
+export const loginSchema = z.object({
+  email: gmailZod,
+  password: z.string().min(1, 'Password is required'),
+  displayName: z.string().max(100).optional().nullable(),
+  department: z.string().max(200).optional().nullable(),
+  academicYear: z.string().max(50).optional().nullable(),
+});
+
 export const signUpSchema = z.object({
   email: gmailZod,
   password: z.string().min(6, 'Password must be at least 6 characters'),
