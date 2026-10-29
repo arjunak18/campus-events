@@ -800,38 +800,5 @@ for r in refs:
     p_r = doc.add_paragraph(r)
     p_r.paragraph_format.line_spacing = 1.25
 
-doc.add_page_break()
-
-# Appendix - I: Code Listing
-p_app = doc.add_paragraph()
-p_app.alignment = WD_ALIGN_PARAGRAPH.CENTER
-p_app.add_run("APPENDIX - I\n").bold = True
-p_app.add_run("CODE LISTING\n\n").bold = True
-
-def add_code_block(doc, file_name, desc, content):
-    p_h = doc.add_paragraph()
-    p_h.add_run(f"// FILE: {file_name} - {desc}\n").bold = True
-    p_c = doc.add_paragraph()
-    p_c.paragraph_format.line_spacing = 1.05
-    r = p_c.add_run(content)
-    r.font.name = 'Consolas'
-    r.font.size = Pt(8.5)
-    doc.add_paragraph("")
-
-def read_src(rel):
-    p = os.path.join(BASE_DIR, rel)
-    if os.path.exists(p):
-        with open(p, 'r', encoding='utf-8', errors='ignore') as f:
-            return f.read()
-    return ""
-
-add_code_block(doc, "mobile/utils/validators.ts", "Validation Utilities & RFC-5322 Rules", read_src("mobile/utils/validators.ts"))
-add_code_block(doc, "mobile/lib/supabase.ts", "Supabase Client & Auth Storage", read_src("mobile/lib/supabase.ts"))
-add_code_block(doc, "mobile/hooks/useAuth.tsx", "Authentication Context State Machine", read_src("mobile/hooks/useAuth.tsx"))
-add_code_block(doc, "mobile/services/events.service.ts", "Campus Events Service & RSVP Query Controller", read_src("mobile/services/events.service.ts"))
-add_code_block(doc, "mobile/app/auth/login.tsx", "User Login Screen & Domain Validation", read_src("mobile/app/auth/login.tsx"))
-add_code_block(doc, "database/migrations/001_initial_schema.sql", "PostgreSQL DDL Database Schema", read_src("database/migrations/001_initial_schema.sql"))
-add_code_block(doc, "database/migrations/002_rls_policies.sql", "Row-Level Security (RLS) Access Policies", read_src("database/migrations/002_rls_policies.sql"))
-
 doc.save(DOCX_PATH)
 print(f"SUCCESS: Word Document generated at: {DOCX_PATH} ({os.path.getsize(DOCX_PATH) / 1024:.1f} KB)")

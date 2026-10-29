@@ -626,7 +626,6 @@ p11_content = """
         <div style="display: flex; justify-content: space-between;"><span><b>6 &nbsp;&nbsp;&nbsp;&nbsp; Results and Discussions</b></span><span><b>10</b></span></div>
         <div style="display: flex; justify-content: space-between;"><span><b>7 &nbsp;&nbsp;&nbsp;&nbsp; Conclusion</b></span><span><b>14</b></span></div>
         <div style="display: flex; justify-content: space-between;"><span><b>8 &nbsp;&nbsp;&nbsp;&nbsp; References</b></span><span><b>15</b></span></div>
-        <div style="display: flex; justify-content: space-between;"><span><b>9 &nbsp;&nbsp;&nbsp;&nbsp; Appendix - I: Code Listing</b></span><span><b>16</b></span></div>
     </div>
 </div>
 """
@@ -1192,68 +1191,6 @@ p29_content = """
 </div>
 """
 pages_html.append(make_numbered_page(p29_content, "15"))
-
-print("Building Appendix - I: Code Listing (Pages 30 to 66 / Pages 16 to 52)...")
-
-# Prepare production code files
-code_files = [
-    ("mobile/utils/validators.ts", "Validation Utilities & RFC-5322 Email / Domain Rules", read_source_file("mobile/utils/validators.ts")),
-    ("mobile/lib/supabase.ts", "Supabase Client Initialization & Secure Storage Adapter", read_source_file("mobile/lib/supabase.ts")),
-    ("mobile/hooks/useAuth.tsx", "Authentication Context State Machine & Session Persistence", read_source_file("mobile/hooks/useAuth.tsx")),
-    ("mobile/services/events.service.ts", "Campus Events Service & RSVP Query Controller", read_source_file("mobile/services/events.service.ts")),
-    ("mobile/app/auth/login.tsx", "Mobile User Login Screen & Validation Feedback", read_source_file("mobile/app/auth/login.tsx")),
-    ("mobile/app/events/[id].tsx", "Event Detail View & Interactive Registration Module", read_source_file("mobile/app/events/[id].tsx")),
-    ("database/migrations/001_initial_schema.sql", "PostgreSQL DDL Schema: Profiles, Events, Categories, Registrations", read_source_file("database/migrations/001_initial_schema.sql")),
-    ("database/migrations/002_rls_policies.sql", "Supabase Row-Level Security (RLS) Access Policies", read_source_file("database/migrations/002_rls_policies.sql"))
-]
-
-all_code_lines = []
-for rel_path, desc, content in code_files:
-    all_code_lines.append(f"// ===========================================================================")
-    all_code_lines.append(f"// FILE: {rel_path}")
-    all_code_lines.append(f"// MODULE: {desc}")
-    all_code_lines.append(f"// PROJECT: CAMPUS EVENTS (JCET AUTONOMOUS)")
-    all_code_lines.append(f"// ===========================================================================")
-    for line in content.splitlines():
-        all_code_lines.append(line)
-    all_code_lines.append("")
-    all_code_lines.append("")
-
-# Exactly 37 pages of code to reach 66 pages total (14 + 15 + 37 = 66)
-TOTAL_CODE_PAGES = 37
-LINES_PER_CODE_PAGE = 41
-
-idx = 0
-for code_page_idx in range(TOTAL_CODE_PAGES):
-    page_num = 16 + code_page_idx
-    chunk = all_code_lines[idx : idx + LINES_PER_CODE_PAGE]
-    idx += LINES_PER_CODE_PAGE
-    
-    if not chunk and idx >= len(all_code_lines):
-        chunk = [
-            "// ===========================================================================",
-            "// END OF CORE PRODUCTION CODE LISTING",
-            "// CAMPUS EVENTS MOBILE APPLICATION",
-            "// DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING (CYBER SECURITY)",
-            "// JAWAHARLAL COLLEGE OF ENGINEERING AND TECHNOLOGY (AUTONOMOUS)",
-            "// ==========================================================================="
-        ]
-    
-    header_block = ""
-    if code_page_idx == 0:
-        header_block = """
-        <h1 class="ch-title" style="margin-top: 0; margin-bottom: 1mm;">APPENDIX - I</h1>
-        <h2 class="ch-subtitle" style="margin-bottom: 3mm;">CODE LISTING</h2>
-        """
-    
-    code_text = escape_html("\n".join(chunk))
-    p_code_content = f"""
-    <div>
-        {header_block}
-        <pre class="code-box">{code_text}</pre>
-    </div>
-    """
-    pages_html.append(make_numbered_page(p_code_content, str(page_num)))
 
 print(f"Total HTML pages assembled: {len(pages_html)}")
 
