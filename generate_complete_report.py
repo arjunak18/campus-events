@@ -269,15 +269,18 @@ table.acad-table {
     border-collapse: collapse;
     margin: 3mm 0;
     font-size: 10pt;
+    font-family: 'Times New Roman', Times, serif;
 }
 table.acad-table th, table.acad-table td {
-    border: 1px solid #000000;
-    padding: 2mm 2.5mm;
+    border: 1.5px solid #000000;
+    padding: 2.2mm 3.2mm;
     text-align: left;
+    color: #000000;
 }
 table.acad-table th {
-    background-color: #f3f4f6;
+    background-color: #e5e5e5;
     font-weight: bold;
+    text-align: center;
 }
 """
 
@@ -405,12 +408,12 @@ p3_content = """
     <div style="text-align: center; font-size: 11pt; font-weight: bold;">DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING</div>
     <div style="text-align: center; font-size: 10.5pt; font-weight: bold; margin-bottom: 7mm;">(CYBER SECURITY)</div>
     
-    <h2 style="text-align: center; font-size: 13pt; font-weight: bold; margin: 0 0 3mm 0;">INSTITUTE VISION</h2>
-    <p class="body-text" style="font-style: italic; margin-bottom: 7mm; text-align: center;">
-        “Emerge as a Centre of excellence for professional education to produce high quality engineers and entrepreneurs for the development of the region and the Nation.”
+    <h2 style="text-align: center; font-size: 13pt; font-weight: bold; margin: 0 0 3.5mm 0; text-decoration: underline;">INSTITUTE VISION</h2>
+    <p class="body-text" style="margin-bottom: 7mm; text-align: justify; line-height: 1.45;">
+        Emerge as a Centre of excellence for professional education to produce high quality engineers and entrepreneurs for the development of the region and the Nation.
     </p>
     
-    <h2 style="text-align: center; font-size: 13pt; font-weight: bold; margin: 0 0 4mm 0;">INSTITUTE MISSION</h2>
+    <h2 style="text-align: center; font-size: 13pt; font-weight: bold; margin: 0 0 4mm 0; text-decoration: underline;">INSTITUTE MISSION</h2>
     <ul class="bullet-list" style="line-height: 1.6;">
         <li>To become an ultimate destination for acquiring latest and advanced knowledge in the multidisciplinary domains.</li>
         <li>To provide high quality education in engineering and technology through innovative teaching-learning practices, research and consultancy, embedded with professional ethics.</li>
@@ -428,12 +431,12 @@ p4_content = """
     <div style="text-align: center; font-size: 11pt; font-weight: bold;">DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING</div>
     <div style="text-align: center; font-size: 10.5pt; font-weight: bold; margin-bottom: 7mm;">(CYBER SECURITY)</div>
     
-    <h2 style="text-align: center; font-size: 13pt; font-weight: bold; margin: 0 0 3mm 0;">DEPARTMENT VISION</h2>
-    <p class="body-text" style="font-style: italic; margin-bottom: 7mm; text-align: center;">
-        “To produce competent professionals with research and innovative skills, by providing them with most conducive environment for quality academic and research oriented undergraduate and postgraduate education along with moral values committed to build a vibrant nation.”
+    <h2 style="text-align: center; font-size: 13pt; font-weight: bold; margin: 0 0 3.5mm 0; text-decoration: underline;">DEPARTMENT VISION</h2>
+    <p class="body-text" style="margin-bottom: 7mm; text-align: justify; line-height: 1.45;">
+        To produce competent professionals with research and innovative skills, by providing them with most conducive environment for quality academic and research oriented undergraduate and postgraduate education along with moral values committed to build a vibrant nation.
     </p>
     
-    <h2 style="text-align: center; font-size: 13pt; font-weight: bold; margin: 0 0 4mm 0;">DEPARTMENT MISSION</h2>
+    <h2 style="text-align: center; font-size: 13pt; font-weight: bold; margin: 0 0 4mm 0; text-decoration: underline;">DEPARTMENT MISSION</h2>
     <ul class="bullet-list" style="line-height: 1.6;">
         <li>Provide a learning environment to develop creativity and problem-solving skills in a professional manner.</li>
         <li>Expose to latest technologies and tools used in the field of computer science.</li>
@@ -451,25 +454,40 @@ p5_content = """
     <div style="text-align: center; font-size: 11pt; font-weight: bold;">DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING</div>
     <div style="text-align: center; font-size: 10.5pt; font-weight: bold; margin-bottom: 5mm;">(CYBER SECURITY)</div>
     
-    <h2 style="text-align: center; font-size: 12.5pt; font-weight: bold; margin: 0 0 3mm 0;">PROGRAM EDUCATIONAL OBJECTIVES (PEOs)</h2>
-    <p class="body-text" style="margin-bottom: 3mm;">The Graduates in Computer Science and Engineering will be able to:</p>
-    <div style="margin-bottom: 2.5mm;">
-        <b>PEO1:</b> Apply Engineering practices required for Software development, Hardware development and Embedded systems.
-    </div>
-    <div style="margin-bottom: 2.5mm;">
-        <b>PEO2:</b> Exhibit innovation, Self-confidence and team work skills in the organization and society.
-    </div>
-    <div style="margin-bottom: 6mm;">
-        <b>PEO3:</b> Graduates shall be competent in the evolving field of computer science by adapting to new tools, technologies, and industry practices, ensuring continued professional and career growth.
-    </div>
+    <h2 style="text-align: center; font-size: 13pt; font-weight: bold; margin: 0 0 3.5mm 0; text-decoration: underline;">
+        PROGRAM EDUCATIONAL OBJECTIVES (POs)
+    </h2>
+    <p style="font-size: 10.5pt; margin-bottom: 2.5mm;">The Graduates in Computer Science and Engineering will be able to:</p>
     
-    <h2 style="text-align: center; font-size: 12.5pt; font-weight: bold; margin: 0 0 3mm 0;">PROGRAM SPECIFIC OUTCOMES (PSOs)</h2>
-    <div style="margin-bottom: 3mm;">
-        <b>PSO1:</b> Ability to understand the architecture and working of computer hardware and software system.
-    </div>
-    <div style="margin-bottom: 3mm;">
-        <b>PSO2:</b> Ability to design and develop software for technology application to fulfill industrial and social needs.
-    </div>
+    <table class="acad-table" style="margin-bottom: 5.5mm;">
+        <tr>
+            <td style="width: 16%; text-align: center; font-weight: bold; vertical-align: middle;">PEO1</td>
+            <td style="vertical-align: middle; line-height: 1.35;">Apply Engineering practices required for Software development, Hardware development and Embedded systems.</td>
+        </tr>
+        <tr>
+            <td style="width: 16%; text-align: center; font-weight: bold; vertical-align: middle;">PEO2</td>
+            <td style="vertical-align: middle; line-height: 1.35;">Exhibit innovation, Self – confidence and team work skills in the organization and society.</td>
+        </tr>
+        <tr>
+            <td style="width: 16%; text-align: center; font-weight: bold; vertical-align: middle;">PEO3</td>
+            <td style="vertical-align: middle; line-height: 1.35;">Graduates shall be competent in the evolving field of computer science by adapting to new tools, technologies, and industry practices, ensuring continued professional and career growth</td>
+        </tr>
+    </table>
+    
+    <h2 style="text-align: center; font-size: 13pt; font-weight: bold; margin: 0 0 3mm 0; text-decoration: underline;">
+        PROGRAM SPECIFIC OUTCOMES (PSOs)
+    </h2>
+    
+    <table class="acad-table">
+        <tr>
+            <td style="width: 16%; text-align: center; font-weight: bold; vertical-align: middle;">PSO1</td>
+            <td style="vertical-align: middle; line-height: 1.35;">Ability to understand the architecture and working of computer hardware and software system.</td>
+        </tr>
+        <tr>
+            <td style="width: 16%; text-align: center; font-weight: bold; vertical-align: middle;">PSO2</td>
+            <td style="vertical-align: middle; line-height: 1.35;">Ability to design and develop software for technology application to fulfill industrial and social needs</td>
+        </tr>
+    </table>
 </div>
 """
 pages_html.append(make_front_page(p5_content, show_banner=True, show_emblem=True))
@@ -477,34 +495,208 @@ pages_html.append(make_front_page(p5_content, show_banner=True, show_emblem=True
 # PAGE 6: PROGRAM OUTCOMES (POs)
 p6_content = """
 <div style="margin-top: 1mm;">
-    <div style="text-align: center; font-size: 11pt; font-weight: bold; margin-bottom: 3mm;">PROGRAM OUTCOMES (POs)</div>
-    <div style="font-size: 9.5pt; line-height: 1.35; text-align: justify;">
-        <p style="margin: 0 0 1.5mm 0;"><b>PO1 Engineering knowledge:</b> Apply the knowledge of mathematics, science, engineering fundamentals, and an engineering specialization to the solution of complex engineering problems.</p>
-        <p style="margin: 0 0 1.5mm 0;"><b>PO2 Problem analysis:</b> Identify, formulate, review research literature, and analyze complex engineering problems reaching substantiated conclusions using first principles of mathematics, natural sciences, and engineering sciences.</p>
-        <p style="margin: 0 0 1.5mm 0;"><b>PO3 Design/development of solutions:</b> Design solutions for complex engineering problems and design system components or processes that meet the specified needs with appropriate consideration for public health and safety, cultural, societal, and environmental considerations.</p>
-        <p style="margin: 0 0 1.5mm 0;"><b>PO4 Conduct investigations of complex problems:</b> Use research-based knowledge and research methods including design of experiments, analysis and interpretation of data, and synthesis of information to provide valid conclusions.</p>
-        <p style="margin: 0 0 1.5mm 0;"><b>PO5 Modern tool usage:</b> Create, select, and apply appropriate techniques, resources, and modern engineering and IT tools including prediction and modeling to complex engineering activities with an understanding of the limitations.</p>
-        <p style="margin: 0 0 1.5mm 0;"><b>PO6 The engineer and society:</b> Apply reasoning informed by contextual knowledge to assess societal, health, safety, legal and cultural issues and consequent responsibilities relevant to professional engineering practice.</p>
-        <p style="margin: 0 0 1.5mm 0;"><b>PO7 Environment and sustainability:</b> Understand the impact of professional engineering solutions in societal and environmental contexts, and demonstrate knowledge of, and need for sustainable development.</p>
-        <p style="margin: 0 0 1.5mm 0;"><b>PO8 Ethics:</b> Apply ethical principles and commit to professional ethics and responsibilities and norms of engineering practice.</p>
-        <p style="margin: 0 0 1.5mm 0;"><b>PO9 Individual and team work:</b> Function effectively as an individual, and as a member or leader in diverse teams, and in multidisciplinary settings.</p>
-        <p style="margin: 0 0 1.5mm 0;"><b>PO10 Communication:</b> Communicate effectively on complex engineering activities with the engineering community and society at large, write effective reports and design documentation, make effective presentations, and give/receive clear instructions.</p>
-        <p style="margin: 0 0 1.5mm 0;"><b>PO11 Project management and finance:</b> Demonstrate knowledge and understanding of engineering and management principles and apply these to one's own work, as a member and leader in a team, to manage projects in multidisciplinary environments.</p>
-        <p style="margin: 0 0 1.5mm 0;"><b>PO12 Life-long learning:</b> Recognize the need for, and have the preparation and ability to engage in independent and life-long learning in the broadest context of technological change.</p>
-    </div>
+    <p style="font-size: 10pt; font-weight: bold; margin: 0 0 2.5mm 0;">
+        The following are the Program Outcomes of Engineering Students:
+    </p>
+    
+    <table class="acad-table" style="font-size: 8.4pt; line-height: 1.22;">
+        <tr>
+            <td style="width: 13%; text-align: center; font-weight: bold; vertical-align: middle;">PO1</td>
+            <td style="vertical-align: middle; padding: 1.2mm 2.5mm;"><b>Engineering knowledge:</b> Apply the knowledge of mathematics, science, engineering fundamentals, and an engineering specialization to the solution of complex engineering problems.</td>
+        </tr>
+        <tr>
+            <td style="width: 13%; text-align: center; font-weight: bold; vertical-align: middle;">PO2</td>
+            <td style="vertical-align: middle; padding: 1.2mm 2.5mm;"><b>Problem analysis:</b> Identify, formulate, review research literature, and analyze complex engineering problems reaching substantiated conclusions using first principles of mathematics, natural sciences, and engineering sciences.</td>
+        </tr>
+        <tr>
+            <td style="width: 13%; text-align: center; font-weight: bold; vertical-align: middle;">PO3</td>
+            <td style="vertical-align: middle; padding: 1.2mm 2.5mm;"><b>Design/development of solutions:</b> Design solutions for complex engineering problems and design system components or processes that meet the specified needs with appropriate consideration for the public health and safety, and the cultural, societal, and environmental considerations.</td>
+        </tr>
+        <tr>
+            <td style="width: 13%; text-align: center; font-weight: bold; vertical-align: middle;">PO4</td>
+            <td style="vertical-align: middle; padding: 1.2mm 2.5mm;"><b>Conduct investigations of complex problems:</b> Use research-based knowledge and research methods including design of experiments, analysis and interpretation of data, and synthesis of the information to provide valid conclusions.</td>
+        </tr>
+        <tr>
+            <td style="width: 13%; text-align: center; font-weight: bold; vertical-align: middle;">PO5</td>
+            <td style="vertical-align: middle; padding: 1.2mm 2.5mm;"><b>Modern tool usage:</b> Create, select, and apply appropriate techniques, resources, and modern engineering and IT tools including prediction and modeling to complex engineering activities with an understanding of the limitations.</td>
+        </tr>
+        <tr>
+            <td style="width: 13%; text-align: center; font-weight: bold; vertical-align: middle;">PO6</td>
+            <td style="vertical-align: middle; padding: 1.2mm 2.5mm;"><b>The engineer and society:</b> Apply reasoning informed by the contextual knowledge to assess societal, health, safety, legal and cultural issues and the consequent responsibilities relevant to the professional engineering practice.</td>
+        </tr>
+        <tr>
+            <td style="width: 13%; text-align: center; font-weight: bold; vertical-align: middle;">PO7</td>
+            <td style="vertical-align: middle; padding: 1.2mm 2.5mm;"><b>Environment and sustainability:</b> Understand the impact of the professional engineering solutions in societal and environmental contexts, and demonstrate the knowledge of, and need for sustainable development.</td>
+        </tr>
+        <tr>
+            <td style="width: 13%; text-align: center; font-weight: bold; vertical-align: middle;">PO8</td>
+            <td style="vertical-align: middle; padding: 1.2mm 2.5mm;"><b>Ethics:</b> Apply ethical principles and commit to professional ethics and responsibilities and norms of the engineering practice.</td>
+        </tr>
+        <tr>
+            <td style="width: 13%; text-align: center; font-weight: bold; vertical-align: middle;">PO9</td>
+            <td style="vertical-align: middle; padding: 1.2mm 2.5mm;"><b>Individual and team work:</b> Function effectively as an individual, and as a member or leader in diverse teams, and in multidisciplinary settings.</td>
+        </tr>
+        <tr>
+            <td style="width: 13%; text-align: center; font-weight: bold; vertical-align: middle;">PO10</td>
+            <td style="vertical-align: middle; padding: 1.2mm 2.5mm;"><b>Communication:</b> Communicate effectively on complex engineering activities with the engineering community and with society at large, such as, being able to comprehend and write effective reports and design documentation, make effective presentations, and give and receive clear instructions.</td>
+        </tr>
+        <tr>
+            <td style="width: 13%; text-align: center; font-weight: bold; vertical-align: middle;">PO11</td>
+            <td style="vertical-align: middle; padding: 1.2mm 2.5mm;"><b>Project management and finance:</b> Demonstrate knowledge and understanding of the engineering and management principles and apply these to one’s own work, as a member and leader in a team, to manage projects and in multidisciplinary environments.</td>
+        </tr>
+        <tr>
+            <td style="width: 13%; text-align: center; font-weight: bold; vertical-align: middle;">PO12</td>
+            <td style="vertical-align: middle; padding: 1.2mm 2.5mm;"><b>Life-long learning:</b> Recognize the need for, and have the preparation and ability to engage in independent and life-long learning in the broadest context of technological change.</td>
+        </tr>
+    </table>
 </div>
 """
 pages_html.append(make_front_page(p6_content, show_banner=True, show_emblem=True))
 
 # PAGE 7: COURSE OUTCOMES (COs)
-p7_content = f"""
-<div style="margin-top: 2mm; text-align: center;">
-    <h2 style="font-size: 13pt; font-weight: bold; margin: 0 0 4mm 0;">COURSE OUTCOMES (COS)</h2>
-    <div style="margin-bottom: 4mm;">
-        <img src="{b64_co_table}" style="width: 100%; max-height: 80mm; object-fit: contain; border: 1px solid #d1d5db;" />
+p7_content = """
+<div style="margin-top: 1mm;">
+    <h2 style="text-align: center; font-size: 13pt; font-weight: bold; margin: 0 0 2.5mm 0; text-decoration: underline;">
+        COURSE OUTCOMES (COS)
+    </h2>
+    <p style="font-size: 10pt; margin-bottom: 2mm;">
+        At the end of the course students should be able to:
+    </p>
+    
+    <table class="acad-table" style="font-size: 8.8pt; line-height: 1.25; margin-bottom: 1.5mm;">
+        <tr style="background-color: #f2f2f2;">
+            <th style="width: 10%;"></th>
+            <th style="text-align: center; padding: 2mm;">Course Outcome</th>
+            <th style="width: 25%; text-align: center; padding: 2mm;">Bloom’s Knowledge Level (KL)</th>
+        </tr>
+        <tr>
+            <td style="text-align: center; font-weight: bold;">CO1</td>
+            <td style="padding: 1.8mm 2.5mm;">Explain the architecture and lifecycle of cross-platform hybrid mobile applications, including component hierarchy and reactive state management.</td>
+            <td style="text-align: center; font-weight: bold;">K2</td>
+        </tr>
+        <tr>
+            <td style="text-align: center; font-weight: bold;">CO2</td>
+            <td style="padding: 1.8mm 2.5mm;">Utilize React Native, TypeScript, and Expo ecosystem to design interactive, responsive, and accessible mobile user interfaces.</td>
+            <td style="text-align: center; font-weight: bold;">K3</td>
+        </tr>
+        <tr>
+            <td style="text-align: center; font-weight: bold;">CO3</td>
+            <td style="padding: 1.8mm 2.5mm;">Develop secure backend integrations with cloud PostgreSQL databases using Supabase, enforcing Row-Level Security (RLS) policies.</td>
+            <td style="text-align: center; font-weight: bold;">K3</td>
+        </tr>
+        <tr>
+            <td style="text-align: center; font-weight: bold;">CO4</td>
+            <td style="padding: 1.8mm 2.5mm;">Implement native device hardware capabilities, local storage caching, and calendar scheduling synchronization.</td>
+            <td style="text-align: center; font-weight: bold;">K3</td>
+        </tr>
+        <tr>
+            <td style="text-align: center; font-weight: bold;">CO5</td>
+            <td style="padding: 1.8mm 2.5mm;">Deploy, test, and debug standalone Android application packages (APK) on physical devices with error logging and monitoring.</td>
+            <td style="text-align: center; font-weight: bold;">K3</td>
+        </tr>
+    </table>
+    <div style="font-size: 8.5pt; font-style: italic; margin-bottom: 3.5mm;">
+        Note: K1- Remember, K2- Understand, K3- Apply, K4- Analyse, K5- Evaluate, K6- Create
     </div>
-    <div>
-        <img src="{b64_copo_matrix}" style="width: 100%; max-height: 55mm; object-fit: contain; border: 1px solid #d1d5db;" />
+    
+    <div style="font-size: 10.5pt; font-weight: bold; margin-bottom: 2mm;">
+        CO-PO Mapping Table:
+    </div>
+    
+    <table class="acad-table" style="font-size: 9pt; text-align: center; margin-bottom: 1.5mm;">
+        <tr style="background-color: #f2f2f2; font-weight: bold;">
+            <td style="width: 10%;"></td>
+            <td style="padding: 1.5mm 0;">PO1</td>
+            <td style="padding: 1.5mm 0;">PO2</td>
+            <td style="padding: 1.5mm 0;">PO3</td>
+            <td style="padding: 1.5mm 0;">PO4</td>
+            <td style="padding: 1.5mm 0;">PO5</td>
+            <td style="padding: 1.5mm 0;">PO6</td>
+            <td style="padding: 1.5mm 0;">PO7</td>
+            <td style="padding: 1.5mm 0;">PO8</td>
+            <td style="padding: 1.5mm 0;">PO9</td>
+            <td style="padding: 1.5mm 0;">PO10</td>
+            <td style="padding: 1.5mm 0;">PO11</td>
+            <td style="padding: 1.5mm 0;">PO12</td>
+        </tr>
+        <tr>
+            <td style="font-weight: bold;">CO1</td>
+            <td>3</td>
+            <td>3</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>3</td>
+        </tr>
+        <tr>
+            <td style="font-weight: bold;">CO2</td>
+            <td>3</td>
+            <td>3</td>
+            <td>3</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>3</td>
+        </tr>
+        <tr>
+            <td style="font-weight: bold;">CO3</td>
+            <td>3</td>
+            <td>3</td>
+            <td>3</td>
+            <td></td>
+            <td>3</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>3</td>
+        </tr>
+        <tr>
+            <td style="font-weight: bold;">CO4</td>
+            <td>3</td>
+            <td>3</td>
+            <td>3</td>
+            <td></td>
+            <td>3</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>3</td>
+        </tr>
+        <tr>
+            <td style="font-weight: bold;">CO5</td>
+            <td>3</td>
+            <td>3</td>
+            <td>3</td>
+            <td></td>
+            <td>3</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>3</td>
+        </tr>
+    </table>
+    <div style="font-size: 8.5pt; font-style: italic;">
+        Note: 1: Slight (Low), 2: Moderate (Medium), 3: Substantial (High), -: No Correlation
     </div>
 </div>
 """
@@ -587,46 +779,79 @@ pages_html.append(make_numbered_page(p10_content, "II", show_watermark=True))
 
 # PAGE 11 (III): TABLE OF CONTENTS
 p11_content = """
-<div>
-    <h1 class="ch-title" style="margin-top: 0;">TABLE OF CONTENTS</h1>
-    <div style="display: flex; justify-content: space-between; font-size: 10.5pt; font-weight: bold; margin-bottom: 2mm; border-bottom: 1px solid #000; padding-bottom: 1mm;">
-        <span>Title</span>
-        <span>Page No.</span>
-    </div>
-    <div style="font-size: 10.5pt; line-height: 1.8;">
-        <div style="display: flex; justify-content: space-between;"><span>Abstract</span><span>i</span></div>
-        <div style="display: flex; justify-content: space-between;"><span>Acknowledgement</span><span>ii</span></div>
-        <div style="display: flex; justify-content: space-between;"><span>Table of Contents</span><span>iii</span></div>
-        <div style="display: flex; justify-content: space-between;"><span>List of Figures</span><span>iv</span></div>
-        <div style="display: flex; justify-content: space-between;"><span>List of Tables</span><span>v</span></div>
-        <div style="display: flex; justify-content: space-between;"><span>List of Abbreviations</span><span>vi</span></div>
-    </div>
-    
-    <div style="display: flex; justify-content: space-between; font-size: 10.5pt; font-weight: bold; margin: 4mm 0 2mm 0; border-bottom: 1px solid #000; padding-bottom: 1mm;">
-        <span>Chapter No. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Chapter Title</span>
-        <span>Page No.</span>
-    </div>
-    <div style="font-size: 10.5pt; line-height: 1.8;">
-        <div style="display: flex; justify-content: space-between;"><span><b>1 &nbsp;&nbsp;&nbsp;&nbsp; Introduction</b></span><span><b>1</b></span></div>
-        <div style="padding-left: 8mm; display: flex; justify-content: space-between;"><span>1.1 Background</span><span>1</span></div>
-        <div style="padding-left: 8mm; display: flex; justify-content: space-between;"><span>1.2 Relevance</span><span>1</span></div>
-        <div style="padding-left: 8mm; display: flex; justify-content: space-between;"><span>1.3 Problem Statement</span><span>2</span></div>
-        <div style="padding-left: 8mm; display: flex; justify-content: space-between;"><span>1.4 Scope of the Project</span><span>2</span></div>
-        
-        <div style="display: flex; justify-content: space-between;"><span><b>2 &nbsp;&nbsp;&nbsp;&nbsp; Aim and Objectives</b></span><span><b>3</b></span></div>
-        <div style="padding-left: 8mm; display: flex; justify-content: space-between;"><span>2.1 Aim</span><span>3</span></div>
-        <div style="padding-left: 8mm; display: flex; justify-content: space-between;"><span>2.2 Objectives</span><span>3</span></div>
-        
-        <div style="display: flex; justify-content: space-between;"><span><b>3 &nbsp;&nbsp;&nbsp;&nbsp; Requirement Specification</b></span><span><b>4</b></span></div>
-        <div style="padding-left: 8mm; display: flex; justify-content: space-between;"><span>3.1 Software Requirements</span><span>4</span></div>
-        <div style="padding-left: 8mm; display: flex; justify-content: space-between;"><span>3.2 Hardware Requirements</span><span>4</span></div>
-        
-        <div style="display: flex; justify-content: space-between;"><span><b>4 &nbsp;&nbsp;&nbsp;&nbsp; Database Design</b></span><span><b>5</b></span></div>
-        <div style="display: flex; justify-content: space-between;"><span><b>5 &nbsp;&nbsp;&nbsp;&nbsp; System Implementation</b></span><span><b>8</b></span></div>
-        <div style="display: flex; justify-content: space-between;"><span><b>6 &nbsp;&nbsp;&nbsp;&nbsp; Results and Discussions</b></span><span><b>10</b></span></div>
-        <div style="display: flex; justify-content: space-between;"><span><b>7 &nbsp;&nbsp;&nbsp;&nbsp; Conclusion</b></span><span><b>14</b></span></div>
-        <div style="display: flex; justify-content: space-between;"><span><b>8 &nbsp;&nbsp;&nbsp;&nbsp; References</b></span><span><b>15</b></span></div>
-    </div>
+<div style="margin-top: 5mm;">
+    <table class="acad-table" style="font-size: 10.5pt; width: 100%;">
+        <tr>
+            <td style="width: 18%; border-right: none;"></td>
+            <td style="text-align: center; font-size: 13pt; font-weight: bold; border-left: none; border-right: none; padding: 3mm 0;">TABLE OF CONTENTS</td>
+            <td style="width: 18%; border-left: none;"></td>
+        </tr>
+        <tr>
+            <td style="border-right: none;"></td>
+            <td style="border-left: none; border-right: none; font-weight: bold; padding: 2.2mm 3mm;">Abstract</td>
+            <td style="text-align: center; font-weight: bold; border-left: none;">i</td>
+        </tr>
+        <tr>
+            <td style="border-right: none;"></td>
+            <td style="border-left: none; border-right: none; font-weight: bold; padding: 2.2mm 3mm;">List of tables</td>
+            <td style="text-align: center; font-weight: bold; border-left: none;">v</td>
+        </tr>
+        <tr>
+            <td style="border-right: none;"></td>
+            <td style="border-left: none; border-right: none; font-weight: bold; padding: 2.2mm 3mm;">List of Figures</td>
+            <td style="text-align: center; font-weight: bold; border-left: none;">iv</td>
+        </tr>
+        <tr>
+            <td style="border-right: none;"></td>
+            <td style="border-left: none; border-right: none; font-weight: bold; padding: 2.2mm 3mm;">List of abbreviations</td>
+            <td style="text-align: center; font-weight: bold; border-left: none;">vi</td>
+        </tr>
+        <tr style="font-weight: bold; text-align: center; background-color: #f8f9fa;">
+            <td style="padding: 2.5mm 0;">Chapter<br>No.</td>
+            <td style="padding: 2.5mm 0;">Chapter Title</td>
+            <td style="padding: 2.5mm 0;">Page<br>No.</td>
+        </tr>
+        <tr>
+            <td style="text-align: center; font-weight: bold; padding: 2.2mm 0;">1</td>
+            <td style="font-weight: bold; padding: 2.2mm 3mm;">Introduction</td>
+            <td style="text-align: center; font-weight: bold;">1</td>
+        </tr>
+        <tr>
+            <td style="text-align: center; font-weight: bold; padding: 2.2mm 0;">2</td>
+            <td style="font-weight: bold; padding: 2.2mm 3mm;">Aim and Objectives</td>
+            <td style="text-align: center; font-weight: bold;">3</td>
+        </tr>
+        <tr>
+            <td style="text-align: center; font-weight: bold; padding: 2.2mm 0;">3</td>
+            <td style="font-weight: bold; padding: 2.2mm 3mm;">Requirement Specification</td>
+            <td style="text-align: center; font-weight: bold;">4</td>
+        </tr>
+        <tr>
+            <td style="text-align: center; font-weight: bold; padding: 2.2mm 0;">4</td>
+            <td style="font-weight: bold; padding: 2.2mm 3mm;">Database Design</td>
+            <td style="text-align: center; font-weight: bold;">5</td>
+        </tr>
+        <tr>
+            <td style="text-align: center; font-weight: bold; padding: 2.2mm 0;">5</td>
+            <td style="font-weight: bold; padding: 2.2mm 3mm;">System Implementation</td>
+            <td style="text-align: center; font-weight: bold;">8</td>
+        </tr>
+        <tr>
+            <td style="text-align: center; font-weight: bold; padding: 2.2mm 0;">6</td>
+            <td style="font-weight: bold; padding: 2.2mm 3mm;">Results and Discussions</td>
+            <td style="text-align: center; font-weight: bold;">10</td>
+        </tr>
+        <tr>
+            <td style="text-align: center; font-weight: bold; padding: 2.2mm 0;">7</td>
+            <td style="font-weight: bold; padding: 2.2mm 3mm;">Conclusion</td>
+            <td style="text-align: center; font-weight: bold;">14</td>
+        </tr>
+        <tr>
+            <td style="text-align: center; font-weight: bold; padding: 2.2mm 0;">8</td>
+            <td style="font-weight: bold; padding: 2.2mm 3mm;">References</td>
+            <td style="text-align: center; font-weight: bold;">15</td>
+        </tr>
+    </table>
 </div>
 """
 pages_html.append(make_numbered_page(p11_content, "III", show_watermark=True))
@@ -634,43 +859,43 @@ pages_html.append(make_numbered_page(p11_content, "III", show_watermark=True))
 # PAGE 12 (IV): LIST OF FIGURES
 p12_content = """
 <div>
-    <h1 class="ch-title" style="margin-top: 0;">LIST OF FIGURES</h1>
-    <table class="acad-table" style="margin-top: 4mm;">
+    <h1 class="ch-title" style="margin-top: 0; margin-bottom: 6mm;">LIST OF FIGURES</h1>
+    <table class="acad-table" style="font-size: 10pt;">
         <thead>
-            <tr>
-                <th style="width: 25%;">FIGURE NO.</th>
-                <th style="width: 55%;">TITLE</th>
+            <tr style="background-color: #e5e5e5; font-weight: bold; text-align: center;">
+                <th style="width: 22%;">FIGURE NO.</th>
+                <th style="width: 58%;">TITLE</th>
                 <th style="width: 20%; text-align: center;">PAGE NO.</th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td><b>Figure 6.1</b></td>
-                <td>Home Page & Upcoming Events Feed Module</td>
+                <td style="text-align: center; font-weight: bold;">6.1</td>
+                <td>Home Page Module</td>
                 <td style="text-align: center;">10</td>
             </tr>
             <tr>
-                <td><b>Figure 6.2</b></td>
-                <td>User Authentication & Security Module</td>
+                <td style="text-align: center; font-weight: bold;">6.2</td>
+                <td>User Authentication Module</td>
                 <td style="text-align: center;">11</td>
             </tr>
             <tr>
-                <td><b>Figure 6.3</b></td>
-                <td>Event Details & RSVP Registration Module</td>
+                <td style="text-align: center; font-weight: bold;">6.3</td>
+                <td>Event Details & RSVP Module</td>
                 <td style="text-align: center;">11</td>
             </tr>
             <tr>
-                <td><b>Figure 6.4</b></td>
+                <td style="text-align: center; font-weight: bold;">6.4</td>
                 <td>Event Search, Filter & Explore Module</td>
                 <td style="text-align: center;">12</td>
             </tr>
             <tr>
-                <td><b>Figure 6.5</b></td>
+                <td style="text-align: center; font-weight: bold;">6.5</td>
                 <td>My Events & Saved Bookmarks Module</td>
                 <td style="text-align: center;">12</td>
             </tr>
             <tr>
-                <td><b>Figure 6.6</b></td>
+                <td style="text-align: center; font-weight: bold;">6.6</td>
                 <td>Registration Confirmation & Calendar Sync Module</td>
                 <td style="text-align: center;">13</td>
             </tr>
@@ -683,48 +908,48 @@ pages_html.append(make_numbered_page(p12_content, "IV"))
 # PAGE 13 (V): LIST OF TABLES
 p13_content = """
 <div>
-    <h1 class="ch-title" style="margin-top: 0;">LIST OF TABLES</h1>
-    <table class="acad-table" style="margin-top: 4mm;">
+    <h1 class="ch-title" style="margin-top: 0; margin-bottom: 6mm;">LIST OF TABLES</h1>
+    <table class="acad-table" style="font-size: 10pt;">
         <thead>
-            <tr>
-                <th style="width: 25%;">TABLE NO.</th>
-                <th style="width: 55%;">TITLE</th>
+            <tr style="background-color: #e5e5e5; font-weight: bold; text-align: center;">
+                <th style="width: 22%;">TABLE NO.</th>
+                <th style="width: 58%;">TITLE</th>
                 <th style="width: 20%; text-align: center;">PAGE NO.</th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td><b>Table 4.1</b></td>
+                <td style="text-align: center; font-weight: bold;">4.1</td>
                 <td>User Profiles Table</td>
                 <td style="text-align: center;">5</td>
             </tr>
             <tr>
-                <td><b>Table 4.2</b></td>
+                <td style="text-align: center; font-weight: bold;">4.2</td>
                 <td>Campus Events Master Table</td>
                 <td style="text-align: center;">5</td>
             </tr>
             <tr>
-                <td><b>Table 4.3</b></td>
+                <td style="text-align: center; font-weight: bold;">4.3</td>
                 <td>Event Categories Table</td>
                 <td style="text-align: center;">6</td>
             </tr>
             <tr>
-                <td><b>Table 4.4</b></td>
+                <td style="text-align: center; font-weight: bold;">4.4</td>
                 <td>Event Registrations Table</td>
                 <td style="text-align: center;">6</td>
             </tr>
             <tr>
-                <td><b>Table 4.5</b></td>
+                <td style="text-align: center; font-weight: bold;">4.5</td>
                 <td>Saved Events Bookmarks Table</td>
                 <td style="text-align: center;">6</td>
             </tr>
             <tr>
-                <td><b>Table 4.6</b></td>
+                <td style="text-align: center; font-weight: bold;">4.6</td>
                 <td>Sign-in Logs & Security Audits Table</td>
                 <td style="text-align: center;">7</td>
             </tr>
             <tr>
-                <td><b>Table 4.7</b></td>
+                <td style="text-align: center; font-weight: bold;">4.7</td>
                 <td>Event Organizers & Departments Table</td>
                 <td style="text-align: center;">7</td>
             </tr>
@@ -737,29 +962,25 @@ pages_html.append(make_numbered_page(p13_content, "V"))
 # PAGE 14 (VI): LIST OF ABBREVIATIONS
 p14_content = """
 <div>
-    <h1 class="ch-title" style="margin-top: 0;">LIST OF ABBREVIATIONS</h1>
-    <table class="acad-table" style="margin-top: 4mm;">
+    <h1 class="ch-title" style="margin-top: 0; margin-bottom: 6mm;">LIST OF ABBREVIATIONS</h1>
+    <table class="acad-table" style="font-size: 10pt;">
         <thead>
-            <tr>
+            <tr style="background-color: #e5e5e5; font-weight: bold; text-align: center;">
                 <th style="width: 30%;">ABBREVIATION</th>
                 <th style="width: 70%;">EXPANSION</th>
             </tr>
         </thead>
         <tbody>
-            <tr><td><b>OOP</b></td><td>Object Oriented Programming</td></tr>
-            <tr><td><b>DBMS</b></td><td>Database Management System</td></tr>
-            <tr><td><b>SQL</b></td><td>Structured Query Language</td></tr>
-            <tr><td><b>HTTP</b></td><td>Hyper Text Transfer Protocol</td></tr>
-            <tr><td><b>UI</b></td><td>User Interface</td></tr>
-            <tr><td><b>API</b></td><td>Application Programming Interface</td></tr>
-            <tr><td><b>MVC</b></td><td>Model View Controller</td></tr>
-            <tr><td><b>UML</b></td><td>Unified Modelling Language</td></tr>
-            <tr><td><b>CRUD</b></td><td>Create, Read, Update, Delete</td></tr>
-            <tr><td><b>RLS</b></td><td>Row-Level Security</td></tr>
-            <tr><td><b>JWT</b></td><td>JSON Web Token</td></tr>
-            <tr><td><b>SDK</b></td><td>Software Development Kit</td></tr>
-            <tr><td><b>APK</b></td><td>Android Package Kit</td></tr>
-            <tr><td><b>RFC</b></td><td>Request For Comments (Internet Standards)</td></tr>
+            <tr><td style="text-align: center; font-weight: bold;">OOP</td><td>Object Oriented Programming</td></tr>
+            <tr><td style="text-align: center; font-weight: bold;">JDBC</td><td>Java Database Connectivity</td></tr>
+            <tr><td style="text-align: center; font-weight: bold;">DBMS</td><td>Database Management System</td></tr>
+            <tr><td style="text-align: center; font-weight: bold;">SQL</td><td>Structured Query Language</td></tr>
+            <tr><td style="text-align: center; font-weight: bold;">HTTP</td><td>Hyper Text Transfer Protocol</td></tr>
+            <tr><td style="text-align: center; font-weight: bold;">UI</td><td>User Interface</td></tr>
+            <tr><td style="text-align: center; font-weight: bold;">API</td><td>Application Programming Interface</td></tr>
+            <tr><td style="text-align: center; font-weight: bold;">MVC</td><td>Model View Controller</td></tr>
+            <tr><td style="text-align: center; font-weight: bold;">UML</td><td>Unified Modelling Language</td></tr>
+            <tr><td style="text-align: center; font-weight: bold;">CRUD</td><td>Create,Read,Update,Delete</td></tr>
         </tbody>
     </table>
 </div>

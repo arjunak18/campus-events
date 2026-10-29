@@ -3,7 +3,7 @@ import os
 import docx
 from docx.shared import Inches, Pt, RGBColor
 from docx.enum.text import WD_ALIGN_PARAGRAPH
-from docx.enum.table import WD_TABLE_ALIGNMENT
+from docx.enum.table import WD_TABLE_ALIGNMENT, WD_ALIGN_VERTICAL
 from docx.oxml import OxmlElement, parse_xml
 from docx.oxml.ns import nsdecls, qn
 
@@ -51,6 +51,43 @@ font = style.font
 font.name = 'Times New Roman'
 font.size = Pt(11)
 font.color.rgb = RGBColor(0, 0, 0)
+
+def set_table_borders(table):
+    from docx.oxml import parse_xml
+    from docx.oxml.ns import nsdecls
+    tblPr = table._tbl.tblPr
+    borders = parse_xml(
+        f'<w:tblBorders {nsdecls("w")}>\n'
+        f'  <w:top w:val="single" w:sz="8" w:space="0" w:color="000000"/>\n'
+        f'  <w:bottom w:val="single" w:sz="8" w:space="0" w:color="000000"/>\n'
+        f'  <w:left w:val="single" w:sz="8" w:space="0" w:color="000000"/>\n'
+        f'  <w:right w:val="single" w:sz="8" w:space="0" w:color="000000"/>\n'
+        f'  <w:insideH w:val="single" w:sz="6" w:space="0" w:color="000000"/>\n'
+        f'  <w:insideV w:val="single" w:sz="6" w:space="0" w:color="000000"/>\n'
+        f'</w:tblBorders>'
+    )
+    tblPr.append(borders)
+
+def set_cell_shading(cell, color="E5E5E5"):
+    from docx.oxml import parse_xml
+    from docx.oxml.ns import nsdecls
+    tcPr = cell._tc.get_or_add_tcPr()
+    shd = parse_xml(f'<w:shd {nsdecls("w")} w:fill="{color}"/>')
+    tcPr.append(shd)
+
+def set_cell_margins(cell, top=80, bottom=80, left=120, right=120):
+    from docx.oxml import parse_xml
+    from docx.oxml.ns import nsdecls
+    tcPr = cell._tc.get_or_add_tcPr()
+    tcMar = parse_xml(
+        f'<w:tcMar {nsdecls("w")}>\n'
+        f'  <w:top w:w="{top}" w:type="dxa"/>\n'
+        f'  <w:bottom w:w="{bottom}" w:type="dxa"/>\n'
+        f'  <w:left w:w="{left}" w:type="dxa"/>\n'
+        f'  <w:right w:w="{right}" w:type="dxa"/>\n'
+        f'</w:tcMar>'
+    )
+    tcPr.append(tcMar)
 
 banner_path = os.path.join(ASSETS_DIR, 'Image7.jpg')
 emblem_path = os.path.join(ASSETS_DIR, 'Image20.jpg')
@@ -225,13 +262,17 @@ p.add_run("DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING\n(CYBER SECURITY)\n\n"
 
 p_v = doc.add_paragraph()
 p_v.alignment = WD_ALIGN_PARAGRAPH.CENTER
-p_v.add_run("INSTITUTE VISION\n").bold = True
+r = p_v.add_run("INSTITUTE VISION\n")
+r.bold = True
+r.underline = True
 r = p_v.add_run("“Emerge as a Centre of excellence for professional education to produce high quality engineers and entrepreneurs for the development of the region and the Nation.”\n\n")
 r.italic = True
 
 p_m = doc.add_paragraph()
 p_m.alignment = WD_ALIGN_PARAGRAPH.CENTER
-p_m.add_run("INSTITUTE MISSION\n").bold = True
+r = p_m.add_run("INSTITUTE MISSION\n")
+r.bold = True
+r.underline = True
 
 bullets = [
     "To become an ultimate destination for acquiring latest and advanced knowledge in the multidisciplinary domains.",
@@ -259,13 +300,17 @@ p.add_run("DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING\n(CYBER SECURITY)\n\n"
 
 p_v2 = doc.add_paragraph()
 p_v2.alignment = WD_ALIGN_PARAGRAPH.CENTER
-p_v2.add_run("DEPARTMENT VISION\n").bold = True
+r = p_v2.add_run("DEPARTMENT VISION\n")
+r.bold = True
+r.underline = True
 r = p_v2.add_run("“To produce competent professionals with research and innovative skills, by providing them with most conducive environment for quality academic and research oriented undergraduate and postgraduate education along with moral values committed to build a vibrant nation.”\n\n")
 r.italic = True
 
 p_m2 = doc.add_paragraph()
 p_m2.alignment = WD_ALIGN_PARAGRAPH.CENTER
-p_m2.add_run("DEPARTMENT MISSION\n").bold = True
+r = p_m2.add_run("DEPARTMENT MISSION\n")
+r.bold = True
+r.underline = True
 
 bullets_d = [
     "Provide a learning environment to develop creativity and problem-solving skills in a professional manner.",
@@ -290,26 +335,64 @@ if os.path.exists(banner_path):
 p = doc.add_paragraph()
 p.alignment = WD_ALIGN_PARAGRAPH.CENTER
 p.add_run("DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING\n(CYBER SECURITY)\n\n").bold = True
-p.add_run("PROGRAM EDUCATIONAL OBJECTIVES (PEOs)\n").bold = True
+r = p.add_run("PROGRAM EDUCATIONAL OBJECTIVES (POs)\n")
+r.bold = True
+r.underline = True
 
-p_peo = doc.add_paragraph()
-p_peo.add_run("The Graduates in Computer Science and Engineering will be able to:\n")
-p_peo.add_run("PEO1: ").bold = True
-p_peo.add_run("Apply Engineering practices required for Software development, Hardware development and Embedded systems.\n")
-p_peo.add_run("PEO2: ").bold = True
-p_peo.add_run("Exhibit innovation, Self-confidence and team work skills in the organization and society.\n")
-p_peo.add_run("PEO3: ").bold = True
-p_peo.add_run("Graduates shall be competent in the evolving field of computer science by adapting to new tools, technologies, and industry practices, ensuring continued professional and career growth.\n\n")
+p_sub = doc.add_paragraph("The Graduates in Computer Science and Engineering will be able to:")
 
-p_pso = doc.add_paragraph()
-p_pso.alignment = WD_ALIGN_PARAGRAPH.CENTER
-p_pso.add_run("PROGRAM SPECIFIC OUTCOMES (PSOs)\n").bold = True
+tbl_peo = doc.add_table(rows=3, cols=2)
+tbl_peo.alignment = WD_TABLE_ALIGNMENT.CENTER
+set_table_borders(tbl_peo)
+tbl_peo.columns[0].width = Inches(1.1)
+tbl_peo.columns[1].width = Inches(5.1)
 
-p_pso_b = doc.add_paragraph()
-p_pso_b.add_run("PSO1: ").bold = True
-p_pso_b.add_run("Ability to understand the architecture and working of computer hardware and software system.\n\n")
-p_pso_b.add_run("PSO2: ").bold = True
-p_pso_b.add_run("Ability to design and develop software for technology application to fulfill industrial and social needs.")
+peo_data = [
+    ("PEO1", "Apply Engineering practices required for Software development, Hardware development and Embedded systems."),
+    ("PEO2", "Exhibit innovation, Self – confidence and team work skills in the organization and society."),
+    ("PEO3", "Graduates shall be competent in the evolving field of computer science by adapting to new tools, technologies, and industry practices, ensuring continued professional and career growth")
+]
+for row_idx, (code, desc) in enumerate(peo_data):
+    c0 = tbl_peo.cell(row_idx, 0)
+    c1 = tbl_peo.cell(row_idx, 1)
+    c0.vertical_alignment = WD_ALIGN_VERTICAL.CENTER
+    c1.vertical_alignment = WD_ALIGN_VERTICAL.CENTER
+    set_cell_margins(c0, 80, 80, 120, 120)
+    set_cell_margins(c1, 80, 80, 120, 120)
+    p0 = c0.paragraphs[0]
+    p0.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    p0.add_run(code).bold = True
+    p1 = c1.paragraphs[0]
+    p1.add_run(desc)
+
+p_pso_title = doc.add_paragraph()
+p_pso_title.alignment = WD_ALIGN_PARAGRAPH.CENTER
+r = p_pso_title.add_run("\nPROGRAM SPECIFIC OUTCOMES (PSOs)\n")
+r.bold = True
+r.underline = True
+
+tbl_pso = doc.add_table(rows=2, cols=2)
+tbl_pso.alignment = WD_TABLE_ALIGNMENT.CENTER
+set_table_borders(tbl_pso)
+tbl_pso.columns[0].width = Inches(1.1)
+tbl_pso.columns[1].width = Inches(5.1)
+
+pso_data = [
+    ("PSO1", "Ability to understand the architecture and working of computer hardware and software system."),
+    ("PSO2", "Ability to design and develop software for technology application to fulfill industrial and social needs")
+]
+for row_idx, (code, desc) in enumerate(pso_data):
+    c0 = tbl_pso.cell(row_idx, 0)
+    c1 = tbl_pso.cell(row_idx, 1)
+    c0.vertical_alignment = WD_ALIGN_VERTICAL.CENTER
+    c1.vertical_alignment = WD_ALIGN_VERTICAL.CENTER
+    set_cell_margins(c0, 80, 80, 120, 120)
+    set_cell_margins(c1, 80, 80, 120, 120)
+    p0 = c0.paragraphs[0]
+    p0.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    p0.add_run(code).bold = True
+    p1 = c1.paragraphs[0]
+    p1.add_run(desc)
 
 # Bottom emblem removed as requested)
 
@@ -320,29 +403,50 @@ if os.path.exists(banner_path):
     doc.add_paragraph().alignment = WD_ALIGN_PARAGRAPH.CENTER
     doc.paragraphs[-1].add_run().add_picture(banner_path, width=Inches(6.2))
 
-p = doc.add_paragraph()
-p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-p.add_run("PROGRAM OUTCOMES (POs)\n").bold = True
+p_po_hdr = doc.add_paragraph()
+r = p_po_hdr.add_run("The following are the Program Outcomes of Engineering Students:")
+r.bold = True
 
-pos = [
-    ("PO1 Engineering knowledge: ", "Apply the knowledge of mathematics, science, engineering fundamentals, and an engineering specialization to the solution of complex engineering problems."),
-    ("PO2 Problem analysis: ", "Identify, formulate, review research literature, and analyze complex engineering problems reaching substantiated conclusions using first principles of mathematics, natural sciences, and engineering sciences."),
-    ("PO3 Design/development of solutions: ", "Design solutions for complex engineering problems and design system components or processes that meet the specified needs with appropriate consideration for public health and safety, cultural, societal, and environmental considerations."),
-    ("PO4 Conduct investigations of complex problems: ", "Use research-based knowledge and research methods including design of experiments, analysis and interpretation of data, and synthesis of information to provide valid conclusions."),
-    ("PO5 Modern tool usage: ", "Create, select, and apply appropriate techniques, resources, and modern engineering and IT tools including prediction and modeling to complex engineering activities with an understanding of the limitations."),
-    ("PO6 The engineer and society: ", "Apply reasoning informed by contextual knowledge to assess societal, health, safety, legal and cultural issues and consequent responsibilities relevant to professional engineering practice."),
-    ("PO7 Environment and sustainability: ", "Understand the impact of professional engineering solutions in societal and environmental contexts, and demonstrate knowledge of, and need for sustainable development."),
-    ("PO8 Ethics: ", "Apply ethical principles and commit to professional ethics and responsibilities and norms of engineering practice."),
-    ("PO9 Individual and team work: ", "Function effectively as an individual, and as a member or leader in diverse teams, and in multidisciplinary settings."),
-    ("PO10 Communication: ", "Communicate effectively on complex engineering activities with the engineering community and society at large, write effective reports and design documentation, make effective presentations, and give/receive clear instructions."),
-    ("PO11 Project management and finance: ", "Demonstrate knowledge and understanding of engineering and management principles and apply these to one's own work, as a member and leader in a team, to manage projects in multidisciplinary environments."),
-    ("PO12 Life-long learning: ", "Recognize the need for, and have the preparation and ability to engage in independent and life-long learning in the broadest context of technological change.")
+tbl_po = doc.add_table(rows=12, cols=2)
+tbl_po.alignment = WD_TABLE_ALIGNMENT.CENTER
+set_table_borders(tbl_po)
+tbl_po.columns[0].width = Inches(0.9)
+tbl_po.columns[1].width = Inches(5.3)
+
+pos_list = [
+    ("PO1", "Engineering knowledge: ", "Apply the knowledge of mathematics, science, engineering fundamentals, and an engineering specialization to the solution of complex engineering problems."),
+    ("PO2", "Problem analysis: ", "Identify, formulate, review research literature, and analyze complex engineering problems reaching substantiated conclusions using first principles of mathematics, natural sciences, and engineering sciences."),
+    ("PO3", "Design/development of solutions: ", "Design solutions for complex engineering problems and design system components or processes that meet the specified needs with appropriate consideration for the public health and safety, and the cultural, societal, and environmental considerations."),
+    ("PO4", "Conduct investigations of complex problems: ", "Use research-based knowledge and research methods including design of experiments, analysis and interpretation of data, and synthesis of the information to provide valid conclusions."),
+    ("PO5", "Modern tool usage: ", "Create, select, and apply appropriate techniques, resources, and modern engineering and IT tools including prediction and modeling to complex engineering activities with an understanding of the limitations."),
+    ("PO6", "The engineer and society: ", "Apply reasoning informed by the contextual knowledge to assess societal, health, safety, legal and cultural issues and the consequent responsibilities relevant to the professional engineering practice."),
+    ("PO7", "Environment and sustainability: ", "Understand the impact of the professional engineering solutions in societal and environmental contexts, and demonstrate the knowledge of, and need for sustainable development."),
+    ("PO8", "Ethics: ", "Apply ethical principles and commit to professional ethics and responsibilities and norms of the engineering practice."),
+    ("PO9", "Individual and team work: ", "Function effectively as an individual, and as a member or leader in diverse teams, and in multidisciplinary settings."),
+    ("PO10", "Communication: ", "Communicate effectively on complex engineering activities with the engineering community and with society at large, such as, being able to comprehend and write effective reports and design documentation, make effective presentations, and give and receive clear instructions."),
+    ("PO11", "Project management and finance: ", "Demonstrate knowledge and understanding of the engineering and management principles and apply these to one’s own work, as a member and leader in a team, to manage projects and in multidisciplinary environments."),
+    ("PO12", "Life-long learning: ", "Recognize the need for, and have the preparation and ability to engage in independent and life-long learning in the broadest context of technological change.")
 ]
-for title, desc in pos:
-    p_po = doc.add_paragraph()
-    p_po.paragraph_format.line_spacing = 1.15
-    p_po.add_run(title).bold = True
-    p_po.add_run(desc)
+
+for row_idx, (code, title, desc) in enumerate(pos_list):
+    c0 = tbl_po.cell(row_idx, 0)
+    c1 = tbl_po.cell(row_idx, 1)
+    c0.vertical_alignment = WD_ALIGN_VERTICAL.CENTER
+    c1.vertical_alignment = WD_ALIGN_VERTICAL.CENTER
+    set_cell_margins(c0, 40, 40, 80, 80)
+    set_cell_margins(c1, 40, 40, 80, 80)
+    p0 = c0.paragraphs[0]
+    p0.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    r0 = p0.add_run(code)
+    r0.bold = True
+    r0.font.size = Pt(8.5)
+    p1 = c1.paragraphs[0]
+    p1.paragraph_format.line_spacing = 1.05
+    r1_t = p1.add_run(title)
+    r1_t.bold = True
+    r1_t.font.size = Pt(8.5)
+    r1_d = p1.add_run(desc)
+    r1_d.font.size = Pt(8.5)
 
 # Bottom emblem removed as requested)
 
@@ -355,20 +459,117 @@ if os.path.exists(banner_path):
 
 p = doc.add_paragraph()
 p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-p.add_run("COURSE OUTCOMES (COS)\n\n").bold = True
+r = p.add_run("COURSE OUTCOMES (COS)\n")
+r.bold = True
+r.underline = True
 
-im47_path = os.path.join(ASSETS_DIR, 'Image47.png')
-im48_path = os.path.join(ASSETS_DIR, 'Image48.png')
+p_sub = doc.add_paragraph("At the end of the course students should be able to:")
 
-if os.path.exists(im47_path):
-    p_im47 = doc.add_paragraph()
-    p_im47.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    p_im47.add_run().add_picture(im47_path, width=Inches(5.8))
+tbl_co = doc.add_table(rows=6, cols=3)
+tbl_co.alignment = WD_TABLE_ALIGNMENT.CENTER
+set_table_borders(tbl_co)
+tbl_co.columns[0].width = Inches(0.7)
+tbl_co.columns[1].width = Inches(4.3)
+tbl_co.columns[2].width = Inches(1.2)
 
-if os.path.exists(im48_path):
-    p_im48 = doc.add_paragraph()
-    p_im48.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    p_im48.add_run().add_picture(im48_path, width=Inches(5.8))
+# Header
+h0 = tbl_co.cell(0, 0)
+h1 = tbl_co.cell(0, 1)
+h2 = tbl_co.cell(0, 2)
+for h in [h0, h1, h2]:
+    set_cell_shading(h, "F2F2F2")
+    set_cell_margins(h, 60, 60, 100, 100)
+p_h1 = h1.paragraphs[0]
+p_h1.alignment = WD_ALIGN_PARAGRAPH.CENTER
+r = p_h1.add_run("Course Outcome")
+r.bold = True
+r.font.size = Pt(9)
+p_h2 = h2.paragraphs[0]
+p_h2.alignment = WD_ALIGN_PARAGRAPH.CENTER
+r = p_h2.add_run("Bloom’s Knowledge Level (KL)")
+r.bold = True
+r.font.size = Pt(8.5)
+
+co_rows = [
+    ("CO1", "Explain the architecture and lifecycle of cross-platform hybrid mobile applications, including component hierarchy and reactive state management.", "K2"),
+    ("CO2", "Utilize React Native, TypeScript, and Expo ecosystem to design interactive, responsive, and accessible mobile user interfaces.", "K3"),
+    ("CO3", "Develop secure backend integrations with cloud PostgreSQL databases using Supabase, enforcing Row-Level Security (RLS) policies.", "K3"),
+    ("CO4", "Implement native device hardware capabilities, local storage caching, and calendar scheduling synchronization.", "K3"),
+    ("CO5", "Deploy, test, and debug standalone Android application packages (APK) on physical devices with error logging and monitoring.", "K3")
+]
+for idx, (code, desc, kl) in enumerate(co_rows):
+    c0 = tbl_co.cell(idx+1, 0)
+    c1 = tbl_co.cell(idx+1, 1)
+    c2 = tbl_co.cell(idx+1, 2)
+    for c in [c0, c1, c2]:
+        c.vertical_alignment = WD_ALIGN_VERTICAL.CENTER
+        set_cell_margins(c, 60, 60, 100, 100)
+    p0 = c0.paragraphs[0]
+    p0.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    r0 = p0.add_run(code)
+    r0.bold = True
+    r0.font.size = Pt(9)
+    p1 = c1.paragraphs[0]
+    r1 = p1.add_run(desc)
+    r1.font.size = Pt(9)
+    p2 = c2.paragraphs[0]
+    p2.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    r2 = p2.add_run(kl)
+    r2.bold = True
+    r2.font.size = Pt(9)
+
+p_note1 = doc.add_paragraph("Note: K1- Remember, K2- Understand, K3- Apply, K4- Analyse, K5- Evaluate, K6- Create")
+p_note1.runs[0].italic = True
+p_note1.runs[0].font.size = Pt(8.5)
+
+p_copo_hdr = doc.add_paragraph("CO-PO Mapping Table:")
+p_copo_hdr.runs[0].bold = True
+
+tbl_copo = doc.add_table(rows=6, cols=13)
+tbl_copo.alignment = WD_TABLE_ALIGNMENT.CENTER
+set_table_borders(tbl_copo)
+tbl_copo.columns[0].width = Inches(0.7)
+for col_i in range(1, 13):
+    tbl_copo.columns[col_i].width = Inches(0.45)
+
+for col_i in range(13):
+    cell = tbl_copo.cell(0, col_i)
+    set_cell_shading(cell, "F2F2F2")
+    set_cell_margins(cell, 40, 40, 40, 40)
+    p = cell.paragraphs[0]
+    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    if col_i > 0:
+        r = p.add_run(f"PO{col_i}")
+        r.bold = True
+        r.font.size = Pt(8)
+
+copo_matrix_data = [
+    ("CO1", [3, 3, "", "", "", "", "", "", "", "", "", 3]),
+    ("CO2", [3, 3, 3, "", "", "", "", "", "", "", "", 3]),
+    ("CO3", [3, 3, 3, "", 3, "", "", "", "", "", "", 3]),
+    ("CO4", [3, 3, 3, "", 3, "", "", "", "", "", "", 3]),
+    ("CO5", [3, 3, 3, "", 3, "", "", "", "", "", "", 3])
+]
+for row_i, (code, vals) in enumerate(copo_matrix_data):
+    c0 = tbl_copo.cell(row_i+1, 0)
+    set_cell_margins(c0, 40, 40, 40, 40)
+    p0 = c0.paragraphs[0]
+    p0.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    r0 = p0.add_run(code)
+    r0.bold = True
+    r0.font.size = Pt(8.5)
+    for col_j, val in enumerate(vals):
+        cj = tbl_copo.cell(row_i+1, col_j+1)
+        set_cell_margins(cj, 40, 40, 40, 40)
+        pj = cj.paragraphs[0]
+        pj.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        if val != "":
+            rj = pj.add_run(str(val))
+            rj.font.size = Pt(8.5)
+
+p_note2 = doc.add_paragraph("Note: 1: Slight (Low), 2: Moderate (Medium), 3: Substantial (High), -: No Correlation")
+p_note2.runs[0].italic = True
+p_note2.runs[0].font.size = Pt(8.5)
 
 # Bottom emblem removed as requested)
 
