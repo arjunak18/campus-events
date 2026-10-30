@@ -130,23 +130,25 @@ html, body {
     flex-direction: column;
 }
 
-/* Running Header & Footer for numbered pages */
+/* Running Header & Footer for numbered body pages (Pages 1-15) */
 .running-header {
     width: 100%;
     margin-bottom: 5mm;
     z-index: 2;
 }
-.running-header-text {
+.running-header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     font-size: 10pt;
     font-weight: bold;
-    text-align: left;
     color: #000000;
-    margin-bottom: 2mm;
+    margin-bottom: 1.5mm;
     letter-spacing: 0.3px;
 }
 .running-header-line {
     width: 100%;
-    height: 1px;
+    height: 1.2px;
     background: #000000;
 }
 .running-footer {
@@ -157,7 +159,7 @@ html, body {
 }
 .running-footer-line {
     width: 100%;
-    height: 1px;
+    height: 1.2px;
     background: #000000;
     margin-bottom: 2mm;
 }
@@ -173,6 +175,21 @@ html, body {
 }
 .running-footer-content .page-num {
     font-weight: normal;
+}
+
+/* Roman Footer for preliminary pages (Abstract to Abbreviations, Pages I to VI) */
+.roman-footer {
+    width: 100%;
+    margin-top: auto;
+    text-align: center;
+    padding-bottom: 2.5mm;
+    z-index: 2;
+}
+.roman-num {
+    font-size: 11pt;
+    font-weight: normal;
+    color: #000000;
+    font-family: 'Times New Roman', Times, serif;
 }
 
 /* Typography */
@@ -300,13 +317,30 @@ def make_front_page(inner_content, show_banner=True, show_emblem=True):
     </div>
     """
 
+def make_roman_page(inner_content, roman_num_str, show_watermark=True):
+    watermark_tag = f'<img src="{b64_logo_watermark}" class="page-watermark" />' if show_watermark else ''
+    return f"""
+    <div class="page">
+        {watermark_tag}
+        <div style="flex: 1; display: flex; flex-direction: column; position: relative; z-index: 1;">
+            {inner_content}
+        </div>
+        <div class="roman-footer">
+            <div class="roman-num">{roman_num_str}</div>
+        </div>
+    </div>
+    """
+
 def make_numbered_page(inner_content, page_num_str, show_watermark=False):
     watermark_tag = f'<img src="{b64_logo_watermark}" class="page-watermark" />' if show_watermark else ''
     return f"""
     <div class="page">
         {watermark_tag}
         <div class="running-header">
-            <div class="running-header-text">HYBRID APP DEVELOPMENT  25CCHADT305</div>
+            <div class="running-header-content">
+                <span>25CCHADT305</span>
+                <span>HYBRID APP DEVELOPMENT</span>
+            </div>
             <div class="running-header-line"></div>
         </div>
         <div style="flex: 1; display: flex; flex-direction: column; position: relative; z-index: 1;">
@@ -687,7 +721,7 @@ p9_content = """
     </p>
 </div>
 """
-pages_html.append(make_numbered_page(p9_content, "I", show_watermark=True))
+pages_html.append(make_roman_page(p9_content, "I", show_watermark=True))
 
 # PAGE 10 (II): ACKNOWLEDGEMENT
 p10_content = """
@@ -719,7 +753,7 @@ p10_content = """
     </div>
 </div>
 """
-pages_html.append(make_numbered_page(p10_content, "II", show_watermark=True))
+pages_html.append(make_roman_page(p10_content, "II", show_watermark=True))
 
 # PAGE 11 (III): TABLE OF CONTENTS
 p11_content = """
@@ -798,7 +832,7 @@ p11_content = """
     </table>
 </div>
 """
-pages_html.append(make_numbered_page(p11_content, "III", show_watermark=True))
+pages_html.append(make_roman_page(p11_content, "III", show_watermark=True))
 
 # PAGE 12 (IV): LIST OF FIGURES
 p12_content = """
@@ -847,7 +881,7 @@ p12_content = """
     </table>
 </div>
 """
-pages_html.append(make_numbered_page(p12_content, "IV"))
+pages_html.append(make_roman_page(p12_content, "IV", show_watermark=True))
 
 # PAGE 13 (V): LIST OF TABLES
 p13_content = """
@@ -901,7 +935,7 @@ p13_content = """
     </table>
 </div>
 """
-pages_html.append(make_numbered_page(p13_content, "V"))
+pages_html.append(make_roman_page(p13_content, "V", show_watermark=True))
 
 # PAGE 14 (VI): LIST OF ABBREVIATIONS
 p14_content = """
@@ -929,7 +963,7 @@ p14_content = """
     </table>
 </div>
 """
-pages_html.append(make_numbered_page(p14_content, "VI"))
+pages_html.append(make_roman_page(p14_content, "VI", show_watermark=True))
 
 print("Building main body chapters 1 to 8 (Pages 1 to 15)...")
 

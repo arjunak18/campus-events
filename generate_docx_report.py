@@ -2,7 +2,7 @@
 import os
 import docx
 from docx.shared import Inches, Pt, RGBColor
-from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_TAB_ALIGNMENT
 from docx.enum.table import WD_TABLE_ALIGNMENT, WD_ALIGN_VERTICAL
 from docx.oxml import OxmlElement, parse_xml
 from docx.oxml.ns import nsdecls, qn
@@ -635,23 +635,69 @@ p_dec_r.add_run(
 
 doc.add_page_break()
 
-# ----------------- SECTION BREAK FOR NUMBERED PAGES -----------------
+
+def add_p_bottom_border(p):
+    pPr = p._p.get_or_add_pPr()
+    pBdr = OxmlElement('w:pBdr')
+    bottom = OxmlElement('w:bottom')
+    bottom.set(qn('w:val'), 'single')
+    bottom.set(qn('w:sz'), '8')
+    bottom.set(qn('w:space'), '4')
+    bottom.set(qn('w:color'), '000000')
+    pBdr.append(bottom)
+    pPr.append(pBdr)
+
+def add_p_top_border(p):
+    pPr = p._p.get_or_add_pPr()
+    pBdr = OxmlElement('w:pBdr')
+    top = OxmlElement('w:top')
+    top.set(qn('w:val'), 'single')
+    top.set(qn('w:sz'), '8')
+    top.set(qn('w:space'), '4')
+    top.set(qn('w:color'), '000000')
+    pBdr.append(top)
+    pPr.append(pBdr)
+
+def add_page_field(run):
+    fldChar1 = OxmlElement('w:fldChar')
+    fldChar1.set(qn('w:fldCharType'), 'begin')
+    instrText = OxmlElement('w:instrText')
+    instrText.set(qn('xml:space'), 'preserve')
+    instrText.text = 'PAGE'
+    fldChar2 = OxmlElement('w:fldChar')
+    fldChar2.set(qn('w:fldCharType'), 'separate')
+    fldChar3 = OxmlElement('w:fldChar')
+    fldChar3.set(qn('w:fldCharType'), 'end')
+    run._r.append(fldChar1)
+    run._r.append(instrText)
+    run._r.append(fldChar2)
+    run._r.append(fldChar3)
+
+# ----------------- SECTION BREAK FOR PRELIMINARY ROMAN PAGES (I to VI) -----------------
 sec2 = doc.add_section()
 sec2.top_margin = Inches(0.8)
 sec2.bottom_margin = Inches(0.8)
 sec2.left_margin = Inches(0.9)
 sec2.right_margin = Inches(0.9)
 
-header = sec2.header
-p_hdr = header.paragraphs[0]
-p_hdr.text = "HYBRID APP DEVELOPMENT  25CCHADT305"
-p_hdr.runs[0].bold = True
-p_hdr.runs[0].font.size = Pt(9.5)
+# No header on preliminary pages
+sec2.header.is_linked_to_previous = False
+sec2.header.paragraphs[0].text = ""
 
-footer = sec2.footer
-p_ftr = footer.paragraphs[0]
-p_ftr.text = "DEPARTMENT OF CSE - CYBER SECURITY"
-p_ftr.runs[0].font.size = Pt(9.5)
+# Roman footer centered at bottom
+sec2.footer.is_linked_to_previous = False
+sectPr2 = sec2._sectPr
+pgNumType2 = OxmlElement('w:pgNumType')
+pgNumType2.set(qn('w:fmt'), 'roman')
+pgNumType2.set(qn('w:start'), '1')
+sectPr2.append(pgNumType2)
+
+p_ftr2 = sec2.footer.paragraphs[0]
+p_ftr2.alignment = WD_ALIGN_PARAGRAPH.CENTER
+r_num2 = p_ftr2.add_run()
+r_num2.font.name = "Times New Roman"
+r_num2.font.size = Pt(11)
+add_page_field(r_num2)
 
 # PAGE 9 (I): ABSTRACT
 p_abs = doc.add_paragraph()
@@ -718,7 +764,41 @@ p_ack_sig.add_run(
     "(JCE25CC019)"
 ).bold = True
 
-doc.add_page_break()
+# ----------------- SECTION BREAK FOR CHAPTERS (DECIMAL NUMBERING 1-15) -----------------
+sec3 = doc.add_section()
+sec3.top_margin = Inches(0.8)
+sec3.bottom_margin = Inches(0.8)
+sec3.left_margin = Inches(0.9)
+sec3.right_margin = Inches(0.9)
+
+# Running header for chapters: 25CCHADT305 (left), HYBRID APP DEVELOPMENT (right)
+sec3.header.is_linked_to_previous = False
+p_hdr3 = sec3.header.paragraphs[0]
+p_hdr3.paragraph_format.tab_stops.add_tab_stop(Inches(6.7), WD_TAB_ALIGNMENT.RIGHT)
+r_h3 = p_hdr3.add_run("25CCHADT305\tHYBRID APP DEVELOPMENT")
+r_h3.bold = True
+r_h3.font.name = "Times New Roman"
+r_h3.font.size = Pt(10)
+add_p_bottom_border(p_hdr3)
+
+# Running footer for chapters: DEPARTMENT OF CSE - CYBER SECURITY (left), Page number (right)
+sec3.footer.is_linked_to_previous = False
+sectPr3 = sec3._sectPr
+pgNumType3 = OxmlElement('w:pgNumType')
+pgNumType3.set(qn('w:fmt'), 'decimal')
+pgNumType3.set(qn('w:start'), '1')
+sectPr3.append(pgNumType3)
+
+p_ftr3 = sec3.footer.paragraphs[0]
+p_ftr3.paragraph_format.tab_stops.add_tab_stop(Inches(6.7), WD_TAB_ALIGNMENT.RIGHT)
+r_f3_title = p_ftr3.add_run("DEPARTMENT OF CSE - CYBER SECURITY\t")
+r_f3_title.font.name = "Times New Roman"
+r_f3_title.font.size = Pt(9.5)
+r_f3_num = p_ftr3.add_run()
+r_f3_num.font.name = "Times New Roman"
+r_f3_num.font.size = Pt(9.5)
+add_page_field(r_f3_num)
+add_p_top_border(p_ftr3)
 
 # ----------------- CHAPTER 1 TO 8 -----------------
 def add_ch_title(doc, ch_num, title):
